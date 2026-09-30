@@ -253,6 +253,21 @@ case_id内の年は安定IDの一部であり、年度分析の根拠にしな�
 
 「未確認」と「存在しない」を同一視しない。
 
+## 13. Review coverage
+
+`data/review_coverage.csv`
+
+案件ごとに、仕様書・質疑・評価表・結果等のどこまでを確認したかを保持する。
+
+| field | meaning |
+|---|---|
+| document_role | specification / qa_amendment / evaluation / result 等 |
+| source_id | 確認したsource。未確認・未取得なら空欄可 |
+| review_state | reviewed / not_reviewed / source_unavailable / not_found_in_reviewed_sources / conflicting_sources |
+| unknown_reason | 未確定理由。review_stateと重複しても分析用に明示 |
+| last_verified | その確認範囲を最後に検証した日 |
+
+「仕様書を確認済み」を「案件全体を確認済み」と読み替えない。特に有効要件の判定には qa_amendment の確認状態が重要。
 ## Verification levels
 
 - `official_html_verified`: 公式HTML本文を確認。

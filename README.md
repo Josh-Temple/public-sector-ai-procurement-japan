@@ -41,6 +41,11 @@
 2026-09-30 に初期コーパスを作成し、公式一次資料から対象を拡張しています。現在は26案件を案件台帳に収録し、そのうち17案件は仕様書レベルの要件比較まで進めています。評価基準は106項目、汎用調達の細粒度要件は22件、業務特化型AIの要件は21件、公開得点は19行を構造化しています。さらに調達方式8件、一般競争入札結果3行、共同調達団体レコード8行（現参加6・将来予定2）を分離して保持しています。
 
 - Structured cases: `data/cases.csv`
+- Procurement/service timeline: `data/case_timeline.csv`
+- Source document registry: `data/source_documents.csv`
+- Effective requirements and amendments: `data/effective_requirements.csv`
+- Review coverage: `data/review_coverage.csv`
+- Reasoning regression tests: `evals/REQUIREMENT_REASONING_V1.md`
 - Requirement matrix: `data/requirements.csv`
 - Granular requirement facts: `data/requirement_facts.csv`
 - Evaluation criteria: `data/evaluation_criteria.csv`
@@ -66,3 +71,11 @@
 ## Next
 
 仕様書・評価基準の深掘りを進め、17案件について比較可能な要件を構造化しました。共同調達では案件固有の参加団体・団体別上限を別テーブル化し始めています。次は群馬の契約予定団体別紙の取得と、残る浅い案件の仕様深掘りを進めます。
+
+## Current hardening phase
+
+2026-10-01以降は、新規案件数の拡大より、代表案件の再監査と有効要件の再現性を優先する。
+
+特に、仕様書の後に公式質問回答・訂正がある場合は、元仕様の記載をそのまま比較値に使わず、変更後の有効要件を `data/effective_requirements.csv` に記録する。
+
+また、公募年度と履行・サービス年度を分離し、case_idの年を年度分析に流用しない。

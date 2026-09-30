@@ -1,0 +1,9 @@
+case_id,document_role,source_id,review_state,unknown_reason,last_verified,notes
+oumi-2026-joint-genai,specification,SRC-oumi-2026-spec,reviewed,,2026-10-01,"当初仕様。後続Q&Aによる変更あり"
+oumi-2026-joint-genai,qa_amendment,SRC-oumi-2026-qa,reviewed,,2026-10-01,"有効要件判定に使用"
+oumi-2026-joint-genai,evaluation,SRC-oumi-2026-evaluation,reviewed,,2026-10-01,"1000点満点。proposal関連350・機能350・価格300"
+oumi-2026-joint-genai,result,SRC-oumi-2026-result,reviewed,,2026-10-01,"公告日・現参加6市・選定結果を確認"
+fukushima-2026-genai-pilot-expansion,specification,SRC-fukushima-2026-spec,reviewed,,2026-10-01,"事業段階を実証として再確認"
+fukushima-2026-genai-pilot-expansion,evaluation,SRC-fukushima-2026-evaluation,reviewed,,2026-10-01,"安全な実証、本格導入に向けた整理を評価文言でも確認"
+fukushima-2026-genai-pilot-expansion,result,SRC-fukushima-2026-result,reviewed,,2026-10-01,"公式HTMLでも実証目的を確認"
+fukushima-2026-genai-pilot-expansion,qa_amendment,,not_reviewed,not_reviewed,2026-10-01,"今回の代表案件再監査では質疑の変更有無まで未確認"

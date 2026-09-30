@@ -23,10 +23,19 @@ Contract structure:
 2. Based on the basic contract, each participating municipality signs its own actual service-use agreement.
 
 Evaluation:
-- proposal-related factors: 330 points
+- proposal-related factors: 350 points
 - function/demo: 350 points
 - price: 300 points
 - total: 1,000 points
+
+Effective-requirement caution:
+- the original specification is not the final effective requirement set;
+- official Q&A relaxes several requirements, including LLM selection, Deep Research, prompt-template count, autonomous agents, security certification, network access and payment cadence;
+- effective requirements must therefore be read from the specification together with the later Q&A.
+
+Service-start clarification:
+- default planned start: April 2026;
+- Kusatsu and Koka: July 2026 planned start.
 
 Published outcome:
 - NTT DOCOMO BUSINESS: 733

@@ -19,13 +19,17 @@
 | 知りたいこと | まず見る場所 | 補助 |
 |---|---|---|
 | どんな案件があるか | `data/cases.csv` | README |
-| 横断的な機能要件 | `data/requirements.csv` | `docs/DATA_MODEL.md` |
+| 現在有効な要件・質疑による変更 | `data/effective_requirements.csv` | `data/source_documents.csv` |
+| 横断的な機能要件projection | `data/requirements.csv` | `docs/DATA_MODEL.md` |
 | 細粒度の要求事項 | `data/requirement_facts.csv` | 該当research memo |
+| 公募年度・履行年度 | `data/case_timeline.csv` | `data/cases.csv` |
 | 評価基準・配点 | `data/evaluation_criteria.csv` | `data/vendor_scores.csv` |
 | 業務特化型AIの要件 | `data/specialized_requirements.csv` | 該当research memo |
 | 調達方式・共同調達 | `data/procurement_structure.csv` | `data/joint_procurement_entities.csv` |
 | 入札額 | `data/bid_results.csv` | 案件の公式結果資料 |
-| 収集済み一次資料の意味・注意 | `sources/` | 元URL・既存data |
+| 収集済み一次資料の意味・注意 | `sources/` | `data/source_documents.csv` |
+| 案件ごとの確認範囲・未確認理由 | `data/review_coverage.csv` | `data/source_documents.csv` |
+| 回帰評価・誤読テスト | `evals/` | Effective requirements / claims |
 | 再利用可能な主張 | `claims/` | 根拠sourceとdata |
 | 未解決事項・次の調査 | `research/COLLECTION_BACKLOG_2026-09-30.md` | 最新research pass |
 | データ項目の意味 | `docs/DATA_MODEL.md` | `docs/KNOWLEDGE_MODEL.md` |
@@ -37,7 +41,7 @@
 
 案件・仕様・評価・価格等を比較可能な形に構造化したデータ。
 
-行ごとの現在の確認状態は `verification_level` 等で管理する。分析文よりも、まずここにある値とsource URLを確認する。
+行ごとの現在の確認状態は `verification_level` 等で管理する。分析文よりも、まずここにある値とsource URLを確認する。ただし仕様書の後に公式質問回答・訂正がある場合は、`effective_requirements.csv` を確認し、元仕様だけで現行要件を確定しない。
 
 ### sources/
 
@@ -62,6 +66,12 @@ research memoの分析結果は有用だが、現在の事実を確認すると�
 - 京都市2026汎用生成AI調達では、RAGを本調達の要件外とし、既存サービスでニーズを満たすという案件固有の境界が確認されている。
   - Source: `sources/SRC-kyoto-2026-general-genai-spec.md`
   - Claim: `claims/CLM-kyoto-2026-rag-out-of-scope.md`
+- おうみ共同調達では、当初仕様の複数要件が公式質疑で変更されている。
+  - Source: `sources/SRC-oumi-2026-qa.md`
+  - Claim: `claims/CLM-oumi-2026-effective-amendments.md`
+- 福島県2026案件は機能範囲が拡大しているが、公式仕様上は次段階の本格導入に向けた実証である。
+  - Source: `sources/SRC-fukushima-2026-spec.md`
+  - Claim: `claims/CLM-fukushima-2026-remains-pilot.md`
 
 この例は、「RAG要件なし」を「組織としてRAGを利用していない」と誤読しないための再利用可能な知識として残している。
 

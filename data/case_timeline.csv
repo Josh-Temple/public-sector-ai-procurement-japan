@@ -1,0 +1,5 @@
+case_id,announcement_date,announcement_fiscal_year,service_start,service_end,service_fiscal_year_start,service_fiscal_year_end,date_precision,source_id,notes,last_verified
+oumi-2026-joint-genai,2026-03-02,2025,2026-04-01,2027-03-31,2026,2026,case_period,SRC-oumi-2026-result,"案件IDの2026は安定IDとして維持。公募年度はFY2025、サービス年度はFY2026",2026-10-01
+fukushima-2025-genai-pilot,,2025,,2026-03-31,2025,2025,partial,SRC-fukushima-2025-spec,"公募・契約開始日は別途正本確認が必要",2026-10-01
+fukushima-2026-genai-pilot-expansion,,2026,,2027-03-31,2026,2026,partial,SRC-fukushima-2026-spec,"2026年度も実証。次段階の本格導入準備",2026-10-01
+kyoto-2026-general-genai,,2026,,2027-03-31,2026,2026,partial,SRC-kyoto-2026-general-genai-spec,"公告日の正規化は別途確認",2026-10-01

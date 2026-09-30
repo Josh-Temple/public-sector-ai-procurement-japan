@@ -87,13 +87,33 @@ evidence:
 
 例えば「RAGが要件外」という記述を、「その自治体がRAGを使っていない」という一般論へ拡張しない。
 
-## 4. Relationship with existing structured data
+## 4. Amendment-aware facts
+
+仕様書は常に最終状態とは限らない。
+
+公式質問回答、訂正、追補、差替え等が元仕様を変更する場合、次を分離する。
+
+- Source: どの資料に何が書かれているか
+- Original requirement: 当初仕様
+- Amendment: 後続資料による変更
+- Effective requirement: 応募・契約判断に用いる変更後の状態
+- Projection: 横断比較用の `requirements.csv`
+
+後続資料が「仕様変更」「緩和」「削除」等を明示した場合、元仕様だけを現行要件として再利用しない。
+
+structured source registryは `data/source_documents.csv`、変更後要件は `data/effective_requirements.csv` で管理する。
+
+## 5. Relationship with existing structured data
 
 既存のCSVは比較可能な事実の主要な構造化表現として維持する。
 
 - `data/cases.csv`
-- `data/requirements.csv`
-- `data/requirement_facts.csv`
+- `data/requirements.csv` — 横断比較projection
+- `data/requirement_facts.csv` — 細粒度fact
+- `data/effective_requirements.csv` — 変更後の有効要件
+- `data/source_documents.csv` — 文書識別・版/取得状態
+- `data/case_timeline.csv` — 公募年度とサービス年度
+- `data/review_coverage.csv` — 確認範囲・未確認理由
 - `data/evaluation_criteria.csv`
 - その他 `docs/DATA_MODEL.md` に定義された表
 
@@ -107,7 +127,7 @@ ClaimはCSVのコピーではない。次の場合だけ作る。
 
 単純な数値や一覧は、原則としてCSVを直接参照する。
 
-## 5. Freshness
+## 6. Freshness
 
 日付の意味を混同しない。
 
@@ -120,7 +140,7 @@ URLが開くことだけを確認して `last_verified` を更新しない。
 
 現在の制度、価格、調達結果、製品仕様等に使う場合は、reviewed claimであっても公式一次資料を再確認する。
 
-## 6. Supersession
+## 7. Supersession
 
 主張の意味が変わる場合は、既存claimを静かに書き換えて履歴を消さず、新しいclaimを作ることを検討する。
 
@@ -132,7 +152,7 @@ superseded_by: CLM-new-id
 
 誤字修正や説明補足など意味を変えない修正は、同じIDのまま更新できる。
 
-## 7. Promotion rule
+## 8. Promotion rule
 
 調査メモの内容を自動的にclaimへ昇格しない。
 

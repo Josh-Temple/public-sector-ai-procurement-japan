@@ -154,6 +154,25 @@ AI機能とは別に、買い方そのものを比較する。共同調達や一
 
 税抜入札額から税込契約額を計算して `contract_amount_jpy` に補完しない。公式契約額が別途確認できた場合のみ案件台帳へ記録する。
 
+## 9. Joint procurement entities
+
+`data/joint_procurement_entities.csv`
+
+共同調達における案件固有の参加団体・利用規模・団体別上限を保持する。協議会等の一般的な構成団体一覧とは分離する。
+
+| field | meaning |
+|---|---|
+| participation_status | current / future_planned |
+| expected_users | 当該案件での想定利用者数 |
+| concurrent_users | 想定同時利用者数 |
+| monthly_characters | 月間想定文字数 |
+| monthly_ceiling_jpy | 月額上限 |
+| initial_setup_ceiling_jpy | 初期構築費上限 |
+| lgwan_setup_ceiling_jpy | LGWAN-ASP等の初期費上限 |
+| contract_model | 基本契約＋団体別利用契約等 |
+
+公式資料上の「－」は0円と推定せず空欄＋notesで保持する。将来参加予定団体をcurrent参加団体へ数えない。
+
 ## Verification levels
 
 - `official_html_verified`: 公式HTML本文を確認。
@@ -162,6 +181,7 @@ AI機能とは別に、買い方そのものを比較する。共同調達や一
 - `verified_from_official_pdf_and_qa`: 公式PDF本文に加え、公式質疑回答で要件解釈を確認。
 - `verified_from_official_pdf_and_html`: 公式PDF本文と公式HTML本文を組み合わせて確認。
 - `official_pdf_verified_result_pending`: 公募・仕様等は公式PDFで確認したが、選定結果の公式公開を確認できていない。
+- `official_html_and_pdf_verified`: 公式HTMLの結果と公式PDFの公募・仕様資料を確認。
 - `attachment_pending`: 添付資料の詳細抽出が未実施。
 
 数値・要件・事業者名は、確認した公式資料以上に推測して補完しない。

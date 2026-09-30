@@ -77,8 +77,11 @@
 - 2026詳細業務処理要領は公式ZIP内で、現在の取得経路では ACCESS_UNAVAILABLE。
 
 ### 上毛町 2026 / 五泉市 2026
-- 案件台帳への基本登録は完了。
-- 仕様書・評価基準を深掘りして小規模自治体の要求水準を比較する。
+- 仕様書レベルの要件比較を完了。
+- 上毛町: 約120名、RAG、国内保存、LLM側不保持、伴走支援、価格5/100点。
+- 五泉市: 同時50以上、月1,700万文字、100GB RAG、LGWAN、独自提案・将来性400/1000点。
+- 評価基準を `evaluation_criteria.csv` へ追加済み。
+- `research/SMALL_MUNICIPALITY_COMPARISON_2026-10-01.md` に比較を整理済み。
 
 ## Priority C — schema extensions
 
@@ -96,3 +99,20 @@ Evidenceが十分に集まった後に追加を検討する。
 - vendor participation / score table
 
 業務特化型AIは `specialized_requirements.csv` のlong-formでまず収集し、複数案件で共通性が確認できた項目だけ共通schemaへ昇格する。
+
+
+## Next priority after research pass 5
+
+### 共同調達の参加団体・価格正規化
+- おうみ: AI案件の参加6市と、協議会全体の構成8市を区別済み。
+- 群馬: 協議会全会員と当該AI調達の契約予定団体を区別する。
+- 調達固有の参加団体一覧・団体別上限額を公式一次資料から取得できた時点で、joint procurement member tableを新設する。
+- 協議会会員であることだけを根拠に参加扱いしない。
+
+### 五泉市
+- 優先交渉権者・次点は公式HTMLで確認済み。
+- 事業者別得点が公開されていないか継続確認する。
+
+### 上毛町
+- 契約候補者は公式HTMLで確認済み。
+- 公開得点が存在する場合のみvendor_scoresへ追加する。

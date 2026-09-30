@@ -26,9 +26,12 @@
 2026-09-30 に初期コーパスを作成。まず公式HTMLページで確認できた生成AI調達案件を収集しています。
 
 - Structured cases: `data/cases.csv`
+- Requirement matrix: `data/requirements.csv`
+- Evaluation criteria: `data/evaluation_criteria.csv`
 - Data model: `docs/DATA_MODEL.md`
 - Initial source pack: `research/INITIAL_SOURCE_PACK_2026-09-30.md`
+- Deep extraction memo: `research/DEEP_REQUIREMENT_EXTRACTION_2026-09-30.md`
 
 ## Next
 
-次の段階では、仕様書・評価基準・要求機能一覧・質疑回答などの添付資料を案件ごとに読み、共通項目へ正規化します。
+仕様書・評価基準の深掘りを開始し、6案件について比較可能な要件・配点を構造化しました。次はExcelの要求機能一覧や未処理案件へ対象を拡大します。

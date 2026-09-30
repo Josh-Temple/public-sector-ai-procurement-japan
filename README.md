@@ -21,6 +21,21 @@
 - 出典URLと収集日を必ず保持する。
 - 原資料の誤記と考えられる箇所も勝手に修正せず、注記して保持する。
 
+## Knowledge reuse
+
+このリポジトリは、人間だけでなく複数のAIから再利用できる知識基盤として段階的に整備しています。
+
+- Entry point: `INDEX.md`
+- AI / agent guidance: `AGENTS.md`
+- Structured data model: `docs/DATA_MODEL.md`
+- Source / claim model: `docs/KNOWLEDGE_MODEL.md`
+- Reusable source metadata: `sources/`
+- Reusable scoped claims: `claims/`
+
+`sources/` と `claims/` は既存の `data/` や `research/` を置き換えません。再利用価値が高く、適用範囲や根拠を明示する必要がある知識だけを追加します。
+
+「検証済み」と「現在の質問にそのまま使える」は別として扱います。現在の制度、調達状況、価格、製品仕様等については、保存済み知識を調査の起点にしつつ、必要な公式一次資料を再確認します。
+
 ## Current status
 
 2026-09-30 に初期コーパスを作成し、公式一次資料から対象を拡張しています。現在は26案件を案件台帳に収録し、そのうち17案件は仕様書レベルの要件比較まで進めています。評価基準は106項目、汎用調達の細粒度要件は22件、業務特化型AIの要件は21件、公開得点は19行を構造化しています。さらに調達方式8件、一般競争入札結果3行、共同調達団体レコード8行（現参加6・将来予定2）を分離して保持しています。

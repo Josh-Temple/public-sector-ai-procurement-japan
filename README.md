@@ -23,12 +23,13 @@
 
 ## Current status
 
-2026-09-30 に初期コーパスを作成し、公式一次資料から対象を拡張しています。現在は22案件を案件台帳に収録し、そのうち12案件は仕様書レベルの要件比較まで進めています。評価基準は77項目、汎用調達の細粒度要件は22件、業務特化型AIの要件は21件をlong-formで構造化しています。
+2026-09-30 に初期コーパスを作成し、公式一次資料から対象を拡張しています。現在は22案件を案件台帳に収録し、そのうち12案件は仕様書レベルの要件比較まで進めています。評価基準は77項目、汎用調達の細粒度要件は22件、業務特化型AIの要件は21件、公開得点は13行を構造化しています。
 
 - Structured cases: `data/cases.csv`
 - Requirement matrix: `data/requirements.csv`
 - Granular requirement facts: `data/requirement_facts.csv`
 - Evaluation criteria: `data/evaluation_criteria.csv`
+- Published vendor scores: `data/vendor_scores.csv`
 - Specialized AI requirements: `data/specialized_requirements.csv`
 - Data model: `docs/DATA_MODEL.md`
 - Initial source pack: `research/INITIAL_SOURCE_PACK_2026-09-30.md`

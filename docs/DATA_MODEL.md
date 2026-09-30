@@ -120,12 +120,46 @@ Excel本文が現在の実行環境で取得できない場合でも、公式質
 
 得点方式は自治体ごとに異なる。焼津市は選定委員の平均点、北九州市は審査委員5名の合計500点満点、大府市は一次400点＋二次350点である。異なる方式のraw scoreをそのまま自治体間ランキングには使わない。
 
+## 7. Procurement structure
+
+`data/procurement_structure.csv`
+
+AI機能とは別に、買い方そのものを比較する。共同調達や一般競争入札を通常のプロポーザルと混同しないためのテーブル。
+
+| field | meaning |
+|---|---|
+| buyer_scope | single_prefecture / multi_entity_joint など |
+| selection_method | public_proposal / restricted_general_competitive_bid など |
+| award_basis | 総合評価、最高評価点、最低有効価格等 |
+| contracting_model | 単独契約、共同選定後の団体別契約等 |
+| pricing_basis | 上限額・団体別上限・税抜入札額等の扱い |
+| lifecycle_stage | pilot / production_service / joint_procurement など |
+
+## 8. Bid results
+
+`data/bid_results.csv`
+
+一般競争入札等で公開される入札額を保存する。プロポーザルの評価得点とは別テーブルとする。
+
+| field | meaning |
+|---|---|
+| bidder_label | 公式結果上の表記 |
+| bidder_name | 実名公表時のみ記録 |
+| bid_amount_jpy | 公式結果に記載されたraw bid |
+| tax_basis | tax_excluded_bid / tax_included_bid / unknown |
+| rank | 入札結果上の順位 |
+| selected | 落札者か |
+
+税抜入札額から税込契約額を計算して `contract_amount_jpy` に補完しない。公式契約額が別途確認できた場合のみ案件台帳へ記録する。
+
 ## Verification levels
 
 - `official_html_verified`: 公式HTML本文を確認。
 - `official_search_result_only`: 公式ページは特定したが本文確認が不十分。
 - `verified_from_official_pdf`: 公式PDF本文を確認。
 - `verified_from_official_pdf_and_qa`: 公式PDF本文に加え、公式質疑回答で要件解釈を確認。
+- `verified_from_official_pdf_and_html`: 公式PDF本文と公式HTML本文を組み合わせて確認。
+- `official_pdf_verified_result_pending`: 公募・仕様等は公式PDFで確認したが、選定結果の公式公開を確認できていない。
 - `attachment_pending`: 添付資料の詳細抽出が未実施。
 
 数値・要件・事業者名は、確認した公式資料以上に推測して補完しない。

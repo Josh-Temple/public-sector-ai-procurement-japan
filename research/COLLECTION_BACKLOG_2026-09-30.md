@@ -58,28 +58,23 @@
 ## Priority B — new cases
 
 ### 鹿児島県 2026
-- 公式仕様書を確認済み。
-- GPT-5 / Gemini 2.5 Pro以降の国内リージョン、LGWAN、複数モデル切替等を要求。
-- 公募結果の公式一次資料を確認して案件台帳へ登録する。
-
-Official source:
-https://www.pref.kagoshima.jp/ac03/jyouhou/documents/126554_20260224091211-1.pdf
+- 案件台帳・仕様書要件を登録済み。
+- 8,000ユーザ、同時300人、LGWAN、複数LLM、100GB RAG、国内処理等を構造化済み。
+- 提案上限8,833,000円（税込）を登録済み。
+- 公式の公開選定結果は今回 NOT_FOUND。受託候補者は未記録のまま継続確認する。
 
 ### 群馬県情報化推進協議会 2026
-- 県内市町村等の共同調達。
-- 契約予定団体と団体別上限価格を別紙で管理する方式。
-- 最優秀提案者・実契約団体・契約額の公式結果を確認してから案件化する。
+- 案件台帳へ登録済み。
+- 共同選定後に各参加団体が個別契約する調達構造を `procurement_structure.csv` へ記録済み。
+- 団体別上限、LGWAN・研修等のオプション、RAG評価シートを確認済み。
+- 二次情報・事業者発表はExa Enterprise AIを示すが、公式公開結果は今回 NOT_FOUND。selected_vendorは未記録。
 
-Official source:
-https://www.pref.gunma.jp/uploaded/attachment/686869.pdf
-
-### 北海道 2026
-- 「生成AIサービス（RAG）提供業務」を一般競争入札で調達。
-- プロポーザル以外の調達方式比較に有用。
-- 入札結果PDFから落札者・価格を抽出し、仕様書を取得する。
-
-Official result index:
-https://www.pref.hokkaido.lg.jp/sm/jsk/186926.html
+### 北海道 2025 / 2026
+- 2025 RAG実証（公募型プロポーザル）と2026 RAGサービス（制限付一般競争入札）を案件化済み。
+- 2025: NTT東日本、21,780,000円、約12,000アカウント、30 RAG以上・100GB以上、LGWANなし。
+- 2026: 日立製作所が落札、3社の税抜入札額を `bid_results.csv` に保存済み。
+- `research/HOKKAIDO_2025_2026_COMPARISON.md` に方式変更を整理済み。
+- 2026詳細業務処理要領は公式ZIP内で、現在の取得経路では ACCESS_UNAVAILABLE。
 
 ### 上毛町 2026 / 五泉市 2026
 - 案件台帳への基本登録は完了。

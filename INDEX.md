@@ -19,8 +19,10 @@
 | 知りたいこと | まず見る場所 | 補助 |
 |---|---|---|
 | どんな案件があるか | `data/cases.csv` | README |
-| 横断的な機能要件 | `data/requirements.csv` | `docs/DATA_MODEL.md` |
+| 現在有効な要件・質疑による変更 | `data/effective_requirements.csv` | `data/source_documents.csv` |
+| 横断的な機能要件projection | `data/requirements.csv` | `docs/DATA_MODEL.md` |
 | 細粒度の要求事項 | `data/requirement_facts.csv` | 該当research memo |
+| 公募年度・履行年度 | `data/case_timeline.csv` | `data/cases.csv` |
 | 評価基準・配点 | `data/evaluation_criteria.csv` | `data/vendor_scores.csv` |
 | 業務特化型AIの要件 | `data/specialized_requirements.csv` | 該当research memo |
 | 調達方式・共同調達 | `data/procurement_structure.csv` | `data/joint_procurement_entities.csv` |
@@ -37,7 +39,7 @@
 
 案件・仕様・評価・価格等を比較可能な形に構造化したデータ。
 
-行ごとの現在の確認状態は `verification_level` 等で管理する。分析文よりも、まずここにある値とsource URLを確認する。
+行ごとの現在の確認状態は `verification_level` 等で管理する。分析文よりも、まずここにある値とsource URLを確認する。ただし仕様書の後に公式質問回答・訂正がある場合は、`effective_requirements.csv` を確認し、元仕様だけで現行要件を確定しない。
 
 ### sources/
 

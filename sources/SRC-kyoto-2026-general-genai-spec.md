@@ -1,16 +1,16 @@
 ---
 id: SRC-kyoto-2026-general-genai-spec
-title: 令和8年度 庁内利活用のための汎用的な生成AIサービス提供業務 仕様書
+title: 令和8年度 庁内利活用のための汎用的な生成AIサービス提供事業者に係る募集要項（別紙1仕様書を含む）
 url: https://www.city.kyoto.lg.jp/sogo/cmsfiles/contents/0000349/349781/01_guide.pdf
 publisher: 京都市
-source_type: official-specification
+source_type: official-procurement-document
 accessed_at: "2026-10-01"
 scope: "京都市 2026年度 庁内利活用のための汎用的な生成AIサービス提供業務"
 ---
 
 # Source notes
 
-京都市の汎用生成AIサービス調達の仕様を確認するための公式一次資料。
+京都市の汎用生成AIサービス調達に関する公式一次資料。PDFの先頭は募集要項で、同じPDF内に別紙1「庁内利活用のための汎用的な生成AIサービス提供業務 仕様書」等の関連書類を含む。
 
 このリポジトリでは、同案件を次でも構造化している。
 

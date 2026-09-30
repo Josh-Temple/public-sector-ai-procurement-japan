@@ -1,0 +1,14 @@
+case_id,government_name,vendor_label,vendor_name,stage1_score,stage2_score,total_score,total_score_max,rank,selected,source_url,collected_at
+obu-2026-genai-service,大府市,A社,,,,236,616,750,2,false,https://www.city.obu.aichi.jp/jigyo/news_jigyo/1038173.html,2026-09-30
+obu-2026-genai-service,大府市,B社,,,,229,600,750,3,false,https://www.city.obu.aichi.jp/jigyo/news_jigyo/1038173.html,2026-09-30
+obu-2026-genai-service,大府市,ソフトバンク株式会社,ソフトバンク株式会社,371,250,621,750,1,true,https://www.city.obu.aichi.jp/jigyo/news_jigyo/1038173.html,2026-09-30
+obu-2026-genai-service,大府市,C社,,369,,,,,false,https://www.city.obu.aichi.jp/jigyo/news_jigyo/1038173.html,2026-09-30
+yaizu-2025-genai-service,焼津市,A社,西日本電信電話株式会社静岡支店,,,84,100,1,true,https://www.city.yaizu.lg.jp/documents/19797/proposal_kekka.pdf,2026-09-30
+yaizu-2025-genai-service,焼津市,B社,,,,,81,100,3,false,https://www.city.yaizu.lg.jp/documents/19797/proposal_kekka.pdf,2026-09-30
+yaizu-2025-genai-service,焼津市,C社,,,,,78,100,4,false,https://www.city.yaizu.lg.jp/documents/19797/proposal_kekka.pdf,2026-09-30
+yaizu-2025-genai-service,焼津市,D社,,,,,83,100,2,false,https://www.city.yaizu.lg.jp/documents/19797/proposal_kekka.pdf,2026-09-30
+kitakyushu-2025-genai-service,北九州市,株式会社QTnet,株式会社QTnet,,,381.25,500,1,true,https://ssl.city.kitakyushu.lg.jp/contents/337_00019.html,2026-09-30
+kitakyushu-2025-genai-service,北九州市,A社,,,,,355.00,500,2,false,https://ssl.city.kitakyushu.lg.jp/contents/337_00019.html,2026-09-30
+kitakyushu-2025-genai-service,北九州市,B社,,,,,346.25,500,3,false,https://ssl.city.kitakyushu.lg.jp/contents/337_00019.html,2026-09-30
+kitakyushu-2025-genai-service,北九州市,C社,,,,,307.50,500,4,false,https://ssl.city.kitakyushu.lg.jp/contents/337_00019.html,2026-09-30
+kitakyushu-2025-genai-service,北九州市,D社,,,,,305.00,500,5,false,https://ssl.city.kitakyushu.lg.jp/contents/337_00019.html,2026-09-30

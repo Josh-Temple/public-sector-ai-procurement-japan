@@ -63,6 +63,25 @@
 | assessment_stage | 書類・面接・事務局審査など |
 | source_url | 公式評価表URL |
 
+## 4. Specialized requirements
+
+`data/specialized_requirements.csv`
+
+汎用生成AIのwide tableでは表現しにくい、業務特化型AIの要件をlong-formで保持する。現在は神戸市の税務ボイスボットを収録している。
+
+| field | meaning |
+|---|---|
+| case_id | `cases.csv` の案件ID |
+| requirement_area | service_scale / answer_policy / speech_nlu / interaction / routing / logging / security / operations など |
+| requirement_key | 安定した比較キー |
+| value | 公式仕様書から確認した値 |
+| unit_or_format | 単位または値形式 |
+| requiredness | required / conditional / context |
+| source_document | 公式資料名 |
+| source_url | 公式一次資料URL |
+
+業務特化型AIのためにwide tableへ多数の固有列を追加せず、複数案件で共通性が確認できた項目だけ将来の共通schemaへ昇格する。
+
 ## Verification levels
 
 - `official_html_verified`: 公式HTML本文を確認。

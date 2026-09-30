@@ -23,7 +23,7 @@
 
 ## Current status
 
-2026-09-30 に初期コーパスを作成し、公式一次資料から対象を拡張しています。現在は26案件を案件台帳に収録し、そのうち16案件は仕様書レベルの要件比較まで進めています。評価基準は101項目、汎用調達の細粒度要件は22件、業務特化型AIの要件は21件、公開得点は15行を構造化しています。さらに調達方式7件と一般競争入札の入札結果3行を分離して保持しています。
+2026-09-30 に初期コーパスを作成し、公式一次資料から対象を拡張しています。現在は26案件を案件台帳に収録し、そのうち17案件は仕様書レベルの要件比較まで進めています。評価基準は106項目、汎用調達の細粒度要件は22件、業務特化型AIの要件は21件、公開得点は19行を構造化しています。さらに調達方式8件、一般競争入札結果3行、共同調達団体レコード8行（現参加6・将来予定2）を分離して保持しています。
 
 - Structured cases: `data/cases.csv`
 - Requirement matrix: `data/requirements.csv`
@@ -32,6 +32,7 @@
 - Published vendor scores: `data/vendor_scores.csv`
 - Procurement structure: `data/procurement_structure.csv`
 - Competitive bid results: `data/bid_results.csv`
+- Joint procurement entities: `data/joint_procurement_entities.csv`
 - Specialized AI requirements: `data/specialized_requirements.csv`
 - Data model: `docs/DATA_MODEL.md`
 - Initial source pack: `research/INITIAL_SOURCE_PACK_2026-09-30.md`
@@ -45,7 +46,8 @@
 - Small-municipality comparison: `research/SMALL_MUNICIPALITY_COMPARISON_2026-10-01.md`
 - Joint-procurement comparison: `research/JOINT_PROCUREMENT_COMPARISON_2026-10-01.md`
 - Fifth extraction pass: `research/RESEARCH_PASS_5_2026-10-01.md`
+- Sixth extraction pass: `research/RESEARCH_PASS_6_2026-10-01.md`
 
 ## Next
 
-仕様書・評価基準の深掘りを進め、16案件について比較可能な要件を構造化しました。小規模自治体と共同調達の比較も開始したため、次は調達参加団体・契約単位・価格条件の正規化と、未処理案件の仕様深掘りを進めます。
+仕様書・評価基準の深掘りを進め、17案件について比較可能な要件を構造化しました。共同調達では案件固有の参加団体・団体別上限を別テーブル化し始めています。次は群馬の契約予定団体別紙の取得と、残る浅い案件の仕様深掘りを進めます。

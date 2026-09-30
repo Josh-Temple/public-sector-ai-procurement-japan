@@ -63,7 +63,26 @@
 | assessment_stage | 書類・面接・事務局審査など |
 | source_url | 公式評価表URL |
 
-## 4. Specialized requirements
+## 4. Requirement facts
+
+`data/requirement_facts.csv`
+
+要求機能一覧、質疑回答、補足資料などから確認できた細粒度の要件を1要件1行で保持する。wide tableの `requirements.csv` は横比較用の要約であり、詳細根拠はこのテーブルへ分離する。
+
+| field | meaning |
+|---|---|
+| requirement_no | 原資料上の項番。複数項目にまたがる場合は 52/56 等 |
+| requirement_area | rag / model / security / usage / operations / adoption 等 |
+| requirement_key | 比較に使う安定キー |
+| value | 公式資料から確認した内容 |
+| requiredness | required / optional / context |
+| evidence_type | official_qa / official_attachment 等 |
+| source_url | 公式一次資料URL |
+| notes | 解釈上の留保 |
+
+Excel本文が現在の実行環境で取得できない場合でも、公式質疑回答によって該当項番の内容・解釈が確認できるものは `official_qa` として収録する。Excel未取得をExcel全体の検証済み扱いにはしない。
+
+## 5. Specialized requirements
 
 `data/specialized_requirements.csv`
 
@@ -82,11 +101,31 @@
 
 業務特化型AIのためにwide tableへ多数の固有列を追加せず、複数案件で共通性が確認できた項目だけ将来の共通schemaへ昇格する。
 
+## 6. Vendor scores
+
+`data/vendor_scores.csv`
+
+公式の選定結果で公開されている事業者別得点を保持する。匿名事業者は公表表記（A社等）のまま保存し、推定で実名を補完しない。
+
+| field | meaning |
+|---|---|
+| vendor_label | 公表資料上の事業者ラベル |
+| vendor_name | 実名公表時のみ記録 |
+| stage1_score | 一次審査得点。未公表は空欄 |
+| stage2_score | 二次審査得点。未公表は空欄 |
+| total_score | 公表された総合得点 |
+| total_score_max | 当該公表得点の満点 |
+| rank | 公表順位 |
+| selected | 選定事業者か |
+
+得点方式は自治体ごとに異なる。焼津市は選定委員の平均点、北九州市は審査委員5名の合計500点満点、大府市は一次400点＋二次350点である。異なる方式のraw scoreをそのまま自治体間ランキングには使わない。
+
 ## Verification levels
 
 - `official_html_verified`: 公式HTML本文を確認。
 - `official_search_result_only`: 公式ページは特定したが本文確認が不十分。
 - `verified_from_official_pdf`: 公式PDF本文を確認。
+- `verified_from_official_pdf_and_qa`: 公式PDF本文に加え、公式質疑回答で要件解釈を確認。
 - `attachment_pending`: 添付資料の詳細抽出が未実施。
 
 数値・要件・事業者名は、確認した公式資料以上に推測して補完しない。

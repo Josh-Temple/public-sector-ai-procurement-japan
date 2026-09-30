@@ -1,0 +1,22 @@
+case_id,government_name,requirement_area,requirement_key,value,unit_or_format,requiredness,source_document,source_url,collected_at
+kobe-2026-tax-voicebot,神戸市,service_scale,annual_target_inquiries,25000,cases_per_year,required,生成AI自動音声応答サービスを活用した税務部電話問合せ改善業務 調達仕様書,https://www.city.kobe.lg.jp/documents/83354/shiyosyo.pdf,2026-09-30
+kobe-2026-tax-voicebot,神戸市,service_scale,annual_staff_transfers,2500,cases_per_year,required,生成AI自動音声応答サービスを活用した税務部電話問合せ改善業務 調達仕様書,https://www.city.kobe.lg.jp/documents/83354/shiyosyo.pdf,2026-09-30
+kobe-2026-tax-voicebot,神戸市,service_scale,annual_sms_sends,5000,cases_per_year,required,生成AI自動音声応答サービスを活用した税務部電話問合せ改善業務 調達仕様書,https://www.city.kobe.lg.jp/documents/83354/shiyosyo.pdf,2026-09-30
+kobe-2026-tax-voicebot,神戸市,service_scale,operating_hours,"平日08:45-17:30",time_window,required,生成AI自動音声応答サービスを活用した税務部電話問合せ改善業務 調達仕様書,https://www.city.kobe.lg.jp/documents/83354/shiyosyo.pdf,2026-09-30
+kobe-2026-tax-voicebot,神戸市,answer_policy,answer_source,"市提供FAQを基にした回答データ",text,required,生成AI自動音声応答サービスを活用した税務部電話問合せ改善業務 調達仕様書,https://www.city.kobe.lg.jp/documents/83354/shiyosyo.pdf,2026-09-30
+kobe-2026-tax-voicebot,神戸市,answer_policy,generative_answer_allowed,false,boolean,required,生成AI自動音声応答サービスを活用した税務部電話問合せ改善業務 調達仕様書,https://www.city.kobe.lg.jp/documents/83354/shiyosyo.pdf,2026-09-30
+kobe-2026-tax-voicebot,神戸市,speech_nlu,japanese_variation_handling,true,boolean,required,生成AI自動音声応答サービスを活用した税務部電話問合せ改善業務 調達仕様書,https://www.city.kobe.lg.jp/documents/83354/shiyosyo.pdf,2026-09-30
+kobe-2026-tax-voicebot,神戸市,speech_nlu,dictionary_synonym_support,true,boolean,required,生成AI自動音声応答サービスを活用した税務部電話問合せ改善業務 調達仕様書,https://www.city.kobe.lg.jp/documents/83354/shiyosyo.pdf,2026-09-30
+kobe-2026-tax-voicebot,神戸市,interaction,sms_url_delivery,true,boolean,required,生成AI自動音声応答サービスを活用した税務部電話問合せ改善業務 調達仕様書,https://www.city.kobe.lg.jp/documents/83354/shiyosyo.pdf,2026-09-30
+kobe-2026-tax-voicebot,神戸市,interaction,response_time_target,3,seconds,required,生成AI自動音声応答サービスを活用した税務部電話問合せ改善業務 調達仕様書,https://www.city.kobe.lg.jp/documents/83354/shiyosyo.pdf,2026-09-30
+kobe-2026-tax-voicebot,神戸市,interaction,response_time_with_filler_max,5,seconds,conditional,生成AI自動音声応答サービスを活用した税務部電話問合せ改善業務 調達仕様書,https://www.city.kobe.lg.jp/documents/83354/shiyosyo.pdf,2026-09-30
+kobe-2026-tax-voicebot,神戸市,interaction,clarifying_question_fallback,true,boolean,required,生成AI自動音声応答サービスを活用した税務部電話問合せ改善業務 調達仕様書,https://www.city.kobe.lg.jp/documents/83354/shiyosyo.pdf,2026-09-30
+kobe-2026-tax-voicebot,神戸市,routing,department_transfer,true,boolean,required,生成AI自動音声応答サービスを活用した税務部電話問合せ改善業務 調達仕様書,https://www.city.kobe.lg.jp/documents/83354/shiyosyo.pdf,2026-09-30
+kobe-2026-tax-voicebot,神戸市,logging,conversation_and_recording_log,true,boolean,required,生成AI自動音声応答サービスを活用した税務部電話問合せ改善業務 調達仕様書,https://www.city.kobe.lg.jp/documents/83354/shiyosyo.pdf,2026-09-30
+kobe-2026-tax-voicebot,神戸市,logging,export_format,"音声データ; CSV等の編集可能ファイル",text,required,生成AI自動音声応答サービスを活用した税務部電話問合せ改善業務 調達仕様書,https://www.city.kobe.lg.jp/documents/83354/shiyosyo.pdf,2026-09-30
+kobe-2026-tax-voicebot,神戸市,security,confidentiality_class_2_possible,true,boolean,context,生成AI自動音声応答サービスを活用した税務部電話問合せ改善業務 調達仕様書,https://www.city.kobe.lg.jp/documents/83354/shiyosyo.pdf,2026-09-30
+kobe-2026-tax-voicebot,神戸市,security,third_party_security_certification,"ISMS・プライバシーマーク等",text,required,生成AI自動音声応答サービスを活用した税務部電話問合せ改善業務 調達仕様書,https://www.city.kobe.lg.jp/documents/83354/shiyosyo.pdf,2026-09-30
+kobe-2026-tax-voicebot,神戸市,security,personal_data_server_side,true,boolean,required,生成AI自動音声応答サービスを活用した税務部電話問合せ改善業務 調達仕様書,https://www.city.kobe.lg.jp/documents/83354/shiyosyo.pdf,2026-09-30
+kobe-2026-tax-voicebot,神戸市,security,database_personal_data_encrypted,true,boolean,required,生成AI自動音声応答サービスを活用した税務部電話問合せ改善業務 調達仕様書,https://www.city.kobe.lg.jp/documents/83354/shiyosyo.pdf,2026-09-30
+kobe-2026-tax-voicebot,神戸市,operations,monthly_log_analysis_and_improvement,true,boolean,required,生成AI自動音声応答サービスを活用した税務部電話問合せ改善業務 調達仕様書,https://www.city.kobe.lg.jp/documents/83354/shiyosyo.pdf,2026-09-30
+kobe-2026-tax-voicebot,神戸市,operations,monthly_faq_update,true,boolean,required,生成AI自動音声応答サービスを活用した税務部電話問合せ改善業務 調達仕様書,https://www.city.kobe.lg.jp/documents/83354/shiyosyo.pdf,2026-09-30

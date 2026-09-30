@@ -1,0 +1,4 @@
+case_id,government_name,bidder_label,bidder_name,bid_amount_jpy,tax_basis,rank,selected,source_url,collected_at
+hokkaido-2026-genai-rag-service,北海道,株式会社日立製作所,株式会社日立製作所,9587430,tax_excluded_bid,1,true,https://www.pref.hokkaido.lg.jp/sm/jsk/186926.html,2026-10-01
+hokkaido-2026-genai-rag-service,北海道,株式会社Exa Enterprise AI,株式会社Exa Enterprise AI,12536000,tax_excluded_bid,2,false,https://www.pref.hokkaido.lg.jp/sm/jsk/186926.html,2026-10-01
+hokkaido-2026-genai-rag-service,北海道,東日本電信電話株式会社,東日本電信電話株式会社,18500000,tax_excluded_bid,3,false,https://www.pref.hokkaido.lg.jp/sm/jsk/186926.html,2026-10-01

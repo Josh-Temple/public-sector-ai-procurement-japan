@@ -71,3 +71,7 @@
 - `attachment_pending`: 添付資料の詳細抽出が未実施。
 
 数値・要件・事業者名は、確認した公式資料以上に推測して補完しない。
+
+## Cost comparison caution
+
+`budget_ceiling_jpy` と `contract_amount_jpy` は現時点では公式資料に記載された raw amount を保持する。案件によって税込・税抜、初期費用込み、研修別契約、複数団体別契約など条件が異なるため、税区分と対象範囲を正規化するまでは案件間の単純な価格ランキングに使用しない。

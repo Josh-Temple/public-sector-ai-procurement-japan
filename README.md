@@ -44,6 +44,8 @@
 - Procurement/service timeline: `data/case_timeline.csv`
 - Source document registry: `data/source_documents.csv`
 - Effective requirements and amendments: `data/effective_requirements.csv`
+- Review coverage: `data/review_coverage.csv`
+- Reasoning regression tests: `evals/REQUIREMENT_REASONING_V1.md`
 - Requirement matrix: `data/requirements.csv`
 - Granular requirement facts: `data/requirement_facts.csv`
 - Evaluation criteria: `data/evaluation_criteria.csv`

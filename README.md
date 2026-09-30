@@ -23,7 +23,7 @@
 
 ## Current status
 
-2026-09-30 に初期コーパスを作成し、公式一次資料から対象を拡張しています。現在は26案件を案件台帳に収録し、そのうち14案件は仕様書レベルの要件比較まで進めています。評価基準は77項目、汎用調達の細粒度要件は22件、業務特化型AIの要件は21件、公開得点は13行を構造化しています。さらに調達方式4件と一般競争入札の入札結果3行を分離して保持しています。
+2026-09-30 に初期コーパスを作成し、公式一次資料から対象を拡張しています。現在は26案件を案件台帳に収録し、そのうち16案件は仕様書レベルの要件比較まで進めています。評価基準は101項目、汎用調達の細粒度要件は22件、業務特化型AIの要件は21件、公開得点は15行を構造化しています。さらに調達方式7件と一般競争入札の入札結果3行を分離して保持しています。
 
 - Structured cases: `data/cases.csv`
 - Requirement matrix: `data/requirements.csv`
@@ -42,7 +42,10 @@
 - Third extraction pass: `research/RESEARCH_PASS_3_2026-09-30.md`
 - Hokkaido 2025→2026 comparison: `research/HOKKAIDO_2025_2026_COMPARISON.md`
 - Fourth extraction pass: `research/RESEARCH_PASS_4_2026-10-01.md`
+- Small-municipality comparison: `research/SMALL_MUNICIPALITY_COMPARISON_2026-10-01.md`
+- Joint-procurement comparison: `research/JOINT_PROCUREMENT_COMPARISON_2026-10-01.md`
+- Fifth extraction pass: `research/RESEARCH_PASS_5_2026-10-01.md`
 
 ## Next
 
-仕様書・評価基準の深掘りを進め、14案件について比較可能な要件を構造化しました。共同調達・一般競争入札も別モデルで扱えるようにしたため、次は既存共同調達の正規化と小規模自治体の深掘りを進めます。
+仕様書・評価基準の深掘りを進め、16案件について比較可能な要件を構造化しました。小規模自治体と共同調達の比較も開始したため、次は調達参加団体・契約単位・価格条件の正規化と、未処理案件の仕様深掘りを進めます。

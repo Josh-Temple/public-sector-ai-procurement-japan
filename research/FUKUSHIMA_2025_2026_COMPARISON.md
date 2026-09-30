@@ -33,7 +33,7 @@ Sources:
 
 The stated goal is to observe usage frequency and use-case tendencies and use the results to consider full deployment.
 
-### 2. 2026: RAG + governance + adoption + evidence for production design
+### 2. 2026: expanded RAG/governance/adoption pilot + evidence for the next production-design stage
 
 2026 keeps the basic SaaS layer but adds a substantially wider work package:
 - 100+ users and 50+ concurrent users
@@ -56,7 +56,7 @@ The stated goal is to observe usage frequency and use-case tendencies and use th
 - intermediate and final reports
 - proposed requirements, operating model, cost sense and phased deployment scenario for production
 
-This is not simply an increase in model capability. The procurement scope expands from a tool trial into organizational implementation research.
+This is not simply an increase in model capability. The procurement remains an official pilot/verification effort, but expands from a tool trial into broader organizational implementation research intended to prepare requirements, governance and operating design for the next full-introduction stage.
 
 ## Evaluation shift
 

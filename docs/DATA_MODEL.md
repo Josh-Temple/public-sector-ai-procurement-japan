@@ -14,7 +14,7 @@
 | government_name | 発注主体 |
 | government_type | prefecture / city / town / joint_municipal |
 | prefecture | 都道府県 |
-| fiscal_year | 主たる公募年度 |
+| fiscal_year | 公募年度（日本の年度）。移行中のlegacy summary field。日付精度が必要な分析では `case_timeline.csv` を優先し、case_idの年から推定しない |
 | procurement_title | 公式案件名 |
 | category | 調達対象の大分類 |
 | procurement_method | 公募・選定方式 |
@@ -37,13 +37,18 @@
 
 `data/requirements.csv`
 
-公式仕様書から確認した要件の比較用テーブル。
+横断比較のためのprojectionテーブル。公式仕様書だけでなく、後続の質問回答・訂正等で変更された場合は**有効要件へ更新する**。変更履歴の正本は `data/effective_requirements.csv` と根拠sourceで管理する。長期的には詳細要件から再生成可能なprojectionへ移行する。
 
 原則:
 - `true`: 仕様書で要求を確認した。
 - `false`: 仕様書で明示的に不要・非対応等を確認した場合だけ使う。
 - `unknown`: 今回確認した資料では判定できない。
 - `desirable`: 「望ましい」要件であり必須ではない。
+- `optional`: 任意機能。
+- `planned_acceptable`: 現時点で未実装でも、実装予定を示せば要件上許容される。
+- `allowed_alternative`: 原要件以外の代替条件が公式に許容された。
+
+これらは比較projection上の簡略表現であり、詳細な変更内容は `effective_requirements.csv` を確認する。
 
 同じ概念でも、ネットワーク環境にLGWAN回線が存在することと、LGWAN-ASP利用をサービス要件として求めることは分ける。
 
@@ -135,7 +140,7 @@ AI機能とは別に、買い方そのものを比較する。共同調達や一
 | award_basis | 総合評価、最高評価点、最低有効価格等 |
 | contracting_model | 単独契約、共同選定後の団体別契約等 |
 | pricing_basis | 上限額・団体別上限・税抜入札額等の扱い |
-| lifecycle_stage | pilot / production_service / joint_procurement など |
+| lifecycle_stage | pilot / production_service / unknown など。共同調達かどうかは buyer_scope / contracting_model で表し、lifecycleと混同しない |
 
 ## 8. Bid results
 
@@ -172,6 +177,81 @@ AI機能とは別に、買い方そのものを比較する。共同調達や一
 | contract_model | 基本契約＋団体別利用契約等 |
 
 公式資料上の「－」は0円と推定せず空欄＋notesで保持する。将来参加予定団体をcurrent参加団体へ数えない。
+
+## 10. Source documents
+
+`data/source_documents.csv`
+
+比較値が依存する公式文書を文書単位で識別する。
+
+| field | meaning |
+|---|---|
+| source_id | 安定したsource ID |
+| case_id | 対象案件 |
+| document_type | official_specification / official_qa_amendment / official_evaluation / official_result 等 |
+| published_at | 公開日。確認できない場合は空欄 |
+| retrieved_at | 取得・確認日 |
+| version_label | original_spec / qa_amendment / result_page 等 |
+| access_state | accessible / source_unavailable 等 |
+| snapshot_hash | 内容hash。まだ取得していない場合は空欄 |
+| snapshot_status | external_url_only / snapshotted 等 |
+
+URLが同じでも内容変更があり得るため、将来は取得本文のhashとsnapshotを追加する。空欄のhashを推測しない。
+
+## 11. Effective requirements
+
+`data/effective_requirements.csv`
+
+当初仕様と、その後の質問回答・訂正・補足による変更を明示的に接続する。
+
+主な項目:
+- `original_status` / `original_value`
+- `effective_status` / `effective_value`
+- `change_type`
+- `base_source_id`
+- `changed_by_source_id`
+- `base_locator` / `change_locator`
+- `scope` / `condition`
+- `review_status`
+
+有効要件の代表status:
+- `required`
+- `desirable`
+- `optional`
+- `required_or_planned`
+- `required_or_in_progress`
+- `allowed_alternative`
+- `optional_disclosure`
+- `removed`
+- `not_applicable`
+
+後続の公式質問回答が「仕様変更」「緩和」「削除」等を明示した場合、元仕様をそのまま現行要件として扱わない。
+
+## 12. Case timeline
+
+`data/case_timeline.csv`
+
+公募日・公募年度と、サービス提供年度を分離する。
+
+- `announcement_date`: 公告日
+- `announcement_fiscal_year`: 公告日の日本の会計年度
+- `service_start` / `service_end`: 履行・サービス期間
+- `service_fiscal_year_start` / `service_fiscal_year_end`: サービス年度
+- `date_precision`: 日付の確認精度
+
+case_id内の年は安定IDの一部であり、年度分析の根拠にしない。
+
+## Unknown / not applicable states
+
+今後の詳細要件では「unknown」を理由別に扱う。
+
+- `not_reviewed`: まだ対象資料を確認していない
+- `not_found_in_reviewed_sources`: 必要範囲を確認したが記載を確認できない
+- `source_unavailable`: 資料の存在は確認したが取得できない
+- `conflicting_sources`: 根拠資料間に未解決の矛盾がある
+- `not_applicable`: 当該案件の適用対象外
+
+「未確認」と「存在しない」を同一視しない。
 
 ## Verification levels
 

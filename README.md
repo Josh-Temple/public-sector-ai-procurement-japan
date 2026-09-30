@@ -23,7 +23,7 @@
 
 ## Current status
 
-2026-09-30 に初期コーパスを作成。まず公式HTMLページで確認できた生成AI調達案件を収集しています。
+2026-09-30 に初期コーパスを作成し、公式一次資料から対象を拡張しています。現在は22案件を案件台帳に収録し、そのうち10案件は仕様書レベルの要件比較まで進めています。
 
 - Structured cases: `data/cases.csv`
 - Requirement matrix: `data/requirements.csv`
@@ -31,7 +31,8 @@
 - Data model: `docs/DATA_MODEL.md`
 - Initial source pack: `research/INITIAL_SOURCE_PACK_2026-09-30.md`
 - Deep extraction memo: `research/DEEP_REQUIREMENT_EXTRACTION_2026-09-30.md`
+- Collection backlog: `research/COLLECTION_BACKLOG_2026-09-30.md`
 
 ## Next
 
-仕様書・評価基準の深掘りを開始し、6案件について比較可能な要件・配点を構造化しました。次はExcelの要求機能一覧や未処理案件へ対象を拡大します。
+仕様書・評価基準の深掘りを進め、10案件について比較可能な要件を構造化しました。次はExcelの要求機能一覧、業務特化型AI、共同調達、一般競争入札案件へ対象を拡大します。

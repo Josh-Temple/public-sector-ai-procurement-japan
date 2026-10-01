@@ -1,11 +1,12 @@
 case_id,announcement_date,announcement_fiscal_year,service_start,service_end,service_fiscal_year_start,service_fiscal_year_end,date_precision,source_id,notes,last_verified
-oumi-2026-joint-genai,2026-03-02,2025,2026-04-01,2027-03-31,2026,2026,case_period,SRC-oumi-2026-result,"案件IDの2026は安定IDとして維持。公募年度はFY2025、サービス年度はFY2026",2026-10-01
-fukushima-2025-genai-pilot,,2025,,2026-03-31,2025,2025,partial,SRC-fukushima-2025-spec,"公募・契約開始日は別途正本確認が必要",2026-10-01
-fukushima-2026-genai-pilot-expansion,,2026,,2027-03-31,2026,2026,partial,SRC-fukushima-2026-spec,"2026年度も実証。次段階の本格導入準備",2026-10-01
-kyoto-2026-general-genai,,2026,,2027-03-31,2026,2026,partial,SRC-kyoto-2026-general-genai-spec,"公告日の正規化は別途確認",2026-10-01
-obu-2026-genai-service,2026-01-28,2025,2026-07-01,2027-03-31,2026,2026,service_start_confirmed_spec,SRC-obu-2026-page,"case_idの2026は安定ID。公告はFY2025、仕様上の運用開始は2026-07-01。契約日は2026年4月中旬予定で実績日は未確認",2026-10-01
-yaizu-2025-genai-service,2025-05-16,2025,,2026-03-31,2025,2025,service_start_unknown,SRC-yaizu-2025-page,"公告はFY2025。契約締結日が開始日だが実契約日の公開確認は未実施。公式HTML後半に2024年表記の混在あり",2026-10-01
-kitakyushu-2025-genai-service,2025-04-21,2025,2025-07-01,2026-03-31,2025,2025,service_start_target,SRC-kitakyushu-2025-page,"仕様書上は2025-07-01サービス利用開始希望。正式スケジュールは発注者・受注者協議で決定",2026-10-01
-kobe-2026-tax-voicebot,2026-02-17,2025,2026-04-01,2027-03-31,2026,2026,planned_start,SRC-kobe-2026-voicebot-guide,"case_idの2026は安定ID。公募開始2026-02-17はFY2025。契約締結・事業開始2026-04-01は公募時予定",2026-10-01
-hokkaido-2026-genai-rag-service,2026-04-03,2026,2026-06-01,2027-03-31,2026,2026,service_period_confirmed_notice,SRC-hokkaido-2026-notice,"準備期間は契約締結日から2026-05-31。サービス提供は2026-06-01開始",2026-10-01
-koshigaya-2024-genai-service-training,2024-06-14,2024,2024-09,2025-03-31,2024,2024,planned_operation_month,SRC-koshigaya-2024-guide,"契約締結は2024年7月下旬〜8月中旬予定、運用開始・研修は2024年9月想定",2026-10-01
+oumi-2026-joint-genai,2026-03-02,2025,,,2026,,planned_start,SRC-oumi-2026-result,Q&Aでは利用開始は2026年4月予定（草津市・甲賀市は7月予定）。実利用開始日の確定情報ではなく、終了日は資料から確定できない。実施要領は契約期間と実利用期間を区別。案件台帳の2026-04-01〜2027-03-31は契約期間。,2026-10-01
+fukushima-2025-genai-pilot,,2025,,2026-03-31,2025,2025,partial,SRC-fukushima-2025-spec,公募・契約開始日は別途正本確認が必要,2026-10-01
+fukushima-2026-genai-pilot-expansion,,2026,,2027-03-31,2026,2026,partial,SRC-fukushima-2026-spec,2026年度も実証。次段階の本格導入準備,2026-10-01
+kyoto-2026-general-genai,,2026,,2027-03-31,2026,2026,partial,SRC-kyoto-2026-general-genai-spec,公告日の正規化は別途確認,2026-10-01
+obu-2026-genai-service,2026-01-28,2025,2026-07-01,2027-03-31,2026,2026,service_start_confirmed_spec,SRC-obu-2026-page,case_idの2026は安定ID。公告はFY2025、仕様上の運用開始は2026-07-01。契約日は2026年4月中旬予定で実績日は未確認,2026-10-01
+yaizu-2025-genai-service,2025-05-16,2025,,2026-03-31,2025,2025,service_start_unknown,SRC-yaizu-2025-page,公告はFY2025。契約締結日が開始日だが実契約日の公開確認は未実施。公式HTML後半に2024年表記の混在あり,2026-10-01
+kitakyushu-2025-genai-service,2025-04-21,2025,2025-07-01,2026-03-31,2025,2025,service_start_target,SRC-kitakyushu-2025-page,仕様書上は2025-07-01サービス利用開始希望。正式スケジュールは発注者・受注者協議で決定,2026-10-01
+kobe-2026-tax-voicebot,2026-02-17,2025,2026-04-01,2027-03-31,2026,2026,planned_start,SRC-kobe-2026-voicebot-guide,case_idの2026は安定ID。公募開始2026-02-17はFY2025。契約締結・事業開始2026-04-01は公募時予定,2026-10-01
+hokkaido-2026-genai-rag-service,2026-04-03,2026,2026-06-01,2027-03-31,2026,2026,service_period_confirmed_notice,SRC-hokkaido-2026-notice,準備期間は契約締結日から2026-05-31。サービス提供は2026-06-01開始,2026-10-01
+koshigaya-2024-genai-service-training,2024-06-14,2024,2024-09,2025-03-31,2024,2024,planned_operation_month,SRC-koshigaya-2024-guide,契約締結は2024年7月下旬〜8月中旬予定、運用開始・研修は2024年9月想定,2026-10-01
+sendai-2025-genai-pilot,2025-03-25,2024,,,2025,2025,partial,SRC-sendai-2025-guide,"募集要領で公告は2025-03-25、履行期間は契約締結日から2025-10-31。市ページは契約日2025-06-23を確認。Q&A No.9,13はサービス実利用を約2か月とし、具体的な利用開始・終了日は非公表。契約期間と実利用期間を混同しない",2026-10-01

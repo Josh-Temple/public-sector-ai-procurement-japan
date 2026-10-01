@@ -185,3 +185,41 @@ Evidenceが十分に集まった後に追加を検討する。
 ### Coverage model
 - `not_applicable` を追加。
 - 未探索をnot_applicableで埋めず、調達方式・文書構造から一次資料で非該当と確認できた場合のみ使用する。
+
+
+## Evidence hardening after research pass 12 — 2026-10-01
+
+### Completed: Yaizu 2025 contract-draft boundary (pass 11)
+- Fresh-read the official project page, procurement guide, and linked contract draft.
+- The guide allows partial changes to the draft agreement and specification during negotiation. The public contract file remains an unfilled draft; contract-final requirements were not found in the reviewed scope.
+- Recorded contract_final=not_found_in_reviewed_sources; this does not claim that a final contract or specification does not exist elsewhere.
+- Kept the requirement-matrix workbook at source_unavailable. Public Q&A clarifications for selected items do not reconstruct the unavailable matrix as a whole.
+
+### Completed: Sendai 2025 public-Q&A and contract-final audit (pass 12)
+- Fresh-read the official case page, procurement guide, specification draft, public Q&A, and evaluation criteria.
+- Mapped the public Q&A into 15 procurement-effective requirement records. These include optional ordinary chat, approximately two months of actual service use within a longer contract period, accepted account patterns, non-fixed usage estimates, strict training conditions, log alternatives, domestic LLM region, separate-server chat history, and mandatory links to RAG source files.
+- Published selection and contract execution are recorded separately from final requirements. The public review scope did not yield a post-contract final specification or signed requirements; contract_final=not_found_in_reviewed_sources.
+- Corrected the announcement fiscal year to FY2024 (announcement 2025-03-25); contract/service year is FY2025. Actual two-month service-use dates remain unknown and blank.
+- Added 17 evaluation criteria (150 points) and procurement structure. No applicant-level score was inferred.
+
+### Projection and QA
+- Updated the evidence coverage generator so case-level publicly_reconstructable requires complete standard-role review plus reviewed public contract-final requirement evidence. Procurement-stage effective rows alone do not imply final-state reconstruction.
+- not_assessed remains distinct from absent evidence; prior Pass 9 Oumi/Koshigaya aggregate labels are historical and superseded.
+- Current case count remains 26. The next high-value audit is Oumi 2026 joint procurement: locate official council/member-municipality contract or final-service documents; until then keep contract_final=not_assessed.
+- No schema columns were added. A nullable source case_id remains reserved for cross-case discovery/context sources; any populated value must resolve to a registered case.
+
+
+## Completed in research pass 13 — Oumi 2026 contract-final boundary
+- Freshly reviewed the official result page, RFP guide, specification, public Q&A, and evaluation sheet.
+- The guide says the service specification is prepared after negotiation and each participating city makes its own use contract; the listed package contains no signed basic/city agreement or negotiated final specification.
+- Set `contract_final=not_found_in_reviewed_sources` for that bounded search scope; case-level public reconstruction is `publicly_bounded`, not `reviewed`.
+- Corrected the timeline: 2026-04-01 through 2027-03-31 is the contract period, not a shared actual service-use period. Q&A's planned April start (July for Kusatsu and Koka) is retained as planned timing, with no inferred end date.
+- Remaining high-value work: locate an official signed/basic or city-level service agreement or post-negotiation specification if one is later published. Member-site searches so far are discovery only and were not exhaustive.
+
+
+## Completed in research pass 14 — Hokkaido 2026 general bid
+- Re-read the official bid page, notice and bidder/result PDF.
+- Confirmed a restricted general competitive bid, with price award, contract-writing requirement and three bid amounts. Proposal evaluation is `not_applicable`; this does not make contract-final review not_applicable.
+- The official page's related-document ZIP could not be retrieved through the current route; the detailed official operating manual remains `source_unavailable`.
+- No signed contract or final requirement document was found on the reviewed official public pages. Set contract_final to scoped `not_found_in_reviewed_sources` and preserve case-level `publicly_bounded`.
+- Next value: obtain the ZIP through another supported official route or locate a signed final document for one of the remaining cases.

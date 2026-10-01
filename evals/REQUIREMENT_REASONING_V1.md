@@ -111,208 +111,88 @@ Required evidence:
 Failure modes:
 - 調達体制と事業段階を同じ分類軸に置く
 
-## Scoring
-
-各問:
-- 2点: expected answer + scope/condition + required evidenceへの到達
-- 1点: 結論は正しいが条件・根拠が不足
-- 0点: 結論誤り、または根拠なし
-
-Total: 38 points.
-
-初期目標は満点ではなく、**0点回答をなくすこと**。特にEVAL-001〜019で旧仕様・スコープ拡張・質疑解釈・公開資料の限界を無視した0点誤答が発生しないことを優先する。
-
-## EVAL-008 — Obu API endpoint vs data storage
+## EVAL-020 — award is not contract-final
 
 Question:
-大府市2026生成AI調達では、国内データセンター保存要件があるため、生成AI API接続先も国内でなければならないか。
+仙台市2025生成AI導入実証でFIXERとの契約締結日が公表されている。公募仕様・公開Q&Aから契約後の最終要求内容まで確定できるか。
 
 Expected:
-いいえ。公式質疑ではAPI接続先は国内限定ではない。ただし市データが国外に保存されないことが前提。
+できない。公開Q&Aから公募時の有効要件は追えるが、募集要領は提案内容や契約内容が協議変更され得るとする。確認した公式公開ページ・掲載資料に契約後の最終要求文書はなく、contract_finalは範囲を限定してnot_found_in_reviewed_sources。
 
 Required evidence:
-- SRC-obu-2026-qa
-- EFF-obu-data-location
-- CLM-obu-2026-domestic-storage-not-api-endpoint
+- SRC-sendai-2025-guide
+- SRC-sendai-2025-page
+- EFF-sendai-contract-final-boundary
 
 Failure modes:
-- 国内保存要件からAPI接続先も国内必須と推定
-- 海外APIなら国外保存も許容されると推定
+- 契約日や受託者の公表を最終要求文書の代用にする
+- not_found_in_reviewed_sourcesを全公開先で不存在と断定
 
-## EVAL-009 — Obu chunking substitution
+## EVAL-021 — LLM training vs chat-history storage
 
 Question:
-大府市のRAG要件で、回答精度が同等ならチャンク分割以外の手法で代替できるか。
+仙台市2025の「LLMサーバに保存しない」という要件は、チャット履歴をどのサーバにも保存しないという意味か。
 
 Expected:
-できない。公式質疑No.32では、チャンク分割そのものを評価する項目であり、別手法の提案は受け付けないと回答している。
+いいえ。Q&Aは主に入力・出力をモデル学習に使わない趣旨と説明し、チャット履歴を別サーバに保存する構成を許容している。「学習不使用」と「履歴を一切保存しない」を混同しない。
 
 Required evidence:
-- SRC-obu-2026-qa
-- EFF-obu-rag-chunking
+- SRC-sendai-2025-qa
+- EFF-sendai-llm-data-retention
 
 Failure modes:
-- 目的が同じなら代替可能と回答
+- LLM学習への不使用を全システムの履歴ゼロ保存と読み替える
 
-## EVAL-010 — Yaizu GPT-3.5
+## EVAL-022 — announcement fiscal year
 
 Question:
-焼津市2025生成AI調達ではGPT-3.5の提供は必須か。
+仙台市2025案件の公告日2025-03-25は、どの公募年度に分類するか。
 
 Expected:
-必須ではない。利用開始直後に職員が利用する想定はあるが、公式質疑No.3で提供は必須ではないと明示された。
+FY2024。日本の年度は4月始まりであり、案件IDや契約年度からFY2025と決めない。
 
 Required evidence:
-- SRC-yaizu-2025-qa
-- EFF-yaizu-gpt35
+- SRC-sendai-2025-guide
+- data/case_timeline.csv
+- data/cases.csv
 
 Failure modes:
-- 要求機能一覧の元記載だけから必須と回答
+- case_idの2025をannouncement fiscal yearに流用
+- 2025年3月公告をFY2025と誤分類
 
-## EVAL-011 — Yaizu RAG general knowledge
+## EVAL-023 — contract period vs service-use period in joint procurement
 
 Question:
-焼津市のRAG要件は、LLMの一般知識を100%使わないことを要求しているか。
+おうみ共同調達の2026-04-01〜2027-03-31を、全6市の実際のサービス利用期間として記録してよいか。
 
 Expected:
-いいえ。登録データからの回答を優先し、一般知識からの回答を可能な限り抑制する要件であり、100%排除は要求していない。
+よくない。これは資料に記載された契約期間。Q&Aは一般に4月開始、草津市と甲賀市は7月開始予定とし、実施要領は契約期間と実利用期間を区別する。実利用の共通開始日・終了日は確定できない。
 
 Required evidence:
-- SRC-yaizu-2025-qa
-- EFF-yaizu-rag-grounding
-- CLM-yaizu-2025-rag-grounding-not-absolute
+- SRC-oumi-2026-guide
+- SRC-oumi-2026-qa
+- data/case_timeline.csv
 
 Failure modes:
-- 一般知識の完全禁止と回答
-- 単なる「RAGあり」だけで条件を省略
+- 契約期間を全市共通の実利用期間へ転記
+- 予定開始月を実績日として扱う
 
-## EVAL-012 — Kitakyushu public Q&A boundary
 
-Question:
-北九州市2025生成AIサービスについて、公開仕様書と評価表を確認すれば応募時の最終有効要件をすべて確定できるか。
-
-Expected:
-できない。公式実施説明書では質問回答を参加申出書提出者全員へ電子メールで配布するとしており、公開回答本文を確認できない。また必須機能を定める別紙2機能要件一覧の本文も現在の取得経路ではsource_unavailable。公開資料から確認できるのは公募baselineまで。
-
-Required evidence:
-- SRC-kitakyushu-2025-guide
-- SRC-kitakyushu-2025-feature-matrix
-- EFF-kitakyushu-public-qa-limit
-
-Failure modes:
-- 仕様書が公開されているので最終要件まで完全に確定できると回答
-- 未取得Excelの中身を推測して補完
-
-## EVAL-013 — Kobe voicebot answer generation
+## EVAL-024 — bid result vs contract-final requirements
 
 Question:
-神戸市税務部の「生成AI自動音声応答サービス」は、市民からの質問に生成AIが自由に回答文を生成する仕組みを要求しているか。
+北海道2026RAGサービスの制限付一般競争入札で日立製作所の落札と入札額が分かる。そこから契約最終要求内容を再構成できるか。
 
 Expected:
-いいえ。音声・文脈理解にはAI技術を利用するが、回答は市提供FAQを基にした回答データから行い、AIによる回答生成は認めない。
-
-Required evidence:
-- SRC-kobe-2026-voicebot-spec
-- EFF-kobe-voice-answer-policy
-- CLM-kobe-2026-voicebot-no-generated-answer
-
-Failure modes:
-- 案件名に「生成AI」があることだけから生成回答を許可していると推定
-- AIを使っていないと逆方向に一般化
-
-## EVAL-014 — Kobe contract-final reconstruction
-
-Question:
-神戸市税務ボイスボットの公開調達仕様書を読めば、契約締結後の最終仕様を完全に再現できるか。
-
-Expected:
-できない。実施要領では質問回答が仕様書より優先し、その質問回答は参加者へのEメール配布で公開本文を確認できない。さらに企画提案書が質問回答・仕様書の水準を上回る部分は提案書が優先し得る。公開仕様は公募時最低限要件として扱う。
-
-Required evidence:
-- SRC-kobe-2026-voicebot-guide
-- EFF-kobe-voice-document-priority
-- CLM-public-docs-may-not-reconstruct-contract-final
-
-Failure modes:
-- 公開仕様書を契約最終仕様と断定
-- 非公開Q&Aを「変更なし」と仮定
-
-## EVAL-015 — Kobe transfer granularity
-
-Question:
-神戸市税務ボイスボットは、問い合わせを特定の個人職員へ直接転送することを要求しているか。
-
-Expected:
-いいえ。仕様書は課または係単位への転送を想定しており、個別職員への転送を前提としていない。
-
-Required evidence:
-- SRC-kobe-2026-voicebot-spec
-- EFF-kobe-voice-transfer-scope
-
-Failure modes:
-- 「職員へ転送」という要約だけから個人転送と回答
-
-## EVAL-016 — Hokkaido evaluation role
-
-Question:
-北海道2026生成AIサービス（RAG）提供業務には、プロポーザルのような提案評価配点表がある前提で比較してよいか。
-
-Expected:
-よくない。制限付一般競争入札であり、今回確認した公開資料上は提案評価roleは非該当。ISO/IEC 27001は加点ではなく参加資格要件。価格競争はprocurement_structure/bid_resultsで扱う。
+できない。告示は契約書作成を要し、契約条項の提示場所を示す。公開結果PDFは入札者・価格・落札者を示すだけで、締結済み条件や最終要求は含まない。レビューした公開ページ範囲ではその文書を確認できず、業務処理要領を含む公式ZIPもsource_unavailable。proposal evaluationは調達方式上not_applicableだが、contract_finalは適用される。
 
 Required evidence:
 - SRC-hokkaido-2026-notice
-- CLM-hokkaido-2026-qualification-not-proposal-score
+- SRC-hokkaido-2026-result
+- EFF-hokkaido-2026-contract-final-boundary
 - data/review_coverage.csv
 
 Failure modes:
-- 「評価表未取得」とだけ扱う
-- ISO27001を加点項目と説明
-
-## EVAL-017 — Hokkaido detailed specification
-
-Question:
-北海道2026RAGサービスの詳細なRAG容量・モデル要件を現在のRepositoryから確定できるか。
-
-Expected:
-確定できない。詳細仕様は公式ZIP内の業務処理要領に委ねられており、現在source_unavailable。告示から推測して補完しない。
-
-Required evidence:
-- SRC-hokkaido-2026-processing-manual
-- data/review_coverage.csv
-
-Failure modes:
-- 2025実証要件を2026へ流用
-- ZIP未取得なのに具体値を断定
-
-## EVAL-018 — Koshigaya monthly usage
-
-Question:
-越谷市2024生成AIサービスで「文字数上限なし」は必須要件か。
-
-Expected:
-いいえ。必須は月100万文字以上。上限なしは提案事項で、上限量に応じて加点評価される。
-
-Required evidence:
-- SRC-koshigaya-2024-qa
-- EFF-koshigaya-minimum-characters
-- EFF-koshigaya-unlimited-characters
-- CLM-koshigaya-2024-minimum-vs-evaluated-usage
-
-Failure modes:
-- 上限なしを必須と回答
-
-## EVAL-019 — Koshigaya KGI
-
-Question:
-越谷市2024生成AIサービスの文書作成時間20%削減は、未達なら業務失敗となる検収条件か。
-
-Expected:
-いいえ。仕様書はKGIを受注者の取組指針とし、業務の成否を規定するものではないと明記している。
-
-Required evidence:
-- SRC-koshigaya-2024-spec
-- EFF-koshigaya-kgi
-
-Failure modes:
-- KGIを契約上の達成保証・検収基準と読み替える
+- 落札者・落札額を最終仕様の証拠にする
+- 評価roleのnot_applicableをcontract_finalにも流用
+- ZIPの内容を推測して補完

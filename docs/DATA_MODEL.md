@@ -189,7 +189,7 @@ AI機能とは別に、買い方そのものを比較する。共同調達や一
 | field | meaning |
 |---|---|
 | source_id | 安定したsource ID |
-| case_id | 対象案件 |
+| case_id | 対象案件。横断的な発見・探索経路の記録など、特定案件に属さない一次資料は空欄可。値がある場合は `cases.csv` の case_id を参照する |
 | document_type | official_specification / official_qa_amendment / official_evaluation / official_result 等 |
 | published_at | 公開日。確認できない場合は空欄 |
 | retrieved_at | 取得・確認日 |
@@ -269,9 +269,11 @@ Q&Aに「変更」という語がなくても、応募可否・評価解釈を�
 
 - `announcement_date`: 公告日
 - `announcement_fiscal_year`: 公告日の日本の会計年度
-- `service_start` / `service_end`: 履行・サービス期間
-- `service_fiscal_year_start` / `service_fiscal_year_end`: サービス年度
-- `date_precision`: 日付の確認精度
+- `service_start` / `service_end`: 公開資料で確認したサービス利用の開始・終了日
+- `service_fiscal_year_start` / `service_fiscal_year_end`: サービス利用年度
+- `date_precision`: 日付の確認精度・予定情報かどうか
+- `cases.csv` の `contract_start` / `contract_end` は契約期間を示す。実利用期間と異なる場合があるため、契約期間をサービス列へ転記しない。
+- 開始予定が自治体ごとに異なる、または終了日が未確定の場合は、共通の日付を推定せず空欄にし、根拠と予定範囲を `notes` に記録する。
 
 case_id内の年は安定IDの一部であり、年度分析の根拠にしない。
 
@@ -350,3 +352,14 @@ projection固有の状態:
 ## Cost comparison caution
 
 `budget_ceiling_jpy` と `contract_amount_jpy` は現時点では公式資料に記載された raw amount を保持する。案件によって税込・税抜、初期費用込み、研修別契約、複数団体別契約など条件が異なるため、税区分と対象範囲を正規化するまでは案件間の単純な価格ランキングに使用しない。
+
+
+## 12. Evidence coverage and public reconstructability
+
+`data/evidence_coverage.csv` と `docs/EVIDENCE_COVERAGE.md` は `scripts/build_evidence_coverage.py` による生成物で、直接編集しない。
+
+個々の `effective_requirements.csv` 行にある `public_reconstructability` は、その行の適用段階に限る。公募仕様と公開Q&Aから公募時の有効要件を再構成できる行は `publicly_reconstructable` でも、契約最終状態まで追えたことを意味しない。
+
+case-level の `public_reconstructability` は契約最終状態までの再構成可能性を示す。6つの標準roleが確認済み (`reviewed`) または根拠ある非該当 (`not_applicable`) で、`contract_final` が `reviewed`、かつ `effective_requirements.csv` に公開最終要求を示すレビュー済み `contracting_rule` 行がある場合のみ `publicly_reconstructable` とする。公開された公募stage要件のみでは十分でない。
+
+既知の欠落・アクセス制約・公開されていない資料・未解決矛盾がある場合は `publicly_bounded` とする。契約最終roleが `not_assessed` の場合は `not_assessed` のままとし、資料がないと解釈しない。role別状態の詳しい意味は `docs/EVIDENCE_COVERAGE.md` と `AGENTS.md` を参照。

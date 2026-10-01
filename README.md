@@ -38,7 +38,11 @@
 
 ## Current status
 
-2026-09-30 に初期コーパスを作成し、公式一次資料から対象を拡張しています。現在は26案件を案件台帳に収録し、そのうち17案件は仕様書レベルの要件比較まで進めています。評価基準は117項目、汎用調達の細粒度要件は22件、業務特化型AIの要件は21件、公開得点は24行を構造化しています。さらに調達方式11件、一般競争入札結果3行、共同調達団体レコード8行（現参加6・将来予定2）を分離して保持しています。
+2026-09-30 に初期コーパスを作成し、以降は既存案件の証拠品質・比較可能性を優先して監査しています。案件台帳は26案件のままです。仕様書水準の要件比較は18案件、評価基準は134項目、汎用調達の細粒度要件は22件、業務特化型AIの要件は21件、公開得点は24行を保持しています。調達方式は12件、一般競争入札結果は3行、共同調達団体レコードは8行（現参加6・将来予定2）です。source documentsは50行、有効要件は69行、review coverageは54行、timelineは11行で、標準roleを1つ以上評価した案件は9件です。
+
+公開された仕様や選定結果があっても契約最終状態を確認できるとは限りません。case-level の公開再構成可能性は契約最終要件の根拠も確認できた場合に限り publicly_reconstructable とし、not_assessed は資料がないことを意味しません。
+
+- Structured cases: `data/cases.csv`
 
 - Structured cases: `data/cases.csv`
 - Procurement/service timeline: `data/case_timeline.csv`
@@ -74,6 +78,10 @@
 - Public-reconstructability audit pass: `research/RESEARCH_PASS_8_2026-10-01.md`
 - Evidence coverage projection pass: `research/RESEARCH_PASS_9_2026-10-01.md`
 - Evidence-pattern audit pass: `research/RESEARCH_PASS_10_2026-10-01.md`
+- Contract-final audit pass: `research/RESEARCH_PASS_11_2026-10-01.md`
+- Contract-final projection audit pass: `research/RESEARCH_PASS_12_2026-10-01.md`
+- Joint-procurement contract-final audit pass: `research/RESEARCH_PASS_13_2026-10-01.md`
+- General-bid contract-final evidence pass: `research/RESEARCH_PASS_14_2026-10-01.md`
 
 ## Next
 

@@ -1,0 +1,212 @@
+[
+  {
+    "source_id": "SRC-fukushima-2026-spec",
+    "url": "https://www.pref.fukushima.lg.jp/uploaded/attachment/734795.pdf",
+    "status": 200,
+    "content_type": "application/pdf",
+    "bytes": 802658,
+    "sha256": "19e18288a7e340bf27858448bcdaa74becae9b07f1ba67bda9b961837cf8cb42",
+    "retrieved_at": "2026-10-01"
+  },
+  {
+    "source_id": "SRC-hokkaido-2026-notice",
+    "url": "https://www.pref.hokkaido.lg.jp/fs/1/3/1/1/6/4/7/9/_/%E5%8C%97%E6%B5%B7%E9%81%93%E5%91%8A%E7%A4%BA%E7%AC%AC10635%E5%8F%B7.pdf",
+    "status": 200,
+    "content_type": "application/pdf",
+    "bytes": 212294,
+    "sha256": "33f29d810127c303e6eed144c7cd471ea863db86dc98b90d89e67c3370545432",
+    "retrieved_at": "2026-10-01"
+  },
+  {
+    "source_id": "SRC-hokkaido-2026-processing-manual",
+    "url": "https://www.pref.hokkaido.lg.jp/fs/1/3/1/1/6/4/7/3/_/%E9%96%A2%E4%BF%82%E6%9B%B8%E9%A1%9E%28%E7%94%9F%E6%88%90AI%E3%82%B5%E3%83%BC%E3%83%93%E3%82%B9%28RAG%29%E6%8F%90%E4%BE%9B%E6%A5%AD%E5%8B%99%29.zip",
+    "status": 200,
+    "content_type": "application/zip",
+    "bytes": 1737112,
+    "sha256": "efc4d197e284b993c8ef84a477a74683449894860c08d2d6f0005847129a6959",
+    "retrieved_at": "2026-10-01"
+  },
+  {
+    "source_id": "SRC-kitakyushu-2025-guide",
+    "url": "https://www.city.kitakyushu.lg.jp/files/001140147.pdf",
+    "status": 200,
+    "content_type": "application/pdf",
+    "bytes": 385847,
+    "sha256": "42888975f7d89d107ae4d0a97054e4734d0d8d29f93ccb15199f340adb16efb2",
+    "retrieved_at": "2026-10-01"
+  },
+  {
+    "source_id": "SRC-kitakyushu-2025-page",
+    "url": "https://ssl.city.kitakyushu.lg.jp/contents/337_00019.html",
+    "status": 200,
+    "content_type": "text/html",
+    "bytes": 35814,
+    "sha256": "64a656d96f8bb5da11aa6c42eabfbaaee9153b38671450f39c1cf2977b6774ff",
+    "retrieved_at": "2026-10-01"
+  },
+  {
+    "source_id": "SRC-kitakyushu-2025-spec",
+    "url": "https://www.city.kitakyushu.lg.jp/files/001140148.pdf",
+    "status": 200,
+    "content_type": "application/pdf",
+    "bytes": 146003,
+    "sha256": "94a19d5999c68885fbd3a015c575e8ad06dde9ce3f33b195a33407fe161b0a48",
+    "retrieved_at": "2026-10-01"
+  },
+  {
+    "source_id": "SRC-kobe-2026-voicebot-guide",
+    "url": "https://www.city.kobe.lg.jp/documents/83354/jisshiyoryo.pdf",
+    "status": 200,
+    "content_type": "application/pdf",
+    "bytes": 569933,
+    "sha256": "1c46bba79e1fc2ab4c22664ea8228a545b5d669266d3cc3bd7b8918cf1919bdb",
+    "retrieved_at": "2026-10-01"
+  },
+  {
+    "source_id": "SRC-kobe-2026-voicebot-spec",
+    "url": "https://www.city.kobe.lg.jp/documents/83354/shiyosyo.pdf",
+    "status": 200,
+    "content_type": "application/pdf",
+    "bytes": 1128671,
+    "sha256": "ff40b66e49ed642d776a4abae1de9ab2cc8a5e59a211cc80d37e2f7283d3548b",
+    "retrieved_at": "2026-10-01"
+  },
+  {
+    "source_id": "SRC-koshigaya-2024-guide",
+    "url": "https://www.city.koshigaya.saitama.jp/kurashi_shisei/jigyosha/dejitaru/files/01_generation-ai-kaisaiyoryo.pdf",
+    "status": 200,
+    "content_type": "application/pdf",
+    "bytes": 693643,
+    "sha256": "10ee9a72f496d37eb5bd8f2e42b8e3ddf4d7c67306708ac06c679d31b9bf36fc",
+    "retrieved_at": "2026-10-01"
+  },
+  {
+    "source_id": "SRC-koshigaya-2024-qa",
+    "url": "https://www.city.koshigaya.saitama.jp/kurashi_shisei/jigyosha/dejitaru/files/generation-ai-answer.pdf",
+    "status": 200,
+    "content_type": "application/pdf",
+    "bytes": 326504,
+    "sha256": "de8ab19df28c1a9ecad9c1389cea1f997689b8a345e0a3bd91f629d28bb39c56",
+    "retrieved_at": "2026-10-01"
+  },
+  {
+    "source_id": "SRC-koshigaya-2024-spec",
+    "url": "https://www.city.koshigaya.saitama.jp/kurashi_shisei/jigyosha/dejitaru/files/02_1_generation-ai-service-shiyosho.pdf",
+    "status": 200,
+    "content_type": "application/pdf",
+    "bytes": 479669,
+    "sha256": "48b9f0f6c44c8a5c21ae063f2b29c30b10a6fb43d0c44543f37806c47b1e8f23",
+    "retrieved_at": "2026-10-01"
+  },
+  {
+    "source_id": "SRC-kyoto-2026-general-genai-result",
+    "url": "https://www.city.kyoto.lg.jp/sogo/page/0000351116.html",
+    "status": 200,
+    "content_type": "text/html",
+    "bytes": 22460,
+    "sha256": "37b080036f0fd9046e78dc760ffb67568ca3b41e5346bad32ca4a5421566c41d",
+    "retrieved_at": "2026-10-01"
+  },
+  {
+    "source_id": "SRC-obu-2026-qa",
+    "url": "https://www.city.obu.aichi.jp/_res/projects/default_project/_page_/001/038/173/kaitou.pdf",
+    "status": 200,
+    "content_type": "application/pdf",
+    "bytes": 260579,
+    "sha256": "3943f9ae50ee0206a007354998318b45a37a51abfe84ccb22ded83cb3d122410",
+    "retrieved_at": "2026-10-01"
+  },
+  {
+    "source_id": "SRC-oumi-2026-guide",
+    "url": "https://www.city.omihachiman.lg.jp/material/files/group/115/AI_jisshiyoryo.pdf",
+    "status": 200,
+    "content_type": "application/pdf",
+    "bytes": 1013175,
+    "sha256": "bbbfa5bc3327fa6780ef416ba90f7fc7fb09d2a3f6dc019e282b643893a64852",
+    "retrieved_at": "2026-10-01"
+  },
+  {
+    "source_id": "SRC-oumi-2026-qa",
+    "url": "https://www.city.omihachiman.lg.jp/material/files/group/115/AI_kaitou.pdf",
+    "status": 200,
+    "content_type": "application/pdf",
+    "bytes": 712077,
+    "sha256": "4eedfb48b1d56e9396f4fbdb7422bde79d648d184654c11f2a135a79402090e0",
+    "retrieved_at": "2026-10-01"
+  },
+  {
+    "source_id": "SRC-oumi-2026-spec",
+    "url": "https://www.city.omihachiman.lg.jp/material/files/group/115/AI_Shiyousyo2.pdf",
+    "status": 200,
+    "content_type": "application/pdf",
+    "bytes": 1034318,
+    "sha256": "e43f08d2cacd06eec84c4c2420fb2790a9198b521019591a115edab248801c5d",
+    "retrieved_at": "2026-10-01"
+  },
+  {
+    "source_id": "SRC-sendai-2025-guide",
+    "url": "https://www.city.sendai.jp/rikatsuyou/propo/documents/01_ai_boshuyoryo.pdf",
+    "status": 200,
+    "content_type": "application/pdf",
+    "bytes": 342663,
+    "sha256": "1b29600552b3671ed45e80061c75d09261becba073a54f45c6f0d1989e4a6533",
+    "retrieved_at": "2026-10-01"
+  },
+  {
+    "source_id": "SRC-sendai-2025-page",
+    "url": "https://www.city.sendai.jp/rikatsuyou/propo/ai.html",
+    "status": 200,
+    "content_type": "text/html",
+    "bytes": 126152,
+    "sha256": "5083c209e9de23850826879dff4e794c011e1bbfd0ab7a45b64c6b938265d5d4",
+    "retrieved_at": "2026-10-01"
+  },
+  {
+    "source_id": "SRC-sendai-2025-qa",
+    "url": "https://www.city.sendai.jp/rikatsuyou/propo/documents/ai_shitsumonkaito.pdf",
+    "status": 200,
+    "content_type": "application/pdf",
+    "bytes": 1276204,
+    "sha256": "f5603950703186cfadc11933a11ed85a887d80309211de8abc6276078780d841",
+    "retrieved_at": "2026-10-01"
+  },
+  {
+    "source_id": "SRC-sendai-2025-spec",
+    "url": "https://www.city.sendai.jp/rikatsuyou/propo/documents/02_ai_shiyosyoan.pdf",
+    "status": 200,
+    "content_type": "application/pdf",
+    "bytes": 466794,
+    "sha256": "4ab4c585b7065ea72f3df50f95b60c4ed723dd99cd87c5d253093abc5db1914c",
+    "retrieved_at": "2026-10-01"
+  },
+  {
+    "source_id": "SRC-yaizu-2025-page",
+    "url": "https://www.city.yaizu.lg.jp/business/bid-contract/info/proposal/info-00032.html",
+    "status": 200,
+    "content_type": "text/html",
+    "bytes": 33993,
+    "sha256": "d302e64c98c1b95ecb197ec81d05ee1738d64978255935fa272513a15d554fd5",
+    "retrieved_at": "2026-10-01"
+  },
+  {
+    "source_id": "SRC-yaizu-2025-qa",
+    "url": "https://www.city.yaizu.lg.jp/documents/19797/kaitou.pdf",
+    "status": 200,
+    "content_type": "application/pdf",
+    "bytes": 64062,
+    "sha256": "91187838db80ee819eaed3d51fe5b435e295687920380a859fe08d0f566ccc34",
+    "retrieved_at": "2026-10-01"
+  },
+  {
+    "source_id": "BENCH-SRC-sendai-2025-contract-draft",
+    "url": "https://www.city.sendai.jp/rikatsuyou/propo/documents/03_ai_keiyakushoan.pdf",
+    "status": 200,
+    "content_type": "application/pdf",
+    "bytes": 374915,
+    "sha256": "47943035f88f8cf482d33666647c6de275ac22fffbf92fc12c82fd79b7df24c0",
+    "retrieved_at": "2026-10-01",
+    "official_referring_source": "SRC-sendai-2025-page",
+    "document_type": "official_contract_draft",
+    "title": "仙台市生成AI導入実証等業務 契約書（案）"
+  }
+]

@@ -118,6 +118,70 @@ Failure modes:
 - 1点: 結論は正しいが条件・根拠が不足
 - 0点: 結論誤り、または根拠なし
 
-Total: 14 points.
+Total: 22 points.
 
-初期目標は満点ではなく、**0点回答をなくすこと**。特にEVAL-001〜006で旧仕様・スコープ拡張による誤答が発生しないことを優先する。
+初期目標は満点ではなく、**0点回答をなくすこと**。特にEVAL-001〜011で旧仕様・スコープ拡張・質疑解釈による0点誤答が発生しないことを優先する。
+
+## EVAL-008 — Obu API endpoint vs data storage
+
+Question:
+大府市2026生成AI調達では、国内データセンター保存要件があるため、生成AI API接続先も国内でなければならないか。
+
+Expected:
+いいえ。公式質疑ではAPI接続先は国内限定ではない。ただし市データが国外に保存されないことが前提。
+
+Required evidence:
+- SRC-obu-2026-qa
+- EFF-obu-data-location
+- CLM-obu-2026-domestic-storage-not-api-endpoint
+
+Failure modes:
+- 国内保存要件からAPI接続先も国内必須と推定
+- 海外APIなら国外保存も許容されると推定
+
+## EVAL-009 — Obu chunking substitution
+
+Question:
+大府市のRAG要件で、回答精度が同等ならチャンク分割以外の手法で代替できるか。
+
+Expected:
+できない。公式質疑No.32では、チャンク分割そのものを評価する項目であり、別手法の提案は受け付けないと回答している。
+
+Required evidence:
+- SRC-obu-2026-qa
+- EFF-obu-rag-chunking
+
+Failure modes:
+- 目的が同じなら代替可能と回答
+
+## EVAL-010 — Yaizu GPT-3.5
+
+Question:
+焼津市2025生成AI調達ではGPT-3.5の提供は必須か。
+
+Expected:
+必須ではない。利用開始直後に職員が利用する想定はあるが、公式質疑No.3で提供は必須ではないと明示された。
+
+Required evidence:
+- SRC-yaizu-2025-qa
+- EFF-yaizu-gpt35
+
+Failure modes:
+- 要求機能一覧の元記載だけから必須と回答
+
+## EVAL-011 — Yaizu RAG general knowledge
+
+Question:
+焼津市のRAG要件は、LLMの一般知識を100%使わないことを要求しているか。
+
+Expected:
+いいえ。登録データからの回答を優先し、一般知識からの回答を可能な限り抑制する要件であり、100%排除は要求していない。
+
+Required evidence:
+- SRC-yaizu-2025-qa
+- EFF-yaizu-rag-grounding
+- CLM-yaizu-2025-rag-grounding-not-absolute
+
+Failure modes:
+- 一般知識の完全禁止と回答
+- 単なる「RAGあり」だけで条件を省略

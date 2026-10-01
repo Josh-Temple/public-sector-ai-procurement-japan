@@ -38,7 +38,7 @@
 
 ## Current status
 
-2026-09-30 に初期コーパスを作成し、公式一次資料から対象を拡張しています。現在は26案件を案件台帳に収録し、そのうち17案件は仕様書レベルの要件比較まで進めています。評価基準は106項目、汎用調達の細粒度要件は22件、業務特化型AIの要件は21件、公開得点は19行を構造化しています。さらに調達方式8件、一般競争入札結果3行、共同調達団体レコード8行（現参加6・将来予定2）を分離して保持しています。
+2026-09-30 に初期コーパスを作成し、公式一次資料から対象を拡張しています。現在は26案件を案件台帳に収録し、そのうち17案件は仕様書レベルの要件比較まで進めています。評価基準は112項目、汎用調達の細粒度要件は22件、業務特化型AIの要件は21件、公開得点は22行を構造化しています。さらに調達方式10件、一般競争入札結果3行、共同調達団体レコード8行（現参加6・将来予定2）を分離して保持しています。
 
 - Structured cases: `data/cases.csv`
 - Procurement/service timeline: `data/case_timeline.csv`
@@ -68,10 +68,11 @@
 - Fifth extraction pass: `research/RESEARCH_PASS_5_2026-10-01.md`
 - Sixth extraction pass: `research/RESEARCH_PASS_6_2026-10-01.md`
 - Effective-requirement audit pass: `research/RESEARCH_PASS_7_2026-10-01.md`
+- Public-reconstructability audit pass: `research/RESEARCH_PASS_8_2026-10-01.md`
 
 ## Next
 
-仕様書・評価基準の深掘りを進め、17案件について比較可能な要件を構造化しました。共同調達では案件固有の参加団体・団体別上限を別テーブル化し始めています。次は群馬の契約予定団体別紙の取得と、残る浅い案件の仕様深掘りを進めます。
+仕様書・評価基準の深掘りを進め、17案件について比較可能な要件を構造化しました。共同調達では案件固有の参加団体・団体別上限を別テーブル化し始めています。新規案件数の拡大より、代表案件の証拠完全性・公開再構成可能性・質疑反映を優先します。次は案件ごとの確認範囲を比較可能な形で要約できるかを検証します。
 
 ## Current hardening phase
 
@@ -83,10 +84,17 @@
 
 ### Hardening status
 
-- Source documents: 20
-- Effective requirements: 32
-- Review coverage records: 18
-- Case timeline records: 6
-- Reasoning regression questions: 11
+- Source documents: 31
+- Effective requirements: 40
+- Review coverage records: 29
+- Case timeline records: 8
+- Reasoning regression questions: 15
 
-代表再監査済み: おうみ共同調達、福島県2026、大府市2026、焼津市2025。案件総数26件すべてが同じ深度で再監査済みという意味ではない。
+代表再監査済み: おうみ共同調達、福島県2026、大府市2026、焼津市2025、北九州市2025、神戸市2026税務ボイスボット。案件総数26件すべてが同じ深度で再監査済みという意味ではない。
+
+
+### Public reconstructability
+
+公開仕様書が存在しても、非公開の質問回答、未取得の必須機能一覧、契約時協議等により契約最終要件を公開資料だけで再構成できない場合がある。
+
+その場合は、公開範囲で確認できる要件を `procurement_baseline` として保持し、`public_reconstructability=publicly_bounded` を付与する。公開仕様を契約最終仕様として断定しない。

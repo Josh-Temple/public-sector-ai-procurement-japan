@@ -64,6 +64,9 @@ claimを作る場合は最低限、次を明示する。
 - URLが開くことだけを確認して `last_verified` を更新しない。
 - 古い資料しか取得できない場合は、その確認時点を明示する。
 - `data/` の `verification_level` は既存の行単位の確認状態を表し、claim statusで置き換えない。
+- 根拠URLの再取得性が低い場合は `data/source_documents.csv` の `snapshot_status` を確認する。
+- 保存済みsnapshotに基づく再確認と、発行元からのfresh取得を区別する。
+- 原典を再取得できない場合、過去にreviewedだったことだけを理由に「現在確認済み」と表現しない。
 
 ## 6. Effective requirement rule
 

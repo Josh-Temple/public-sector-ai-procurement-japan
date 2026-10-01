@@ -111,3 +111,8 @@ kobe-2026-tax-voicebot,神戸市,KVB-03,実施手順,明確で計画的かつ実
 kobe-2026-tax-voicebot,神戸市,KVB-04,提案内容,目的理解・ボイスボット妥当性15＋回答率/解決率指標と改善目標20＋その他提案15,50,100,書類審査+プレゼンテーション,https://www.city.kobe.lg.jp/documents/83354/jisshiyoryo.pdf,2026-10-01
 kobe-2026-tax-voicebot,神戸市,KVB-05,提案価格,"{1-(提案価格/提案上限金額)}×15点",15,100,価格評価,https://www.city.kobe.lg.jp/documents/83354/jisshiyoryo.pdf,2026-10-01
 kobe-2026-tax-voicebot,神戸市,KVB-06,地元企業の受注機会,地元企業10点・準地元5点・その他0点（共同企業体は別計算）,10,100,書類審査,https://www.city.kobe.lg.jp/documents/83354/jisshiyoryo.pdf,2026-10-01
+koshigaya-2024-genai-service-training,越谷市,KOS-01,機能要件,必須条件・提案事項・RAG等の機能,30,100,書類審査+プレゼンテーション,https://www.city.koshigaya.saitama.jp/kurashi_shisei/jigyosha/dejitaru/files/01_generation-ai-kaisaiyoryo.pdf,2026-10-01
+koshigaya-2024-genai-service-training,越谷市,KOS-02,非機能要件,可用性・使用性・性能拡張性・保守性等,15,100,書類審査+プレゼンテーション,https://www.city.koshigaya.saitama.jp/kurashi_shisei/jigyosha/dejitaru/files/01_generation-ai-kaisaiyoryo.pdf,2026-10-01
+koshigaya-2024-genai-service-training,越谷市,KOS-03,研修,推進体制・講師経験・研修内容,15,100,書類審査+プレゼンテーション,https://www.city.koshigaya.saitama.jp/kurashi_shisei/jigyosha/dejitaru/files/01_generation-ai-kaisaiyoryo.pdf,2026-10-01
+koshigaya-2024-genai-service-training,越谷市,KOS-04,実施体制・業務実績,実施体制・市とのコミュニケーション・他自治体実績等,10,100,書類審査+プレゼンテーション,https://www.city.koshigaya.saitama.jp/kurashi_shisei/jigyosha/dejitaru/files/01_generation-ai-kaisaiyoryo.pdf,2026-10-01
+koshigaya-2024-genai-service-training,越谷市,KOS-05,見積金額,開催要領記載式による価格評価,30,100,価格評価,https://www.city.koshigaya.saitama.jp/kurashi_shisei/jigyosha/dejitaru/files/01_generation-ai-kaisaiyoryo.pdf,2026-10-01

@@ -33,6 +33,7 @@
 | 案件ごとの確認範囲・未確認理由 | `data/review_coverage.csv` | `data/source_documents.csv` |
 | Evidence coverage matrix | `data/evidence_coverage.csv` / `docs/EVIDENCE_COVERAGE.md` | `data/review_coverage.csv` |
 | 回帰評価・誤読テスト | `evals/` | Effective requirements / claims |
+| Web-only / Repository-firstの独立比較設計 | `evals/benchmark/BENCHMARK_V1_METHOD.md` | RunnerにはPublic本文だけを渡し、Gold・evalsを閲覧させない |
 | 公開資料での再構成限界 | `data/review_coverage.csv` / `data/effective_requirements.csv` | Source documents |
 | 再利用可能な主張 | `claims/` | 根拠sourceとdata |
 | 未解決事項・次の調査 | `research/COLLECTION_BACKLOG_2026-09-30.md` | 最新research pass |

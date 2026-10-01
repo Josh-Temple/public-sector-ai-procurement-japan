@@ -105,3 +105,9 @@ kyoto-2026-general-genai,京都市,KYO-02,UI/UX,ユーザ・管理者の使い�
 kyoto-2026-general-genai,京都市,KYO-03,追加要件,複数モデル・最新モデル・Deep Research等の追加提案,20,100,書類審査+トライアル,https://www.city.kyoto.lg.jp/sogo/cmsfiles/contents/0000349/349781/01_guide.pdf,2026-10-01
 kyoto-2026-general-genai,京都市,KYO-04,実施体制・導入,実施体制・スケジュール・マニュアル・問合せ対応,15,100,書類審査,https://www.city.kyoto.lg.jp/sogo/cmsfiles/contents/0000349/349781/01_guide.pdf,2026-10-01
 kyoto-2026-general-genai,京都市,KYO-05,コストパフォーマンス,利用数量超過時を含む価格妥当性・単価・耐用性,35,100,書類審査,https://www.city.kyoto.lg.jp/sogo/cmsfiles/contents/0000349/349781/01_guide.pdf,2026-10-01
+kobe-2026-tax-voicebot,神戸市,KVB-01,類似業務実績,類似業務実績が豊富で高い専門性を有するか,5,100,書類審査+プレゼンテーション,https://www.city.kobe.lg.jp/documents/83354/jisshiyoryo.pdf,2026-10-01
+kobe-2026-tax-voicebot,神戸市,KVB-02,実施体制,管理責任者・担当者が十分に配置されているか,10,100,書類審査+プレゼンテーション,https://www.city.kobe.lg.jp/documents/83354/jisshiyoryo.pdf,2026-10-01
+kobe-2026-tax-voicebot,神戸市,KVB-03,実施手順,明確で計画的かつ実現可能な作業工程か,10,100,書類審査+プレゼンテーション,https://www.city.kobe.lg.jp/documents/83354/jisshiyoryo.pdf,2026-10-01
+kobe-2026-tax-voicebot,神戸市,KVB-04,提案内容,目的理解・ボイスボット妥当性15＋回答率/解決率指標と改善目標20＋その他提案15,50,100,書類審査+プレゼンテーション,https://www.city.kobe.lg.jp/documents/83354/jisshiyoryo.pdf,2026-10-01
+kobe-2026-tax-voicebot,神戸市,KVB-05,提案価格,"{1-(提案価格/提案上限金額)}×15点",15,100,価格評価,https://www.city.kobe.lg.jp/documents/83354/jisshiyoryo.pdf,2026-10-01
+kobe-2026-tax-voicebot,神戸市,KVB-06,地元企業の受注機会,地元企業10点・準地元5点・その他0点（共同企業体は別計算）,10,100,書類審査,https://www.city.kobe.lg.jp/documents/83354/jisshiyoryo.pdf,2026-10-01

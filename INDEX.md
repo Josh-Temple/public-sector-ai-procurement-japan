@@ -28,6 +28,7 @@
 | 調達方式・共同調達 | `data/procurement_structure.csv` | `data/joint_procurement_entities.csv` |
 | 入札額 | `data/bid_results.csv` | 案件の公式結果資料 |
 | 収集済み一次資料の意味・注意 | `sources/` | `data/source_documents.csv` |
+| 一次資料の再取得性・snapshot状態 | `data/source_documents.csv` | `docs/KNOWLEDGE_MODEL.md` |
 | 案件ごとの確認範囲・未確認理由 | `data/review_coverage.csv` | `data/source_documents.csv` |
 | 回帰評価・誤読テスト | `evals/` | Effective requirements / claims |
 | 再利用可能な主張 | `claims/` | 根拠sourceとdata |
@@ -72,6 +73,12 @@ research memoの分析結果は有用だが、現在の事実を確認すると�
 - 福島県2026案件は機能範囲が拡大しているが、公式仕様上は次段階の本格導入に向けた実証である。
   - Source: `sources/SRC-fukushima-2026-spec.md`
   - Claim: `claims/CLM-fukushima-2026-remains-pilot.md`
+- 京都市では市長部局向けとは別に交通局も生成AIサービスを調達している。
+  - Source registry: `data/source_documents.csv`
+  - Claim: `claims/CLM-kyoto-2026-multiple-procurement-units.md`
+- 群馬の共同調達は共通選定後に団体別再見積・個別契約を行う。ただし契約予定団体一覧本文は未取得である。
+  - Source registry: `data/source_documents.csv`
+  - Claim: `claims/CLM-gunma-2026-entity-specific-contracting.md`
 
 この例は、「RAG要件なし」を「組織としてRAGを利用していない」と誤読しないための再利用可能な知識として残している。
 

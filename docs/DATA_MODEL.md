@@ -193,10 +193,19 @@ AI機能とは別に、買い方そのものを比較する。共同調達や一
 | retrieved_at | 取得・確認日 |
 | version_label | original_spec / qa_amendment / result_page 等 |
 | access_state | accessible / source_unavailable 等 |
-| snapshot_hash | 内容hash。まだ取得していない場合は空欄 |
-| snapshot_status | external_url_only / snapshotted 等 |
+| original_filename | 取得元のファイル名。HTML等で該当しない場合は空欄 |
+| snapshot_hash | 保存したsnapshotの内容hash。原則 `sha256:<hex>`。未保存なら空欄 |
+| snapshot_status | external_url_only / snapshot_pending / snapshotted / snapshot_unavailable |
+| snapshot_locator | durable snapshotの所在。公開repoにはsecretやbearer URLを書かない |
 
-URLが同じでも内容変更があり得るため、将来は取得本文のhashとsnapshotを追加する。空欄のhashを推測しない。
+URLが同じでも内容変更・削除があり得るため、再取得が重要な一次資料はsnapshot候補として扱う。
+
+- `external_url_only`: 現時点では外部公式URLのみを保持
+- `snapshot_pending`: 再取得性リスクがあり、durable snapshotを作る候補
+- `snapshotted`: snapshotを保存し、locatorとhashで同一性を追跡できる
+- `snapshot_unavailable`: 権利・技術・取得制約等によりsnapshotを保存できない
+
+snapshotは内容の正しさを証明するものではない。将来同じ取得物を再検証できるようにするための保存である。空欄のhashや取得不能なsnapshotを推測して埋めない。
 
 ## 11. Effective requirements
 

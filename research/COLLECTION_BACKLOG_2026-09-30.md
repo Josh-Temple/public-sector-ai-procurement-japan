@@ -44,14 +44,22 @@
 - Excel本体取得後、質問されていない77要求機能を補完する。
 
 ### 北九州市 2025
-- Excel「機能要件一覧」の存在は公式ページで確認済み。本文は現在の取得経路ではACCESS_UNAVAILABLE。
-- PDF仕様書・評価方法から約7,500人・同時400人・既存RAG移行・評価軸は構造化済み。
-- 事業者別公開得点5社分をvendor_scoresへ追加済み。
-- Excel本体を取得可能な経路ができたら、必須/加点機能の詳細を接続する。
+- 2026-10-01に公式ページ・実施説明書・仕様書・評価方法を代表再監査済み。
+- 公告2025-04-21、約7,500人、同時約400人、既存RAG移行、評価軸を確認。
+- `effective_requirements.csv` に公開baseline 4件を追加。
+- Excel「機能要件一覧」本文: SOURCE_UNAVAILABLE。仕様上、同一覧の「必須」を全て満たす必要がある。
+- 質問回答は参加申出書提出者へのメール配布で NOT_PUBLIC。公開資料だけでは応募時の最終有効要件を完全再構成できない。
+- 取得可能な一次資料が増えるまで、公開baselineをcontract-finalへ昇格しない。
 
 ### 神戸市 2026 税務部音声応答
-- 公募添付資料・別紙から、評価基準やFAQ件数、既存入電分析等を追加抽出する。
-- 音声AI要件が他自治体でも複数確認できた段階で共通schema化を検討する。
+- 2026-10-01に公式結果・実施要領・仕様書を代表再監査済み。
+- 公募開始2026-02-17はFY2025、事業開始予定はFY2026としてtimeline分離。
+- 評価基準6項目（100点）・公開得点3社を構造化。
+- AIによる回答生成は禁止し、市FAQ由来の回答データを利用する境界をreviewed claim化。
+- 質問回答は参加者メール配布で NOT_PUBLIC。
+- 契約時の優先順位は質問回答→仕様書→企画提案書。ただし上位提案部分は提案書が優先し得るため、公開仕様だけではcontract-finalを完全再構成できない。
+- specialised requirement 21行は `procurement_minimum / publicly_bounded` として段階を明示。
+- FAQデータExcel本文は SOURCE_UNAVAILABLE。
 
 ### 福島県 2025 / 2026
 - 質疑回答に仕様解釈上の重要情報がある場合だけ追加する。
@@ -145,3 +153,11 @@ Evidenceが十分に集まった後に追加を検討する。
 - 残る案件の `fiscal_year` は一括で正しいと仮定しない。公告日を取得した案件から `case_timeline.csv` で監査する。
 - 次の代表再監査候補は、北九州市（Excel機能要件あり）または神戸市の業務特化AI。新規案件数の拡大より、Source→Q&A→Effective Requirementが別案件でも再利用できるかを優先する。
 - `source_unavailable` のExcelは、取得可能経路ができた場合のみ本文を追加し、現在の質疑から推測した未質問項目を埋めない。
+
+
+## Evidence hardening after research pass 8
+
+- 次の焦点は案件数ではなく、case単位の「証拠完全性」を誤解なく要約できるか。
+- 候補軸: specification / Q&A / requirement matrix / evaluation / result / contract-final の各確認状態。
+- ただし一つの総合「成熟度スコア」にはしない。欠落理由（not_reviewed / source_unavailable / not_public）を保持する。
+- 公開資料のみでcontract-finalを再構成できない案件では、AI回答が自動的に範囲限定されるかを回帰評価する。

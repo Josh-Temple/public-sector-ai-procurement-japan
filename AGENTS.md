@@ -108,6 +108,7 @@ claimを作る場合は最低限、次を明示する。
 
 重要:
 - `not_assessed` を「資料なし」「未成熟」と解釈しない。
+- `not_applicable` は、調達方式・文書構造からrole非該当を一次資料で確認できる場合だけ使う。未探索の代用にしない。
 - assessed/reviewed role数を品質スコアにしない。
 - `publicly_bounded` は公開証拠の限界であり、調達品質の否定ではない。
 

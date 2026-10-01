@@ -38,11 +38,9 @@
 
 ## Current status
 
-2026-09-30 に初期コーパスを作成し、以降は既存案件の証拠品質・比較可能性を優先して監査しています。案件台帳は26案件のままです。仕様書水準の要件比較は18案件、評価基準は134項目、汎用調達の細粒度要件は22件、業務特化型AIの要件は21件、公開得点は24行を保持しています。調達方式は12件、一般競争入札結果は3行、共同調達団体レコードは8行（現参加6・将来予定2）です。source documentsは50行、有効要件は69行、review coverageは54行、timelineは11行で、標準roleを1つ以上評価した案件は9件です。
+2026-09-30 に初期コーパスを作成し、以降は既存案件の証拠品質・比較可能性を優先して監査しています。案件台帳は26案件のままです。仕様書水準の要件比較は18案件、評価基準は134項目、汎用調達の細粒度要件は22件、業務特化型AIの要件は21件、公開得点は24行を保持しています。調達方式は12件、一般競争入札結果は3行、共同調達団体レコードは8行（現参加6・将来予定2）です。source documentsは52行、有効要件は69行、review coverageは54行、timelineは11行で、標準roleを1つ以上評価した案件は9件です。
 
 公開された仕様や選定結果があっても契約最終状態を確認できるとは限りません。case-level の公開再構成可能性は契約最終要件の根拠も確認できた場合に限り publicly_reconstructable とし、not_assessed は資料がないことを意味しません。
-
-- Structured cases: `data/cases.csv`
 
 - Structured cases: `data/cases.csv`
 - Procurement/service timeline: `data/case_timeline.csv`
@@ -85,7 +83,7 @@
 
 ## Next
 
-仕様書・評価基準の深掘りを進め、17案件について比較可能な要件を構造化しました。共同調達では案件固有の参加団体・団体別上限を別テーブル化し始めています。新規案件数の拡大より、代表案件の証拠完全性・公開再構成可能性・質疑反映を優先します。次は案件ごとの確認範囲を比較可能な形で要約できるかを検証します。
+仕様書・評価基準の深掘りを進め、18案件について比較可能な要件を構造化しました。共同調達では案件固有の参加団体・団体別上限を別テーブル化し始めています。新規案件数の拡大より、代表案件の証拠完全性・公開再構成可能性・質疑反映を優先します。次は案件ごとの確認範囲を比較可能な形で要約できるかを検証します。
 
 ## Current hardening phase
 
@@ -97,14 +95,15 @@
 
 ### Hardening status
 
-- Source documents: 40
-- Effective requirements: 50
-- Review coverage records: 43
-- Case timeline records: 10
-- Reasoning regression questions: 19
-- Cases with hardening roles assessed: 8 / 26
+- Source documents: 52
+- Effective requirements: 69
+- Review coverage records: 54
+- Case timeline records: 11
+- Reasoning regression questions: 24
+- Cases with hardening roles assessed: 9 / 26
+- Case-level public reconstructability: publicly_bounded 7 / not_assessed 19 / publicly_reconstructable 0
 
-代表再監査済み: おうみ共同調達、福島県2026、大府市2026、焼津市2025、北九州市2025、神戸市2026税務ボイスボット、北海道2026、越谷市2024。案件総数26件すべてが同じ深度で再監査済みという意味ではない。
+代表再監査済み: 仙台市2025、大府市2026、焼津市2025、おうみ共同調達、神戸市2026税務ボイスボット、越谷市2024、北九州市2025、福島県2026、北海道2026。案件総数26件すべてが同じ深度で再監査済みという意味ではない。
 
 
 ### Public reconstructability

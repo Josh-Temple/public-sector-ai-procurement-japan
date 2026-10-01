@@ -1,0 +1,2 @@
+case_id,selection_state,selection_date,selection_source_id,contract_state,contract_date,contract_source_id,operation_state,operation_start,operation_source_id,last_verified,notes
+kyoto-2026-general-genai,selected_candidate_confirmed,2026-03-12,SRC-kyoto-2026-general-genai-result,not_verified,,,not_verified,,,2026-10-01,"京都市公式結果ページで第一交渉権者の選定を確認。契約締結・2026-10-01時点の実稼働は、このprojectionの根拠sourceでは確認していない。selectedをcontracted/operatingへ昇格しない"

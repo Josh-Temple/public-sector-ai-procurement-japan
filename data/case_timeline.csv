@@ -5,3 +5,5 @@ fukushima-2026-genai-pilot-expansion,,2026,,2027-03-31,2026,2026,partial,SRC-fuk
 kyoto-2026-general-genai,,2026,,2027-03-31,2026,2026,partial,SRC-kyoto-2026-general-genai-spec,"公告日の正規化は別途確認",2026-10-01
 obu-2026-genai-service,2026-01-28,2025,2026-07-01,2027-03-31,2026,2026,service_start_confirmed_spec,SRC-obu-2026-page,"case_idの2026は安定ID。公告はFY2025、仕様上の運用開始は2026-07-01。契約日は2026年4月中旬予定で実績日は未確認",2026-10-01
 yaizu-2025-genai-service,2025-05-16,2025,,2026-03-31,2025,2025,service_start_unknown,SRC-yaizu-2025-page,"公告はFY2025。契約締結日が開始日だが実契約日の公開確認は未実施。公式HTML後半に2024年表記の混在あり",2026-10-01
+kitakyushu-2025-genai-service,2025-04-21,2025,2025-07-01,2026-03-31,2025,2025,service_start_target,SRC-kitakyushu-2025-page,"仕様書上は2025-07-01サービス利用開始希望。正式スケジュールは発注者・受注者協議で決定",2026-10-01
+kobe-2026-tax-voicebot,2026-02-17,2025,2026-04-01,2027-03-31,2026,2026,planned_start,SRC-kobe-2026-voicebot-guide,"case_idの2026は安定ID。公募開始2026-02-17はFY2025。契約締結・事業開始2026-04-01は公募時予定",2026-10-01

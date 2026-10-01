@@ -30,6 +30,7 @@
 | 収集済み一次資料の意味・注意 | `sources/` | `data/source_documents.csv` |
 | 案件ごとの確認範囲・未確認理由 | `data/review_coverage.csv` | `data/source_documents.csv` |
 | 回帰評価・誤読テスト | `evals/` | Effective requirements / claims |
+| 公開資料での再構成限界 | `data/review_coverage.csv` / `data/effective_requirements.csv` | Source documents |
 | 再利用可能な主張 | `claims/` | 根拠sourceとdata |
 | 未解決事項・次の調査 | `research/COLLECTION_BACKLOG_2026-09-30.md` | 最新research pass |
 | データ項目の意味 | `docs/DATA_MODEL.md` | `docs/KNOWLEDGE_MODEL.md` |
@@ -93,3 +94,14 @@ research memoの分析結果は有用だが、現在の事実を確認すると�
 - 制度やガイドラインの現行内容
 
 これらは、既存知識を調査の起点に使い、必要な公式一次資料をfresh readする。
+
+## Public reconstruction boundaries
+
+- 北九州市2025生成AIサービスでは、質問回答は参加申出者へメール配布され、公開本文を確認できない。別紙2機能要件一覧も現在の取得経路では本文未取得。
+  - Source: `sources/SRC-kitakyushu-2025-guide.md`
+- 神戸市2026税務ボイスボットでは、質問回答が仕様書より優先し、上位提案も契約条件に入り得るため、公開仕様だけでは契約最終要件を完全再構成できない。
+  - Source: `sources/SRC-kobe-2026-voicebot-guide.md`
+  - Claim: `claims/CLM-public-docs-may-not-reconstruct-contract-final.md`
+- 神戸市税務ボイスボットはAIを利用するが、市民向け回答のAI生成は公募時最低限要件で禁止されている。
+  - Source: `sources/SRC-kobe-2026-voicebot-spec.md`
+  - Claim: `claims/CLM-kobe-2026-voicebot-no-generated-answer.md`

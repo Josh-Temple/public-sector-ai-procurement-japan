@@ -29,13 +29,23 @@ scope: 対象案件や適用範囲
 - `version`
 - `valid_from`
 - `valid_to`
-- `checksum`
-- 外部snapshotの所在
+- `original_filename`
+- `snapshot_hash`
+- `snapshot_status`
+- `snapshot_locator`
 - 利用条件
 
 不明な日付や版を推測で埋めない。
 
 Source metadataは「その資料が存在する」ことを記録する。資料のすべての内容を検証済みとするものではない。
+
+### Source preservation
+
+一次資料のURLは、将来も同じ本文を返すとは限らない。再検証価値が高く、後から取得不能になるリスクがある資料は、`data/source_documents.csv` でsnapshot状態を追跡する。
+
+snapshotを保存する場合は、原則として元ファイル名・durableな保存先・SHA-256等の内容hashを記録する。大きな原典や公開repoへ再配布しない方がよい資料は、Object Storage等の適切な保存先を用い、このpublic repoにはsecretを含まないlocatorとhashだけを保持する。
+
+`reviewed` claimであっても、根拠原典を再取得できない場合は「現在freshに再確認した」とは扱わない。保存済みsnapshotに基づく確認と、発行元からのfresh取得を区別する。
 
 ## 2. Claim
 

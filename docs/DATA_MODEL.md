@@ -290,7 +290,35 @@ case_id内の年は安定IDの一部であり、年度分析の根拠にしな�
 
 「未確認」と「存在しない」を同一視しない。
 
-## 13. Review coverage
+## 13. Procurement stage projection
+
+`data/case_stage.csv`
+
+選定・契約・稼働を別段階として保持する、現在状態確認用のbounded projection。
+
+このテーブルは全案件を自動的に埋めるものではない。各段階を一次資料で個別確認できた案件だけを追加し、未確認段階は `not_verified` のまま保持する。
+
+主な項目:
+- `selection_state`: selected_candidate_confirmed / awarded_confirmed / not_verified 等
+- `selection_date`
+- `selection_source_id`
+- `contract_state`: contracted_confirmed / not_verified
+- `contract_date`
+- `contract_source_id`
+- `operation_state`: operating_confirmed / not_verified
+- `operation_start`
+- `operation_source_id`
+- `last_verified`
+- `notes`
+
+重要:
+- 受託候補者・第一交渉権者の選定を、契約締結済みと読み替えない。
+- 契約締結を、サービス稼働中と読み替えない。
+- 仕様書上の予定開始日を、実稼働確認日へ変換しない。
+- `cases.csv` の `status` は案件の要約であり、current-state質問では本projectionと根拠sourceを優先する。
+- rowが存在しない案件は「未確認」であり、「未契約」「未稼働」を意味しない。
+
+## 14. Review coverage
 
 `data/review_coverage.csv`
 
@@ -305,7 +333,7 @@ case_id内の年は安定IDの一部であり、年度分析の根拠にしな�
 | last_verified | その確認範囲を最後に検証した日 |
 
 「仕様書を確認済み」を「案件全体を確認済み」と読み替えない。特に有効要件の判定には qa_amendment の確認状態が重要。
-## 14. Evidence coverage projection
+## 15. Evidence coverage projection
 
 `data/evidence_coverage.csv`
 

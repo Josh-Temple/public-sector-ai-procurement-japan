@@ -224,8 +224,21 @@ URLが同じでも内容変更があり得るため、将来は取得本文のha
 - `optional_disclosure`
 - `removed`
 - `not_applicable`
+- `context`: 値の必須/任意ではなく、用語定義や適用範囲そのものを示す
 
 後続の公式質問回答が「仕様変更」「緩和」「削除」等を明示した場合、元仕様をそのまま現行要件として扱わない。
+
+`change_type` は置換だけでなく、質疑による意味の具体化も表す。例:
+- `relaxed`: 必須条件を緩和
+- `clarified_scope`: 対象範囲を明確化
+- `allowed_interpretation`: 特定の実装・解釈を許容
+- `allowed_alternative`: 代替手段を許容
+- `threshold_defined`: 数値・期限を具体化
+- `clarified_strict`: 同等目的の代替では足りない等、要件を厳密化
+- `clarified_feasibility`: 100%等の絶対条件ではなく実現可能な範囲を明確化
+- `clarified_definition`: 用語の意味を限定
+
+Q&Aに「変更」という語がなくても、応募可否・評価解釈を変える回答はeffective requirementとして保持できる。
 
 ## 12. Case timeline
 

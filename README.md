@@ -38,7 +38,7 @@
 
 ## Current status
 
-2026-09-30 に初期コーパスを作成し、公式一次資料から対象を拡張しています。現在は26案件を案件台帳に収録し、そのうち17案件は仕様書レベルの要件比較まで進めています。評価基準は112項目、汎用調達の細粒度要件は22件、業務特化型AIの要件は21件、公開得点は22行を構造化しています。さらに調達方式10件、一般競争入札結果3行、共同調達団体レコード8行（現参加6・将来予定2）を分離して保持しています。
+2026-09-30 に初期コーパスを作成し、公式一次資料から対象を拡張しています。現在は26案件を案件台帳に収録し、そのうち17案件は仕様書レベルの要件比較まで進めています。評価基準は117項目、汎用調達の細粒度要件は22件、業務特化型AIの要件は21件、公開得点は24行を構造化しています。さらに調達方式11件、一般競争入札結果3行、共同調達団体レコード8行（現参加6・将来予定2）を分離して保持しています。
 
 - Structured cases: `data/cases.csv`
 - Procurement/service timeline: `data/case_timeline.csv`
@@ -72,6 +72,8 @@
 - Sixth extraction pass: `research/RESEARCH_PASS_6_2026-10-01.md`
 - Effective-requirement audit pass: `research/RESEARCH_PASS_7_2026-10-01.md`
 - Public-reconstructability audit pass: `research/RESEARCH_PASS_8_2026-10-01.md`
+- Evidence coverage projection pass: `research/RESEARCH_PASS_9_2026-10-01.md`
+- Evidence-pattern audit pass: `research/RESEARCH_PASS_10_2026-10-01.md`
 
 ## Next
 
@@ -87,14 +89,14 @@
 
 ### Hardening status
 
-- Source documents: 31
-- Effective requirements: 40
-- Review coverage records: 31
-- Case timeline records: 8
-- Reasoning regression questions: 15
-- Cases with hardening roles assessed: 6 / 26
+- Source documents: 40
+- Effective requirements: 50
+- Review coverage records: 43
+- Case timeline records: 10
+- Reasoning regression questions: 19
+- Cases with hardening roles assessed: 8 / 26
 
-代表再監査済み: おうみ共同調達、福島県2026、大府市2026、焼津市2025、北九州市2025、神戸市2026税務ボイスボット。案件総数26件すべてが同じ深度で再監査済みという意味ではない。
+代表再監査済み: おうみ共同調達、福島県2026、大府市2026、焼津市2025、北九州市2025、神戸市2026税務ボイスボット、北海道2026、越谷市2024。案件総数26件すべてが同じ深度で再監査済みという意味ではない。
 
 
 ### Public reconstructability

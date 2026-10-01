@@ -2,21 +2,15 @@
 
 This is a **review-coverage projection**, not a quality score.
 
-It is generated from `data/cases.csv` and `data/review_coverage.csv`. A blank audit history is rendered as `not_assessed`; it does not mean the document does not exist.
-
 Legend:
 - **R** reviewed
 - **N** explicitly not reviewed
 - **U** public source exists but is currently unavailable
 - **P** source/use is known but the body is not public
+- **—** not applicable to this procurement/document structure
 - **C** conflicting sources
 - **F** searched in reviewed sources but not found
 - **·** not assessed under the current hardening model
-
-`public_reconstructability` is not a maturity score:
-- `publicly_reconstructable`: the audited effective state can be traced with public evidence for the assessed scope
-- `publicly_bounded`: at least one assessed core role is blocked by non-public/unavailable/conflicting evidence
-- `not_assessed`: no case-level conclusion has been made
 
 | case | government | spec | Q&A | req matrix | eval | result | contract-final | reconstructability |
 |---|---|:---:|:---:|:---:|:---:|:---:|:---:|---|
@@ -33,7 +27,7 @@ Legend:
 | oumi-2026-joint-genai | おうみ自治体クラウド協議会 | R | R | · | R | R | · | publicly_reconstructable |
 | kobe-2025-dify-platform | 神戸市 | · | · | · | · | · | · | not_assessed |
 | kobe-2026-tax-voicebot | 神戸市 | R | P | · | R | R | P | publicly_bounded |
-| koshigaya-2024-genai-service-training | 越谷市 | · | · | · | · | · | · | not_assessed |
+| koshigaya-2024-genai-service-training | 越谷市 | R | R | — | R | R | · | publicly_reconstructable |
 | kitakyushu-2025-genai-service | 北九州市 | R | P | U | R | R | · | publicly_bounded |
 | hamada-2025-municipal-genai | 浜田市 | · | · | · | · | · | · | not_assessed |
 | wakayama-2026-genai-support | 和歌山県 | · | · | · | · | · | · | not_assessed |
@@ -45,12 +39,11 @@ Legend:
 | kagoshima-2026-genai-service | 鹿児島県 | · | · | · | · | · | · | not_assessed |
 | gunma-2026-joint-genai | 群馬県情報化推進協議会 | · | · | · | · | · | · | not_assessed |
 | hokkaido-2025-genai-rag-pilot | 北海道 | · | · | · | · | · | · | not_assessed |
-| hokkaido-2026-genai-rag-service | 北海道 | · | · | · | · | · | · | not_assessed |
+| hokkaido-2026-genai-rag-service | 北海道 | U | · | · | — | R | · | publicly_bounded |
 
 ## Current reading
 
 - Cases in repository: 26
-- Cases with at least one role assessed under the current hardening model: 6
-- The matrix intentionally does not infer missing coverage from legacy structured rows.
-- Contract-final is usually not assessed yet. A selected vendor or known contract amount is not evidence that the final requirement set has been reconstructed.
-- Use this matrix to choose the next audit target, not to rank municipalities.
+- Cases with at least one role assessed under the current hardening model: 8
+- `not_applicable` is evidence-backed non-applicability, not missing work.
+- Contract-final remains a separate role from procurement-effective requirements.

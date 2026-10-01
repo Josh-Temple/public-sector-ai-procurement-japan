@@ -13,7 +13,7 @@ DATA = ROOT / "data"
 DOCS = ROOT / "docs"
 ROLES = ["specification","qa_amendment","requirement_matrix","evaluation","result","contract_final"]
 BLOCKERS = {"source_unavailable","not_public","conflicting_sources"}
-SYMBOL = {"reviewed":"R","not_reviewed":"N","source_unavailable":"U","not_public":"P","not_assessed":"·","conflicting_sources":"C","not_found_in_reviewed_sources":"F"}
+SYMBOL = {"reviewed":"R","not_reviewed":"N","source_unavailable":"U","not_public":"P","not_assessed":"·","not_applicable":"—","conflicting_sources":"C","not_found_in_reviewed_sources":"F"}
 
 def read_csv(path):
     with path.open(encoding="utf-8", newline="") as f:

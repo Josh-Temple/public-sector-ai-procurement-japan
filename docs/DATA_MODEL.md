@@ -289,7 +289,7 @@ case_id内の年は安定IDの一部であり、年度分析の根拠にしな�
 |---|---|
 | document_role | specification / qa_amendment / evaluation / result 等 |
 | source_id | 確認したsource。未確認・未取得なら空欄可 |
-| review_state | reviewed / not_reviewed / source_unavailable / not_public / not_found_in_reviewed_sources / conflicting_sources |
+| review_state | reviewed / not_reviewed / source_unavailable / not_public / not_applicable / not_found_in_reviewed_sources / conflicting_sources |
 | unknown_reason | 未確定理由。review_stateと重複しても分析用に明示 |
 | last_verified | その確認範囲を最後に検証した日 |
 
@@ -310,6 +310,7 @@ case_id内の年は安定IDの一部であり、年度分析の根拠にしな�
 
 projection固有の状態:
 - `not_assessed`: 現行hardeningモデルでそのroleをまだ評価していない。資料が存在しないという意味ではない。
+- `not_applicable`: 調達方式や文書構造上、そのrole自体が非該当。例: 価格競争型一般入札の提案評価表、仕様書内に要件を内包し独立要求表がない場合。一次資料で非該当と判断できる場合だけ使う。
 
 `public_reconstructability`:
 - `publicly_reconstructable`: 監査済み範囲について公開証拠から有効状態を追跡可能

@@ -118,9 +118,9 @@ Failure modes:
 - 1点: 結論は正しいが条件・根拠が不足
 - 0点: 結論誤り、または根拠なし
 
-Total: 30 points.
+Total: 38 points.
 
-初期目標は満点ではなく、**0点回答をなくすこと**。特にEVAL-001〜015で旧仕様・スコープ拡張・質疑解釈・公開資料の限界を無視した0点誤答が発生しないことを優先する。
+初期目標は満点ではなく、**0点回答をなくすこと**。特にEVAL-001〜019で旧仕様・スコープ拡張・質疑解釈・公開資料の限界を無視した0点誤答が発生しないことを優先する。
 
 ## EVAL-008 — Obu API endpoint vs data storage
 
@@ -251,3 +251,68 @@ Required evidence:
 
 Failure modes:
 - 「職員へ転送」という要約だけから個人転送と回答
+
+## EVAL-016 — Hokkaido evaluation role
+
+Question:
+北海道2026生成AIサービス（RAG）提供業務には、プロポーザルのような提案評価配点表がある前提で比較してよいか。
+
+Expected:
+よくない。制限付一般競争入札であり、今回確認した公開資料上は提案評価roleは非該当。ISO/IEC 27001は加点ではなく参加資格要件。価格競争はprocurement_structure/bid_resultsで扱う。
+
+Required evidence:
+- SRC-hokkaido-2026-notice
+- CLM-hokkaido-2026-qualification-not-proposal-score
+- data/review_coverage.csv
+
+Failure modes:
+- 「評価表未取得」とだけ扱う
+- ISO27001を加点項目と説明
+
+## EVAL-017 — Hokkaido detailed specification
+
+Question:
+北海道2026RAGサービスの詳細なRAG容量・モデル要件を現在のRepositoryから確定できるか。
+
+Expected:
+確定できない。詳細仕様は公式ZIP内の業務処理要領に委ねられており、現在source_unavailable。告示から推測して補完しない。
+
+Required evidence:
+- SRC-hokkaido-2026-processing-manual
+- data/review_coverage.csv
+
+Failure modes:
+- 2025実証要件を2026へ流用
+- ZIP未取得なのに具体値を断定
+
+## EVAL-018 — Koshigaya monthly usage
+
+Question:
+越谷市2024生成AIサービスで「文字数上限なし」は必須要件か。
+
+Expected:
+いいえ。必須は月100万文字以上。上限なしは提案事項で、上限量に応じて加点評価される。
+
+Required evidence:
+- SRC-koshigaya-2024-qa
+- EFF-koshigaya-minimum-characters
+- EFF-koshigaya-unlimited-characters
+- CLM-koshigaya-2024-minimum-vs-evaluated-usage
+
+Failure modes:
+- 上限なしを必須と回答
+
+## EVAL-019 — Koshigaya KGI
+
+Question:
+越谷市2024生成AIサービスの文書作成時間20%削減は、未達なら業務失敗となる検収条件か。
+
+Expected:
+いいえ。仕様書はKGIを受注者の取組指針とし、業務の成否を規定するものではないと明記している。
+
+Required evidence:
+- SRC-koshigaya-2024-spec
+- EFF-koshigaya-kgi
+
+Failure modes:
+- KGIを契約上の達成保証・検収基準と読み替える

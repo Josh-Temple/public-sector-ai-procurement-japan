@@ -106,3 +106,12 @@ research memoの分析結果は有用だが、現在の事実を確認すると�
 - 神戸市税務ボイスボットはAIを利用するが、市民向け回答のAI生成は公募時最低限要件で禁止されている。
   - Source: `sources/SRC-kobe-2026-voicebot-spec.md`
   - Claim: `claims/CLM-kobe-2026-voicebot-no-generated-answer.md`
+
+## Additional evidence-pattern examples
+
+- 北海道2026RAGサービスは制限付一般競争入札で、ISO/IEC 27001は提案加点ではなく参加資格要件。
+  - Source: `sources/SRC-hokkaido-2026-bid-notice.md`
+  - Claim: `claims/CLM-hokkaido-2026-qualification-not-proposal-score.md`
+- 越谷市2024では月100万文字以上が必須だが、「上限なし」は加点対象の提案事項。
+  - Source: `sources/SRC-koshigaya-2024-qa.md`
+  - Claim: `claims/CLM-koshigaya-2024-minimum-vs-evaluated-usage.md`

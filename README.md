@@ -67,6 +67,7 @@
 - Joint-procurement comparison: `research/JOINT_PROCUREMENT_COMPARISON_2026-10-01.md`
 - Fifth extraction pass: `research/RESEARCH_PASS_5_2026-10-01.md`
 - Sixth extraction pass: `research/RESEARCH_PASS_6_2026-10-01.md`
+- Effective-requirement audit pass: `research/RESEARCH_PASS_7_2026-10-01.md`
 
 ## Next
 
@@ -79,3 +80,13 @@
 特に、仕様書の後に公式質問回答・訂正がある場合は、元仕様の記載をそのまま比較値に使わず、変更後の有効要件を `data/effective_requirements.csv` に記録する。
 
 また、公募年度と履行・サービス年度を分離し、case_idの年を年度分析に流用しない。
+
+### Hardening status
+
+- Source documents: 20
+- Effective requirements: 32
+- Review coverage records: 18
+- Case timeline records: 6
+- Reasoning regression questions: 11
+
+代表再監査済み: おうみ共同調達、福島県2026、大府市2026、焼津市2025。案件総数26件すべてが同じ深度で再監査済みという意味ではない。

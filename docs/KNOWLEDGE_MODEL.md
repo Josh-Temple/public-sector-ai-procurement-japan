@@ -103,7 +103,25 @@ evidence:
 
 structured source registryは `data/source_documents.csv`、変更後要件は `data/effective_requirements.csv` で管理する。
 
-## 5. Relationship with existing structured data
+## 5. Public reconstructability
+
+「公式一次資料であること」と「最終状態を公開資料だけで再構成できること」は別である。
+
+少なくとも次の状態を区別する。
+
+- `publicly_reconstructable`: 当該要件の根拠となる仕様・質疑・訂正等が公開されており、公開資料から状態を追跡できる。
+- `publicly_bounded`: 公開仕様等から公募baselineは確認できるが、非公開質問回答、未取得別紙、企画提案、契約時協議等により最終状態までは確定できない。
+
+Sourceの取得状態:
+- `accessible`
+- `source_unavailable`
+- `not_public`
+
+`not_public` は「見つからない」ではない。公式文書からその資料の存在・利用が確認できるが、一般公開本文を取得できない状態である。
+
+AIは `publicly_bounded` な要件を contract-final と表現してはいけない。
+
+## 6. Relationship with existing structured data
 
 既存のCSVは比較可能な事実の主要な構造化表現として維持する。
 
@@ -127,7 +145,7 @@ ClaimはCSVのコピーではない。次の場合だけ作る。
 
 単純な数値や一覧は、原則としてCSVを直接参照する。
 
-## 6. Freshness
+## 7. Freshness
 
 日付の意味を混同しない。
 
@@ -140,7 +158,7 @@ URLが開くことだけを確認して `last_verified` を更新しない。
 
 現在の制度、価格、調達結果、製品仕様等に使う場合は、reviewed claimであっても公式一次資料を再確認する。
 
-## 7. Supersession
+## 8. Supersession
 
 主張の意味が変わる場合は、既存claimを静かに書き換えて履歴を消さず、新しいclaimを作ることを検討する。
 
@@ -152,7 +170,7 @@ superseded_by: CLM-new-id
 
 誤字修正や説明補足など意味を変えない修正は、同じIDのまま更新できる。
 
-## 8. Promotion rule
+## 9. Promotion rule
 
 調査メモの内容を自動的にclaimへ昇格しない。
 

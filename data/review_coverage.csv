@@ -28,3 +28,5 @@ kobe-2026-tax-voicebot,procurement_guide,SRC-kobe-2026-voicebot-guide,reviewed,,
 kobe-2026-tax-voicebot,specification,SRC-kobe-2026-voicebot-spec,reviewed,,2026-10-01,"最低限サービス要件・機能・セキュリティを再監査"
 kobe-2026-tax-voicebot,qa_amendment,SRC-kobe-2026-voicebot-qa-private,not_public,not_public,2026-10-01,"参加者へのEメール回答。契約上は仕様書より優先するため公開仕様だけでは契約最終状態を確定できない"
 kobe-2026-tax-voicebot,faq_attachment,SRC-kobe-2026-voicebot-faq,source_unavailable,source_unavailable,2026-10-01,"公開Excelは存在するが本文取得不能"
+kobe-2026-tax-voicebot,evaluation,SRC-kobe-2026-voicebot-guide,reviewed,,2026-10-01,"100点満点の評価基準を実施要領から再監査"
+kobe-2026-tax-voicebot,contract_final,SRC-kobe-2026-voicebot-guide,not_public,not_public,2026-10-01,"質問回答は非公開で仕様書より優先し、上位提案も契約条件に入り得るため公開資料だけでは最終仕様を完全再構成できない"

@@ -72,6 +72,12 @@ research memoの分析結果は有用だが、現在の事実を確認すると�
 - 福島県2026案件は機能範囲が拡大しているが、公式仕様上は次段階の本格導入に向けた実証である。
   - Source: `sources/SRC-fukushima-2026-spec.md`
   - Claim: `claims/CLM-fukushima-2026-remains-pilot.md`
+- 大府市2026では、国内データ保存要件は生成AI API接続先の国内限定を意味しない。
+  - Source: `sources/SRC-obu-2026-qa.md`
+  - Claim: `claims/CLM-obu-2026-domestic-storage-not-api-endpoint.md`
+- 焼津市2025のRAGは登録データ優先を求めるが、一般知識の100%排除までは要求しない。
+  - Source: `sources/SRC-yaizu-2025-qa.md`
+  - Claim: `claims/CLM-yaizu-2025-rag-grounding-not-absolute.md`
 
 この例は、「RAG要件なし」を「組織としてRAGを利用していない」と誤読しないための再利用可能な知識として残している。
 

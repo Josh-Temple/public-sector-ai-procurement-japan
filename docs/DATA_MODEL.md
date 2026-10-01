@@ -101,6 +101,8 @@ Excel本文が現在の実行環境で取得できない場合でも、公式質
 | value | 公式仕様書から確認した値 |
 | unit_or_format | 単位または値形式 |
 | requiredness | required / conditional / context |
+| applicability_stage | procurement_minimum 等。どの段階の要求事実か |
+| public_reconstructability | publicly_bounded 等。公開資料だけで最終状態まで追えるか |
 | source_document | 公式資料名 |
 | source_url | 公式一次資料URL |
 
@@ -228,6 +230,16 @@ URLが同じでも内容変更があり得るため、将来は取得本文のha
 
 後続の公式質問回答が「仕様変更」「緩和」「削除」等を明示した場合、元仕様をそのまま現行要件として扱わない。
 
+`public_reconstructability` は、公開資料だけでその要件状態をどこまで再構成できるかを示す。
+- `publicly_reconstructable`: 根拠となる仕様・質疑等が公開され、当該行の状態を公開資料で追跡できる
+- `publicly_bounded`: 公開仕様等で最低限の状態は確認できるが、非公開質疑・最終協議・未取得添付等があり契約最終状態までは公開資料だけで確定できない
+
+`applicability_stage` は、どの段階の要件かを分ける。
+- `procurement_baseline`: 公募時仕様・最低限要件
+- `procurement_effective`: 公開質疑・訂正を反映した応募時の有効要件
+- `contracting_rule`: 契約締結時の文書優先順位・決定ルール
+- `contract_final`: 契約最終状態を一次資料で確認できた場合のみ
+
 `change_type` は置換だけでなく、質疑による意味の具体化も表す。例:
 - `relaxed`: 必須条件を緩和
 - `clarified_scope`: 対象範囲を明確化
@@ -261,6 +273,7 @@ case_id内の年は安定IDの一部であり、年度分析の根拠にしな�
 - `not_reviewed`: まだ対象資料を確認していない
 - `not_found_in_reviewed_sources`: 必要範囲を確認したが記載を確認できない
 - `source_unavailable`: 資料の存在は確認したが取得できない
+- `not_public`: 資料の存在・利用は公式資料で確認できるが、本文が一般公開されていない
 - `conflicting_sources`: 根拠資料間に未解決の矛盾がある
 - `not_applicable`: 当該案件の適用対象外
 
@@ -276,7 +289,7 @@ case_id内の年は安定IDの一部であり、年度分析の根拠にしな�
 |---|---|
 | document_role | specification / qa_amendment / evaluation / result 等 |
 | source_id | 確認したsource。未確認・未取得なら空欄可 |
-| review_state | reviewed / not_reviewed / source_unavailable / not_found_in_reviewed_sources / conflicting_sources |
+| review_state | reviewed / not_reviewed / source_unavailable / not_public / not_found_in_reviewed_sources / conflicting_sources |
 | unknown_reason | 未確定理由。review_stateと重複しても分析用に明示 |
 | last_verified | その確認範囲を最後に検証した日 |
 

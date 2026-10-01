@@ -1,5 +1,12 @@
 # Research pass 9 — 2026-10-01
 
+## Later correction — case-level contract-final semantics (passes 11–13)
+
+Pass 9's initial case-level publicly_reconstructable label described public procurement-stage specification/Q&A coverage. That label did not establish contract-final reconstruction. The case-level aggregate has since been tightened: all standard roles must be reviewed or evidence-backed not_applicable, contract_final must be reviewed, and a reviewed public final requirement must be recorded at contracting_rule.
+
+At the Pass 12 correction point, Oumi's contract_final role had not yet been assessed, and both Oumi and Koshigaya were not_assessed for case-level contract-final reconstruction. Pass 13 subsequently reviewed Oumi's proposal guide and official linked package. Oumi is now publicly_bounded with contract_final=not_found_in_reviewed_sources because the guide places final specification and city-level use contracts after negotiation and those documents were not found in the reviewed package. Koshigaya remains not_assessed. Neither state is a global claim that a final document does or does not exist. Older counts below are historical for the Pass 9 projection and must not be read as contract-final coverage.
+
+
 ## Goal
 
 Make evidence coverage visible across all 26 registered cases without creating a misleading overall quality/maturity score.

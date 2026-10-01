@@ -114,6 +114,19 @@ research memoの分析結果は有用だが、現在の事実を確認すると�
   - Source: `sources/SRC-kobe-2026-voicebot-spec.md`
   - Claim: `claims/CLM-kobe-2026-voicebot-no-generated-answer.md`
 
+## Public reconstruction boundaries
+
+- 仙台市2025では、仕様書案と公開Q&Aから公募時の有効要件を追える。FIXERとの契約締結日・応募数も公表されているが、募集要領は提案内容や契約金額の協議変更を認める。公開された案件ページ・公募資料の確認範囲では契約後の最終要求文書は見つからず、contract_final は `not_found_in_reviewed_sources`。
+  - Sources: `sources/SRC-sendai-2025-guide.md`, `sources/SRC-sendai-2025-qa.md`
+- おうみ共同調達2026では、選定後に共通サービス仕様を協議作成し、各市が個別利用契約を締結する。案件ページ掲載資料では契約最終仕様・市別契約を確認できず、contract_final は確認範囲付きの `not_found_in_reviewed_sources`。
+  - Sources: `sources/SRC-oumi-2026-guide.md`, `sources/SRC-oumi-2026-result.md`
+- 北海道2026RAGサービスは価格による一般競争入札で、落札結果は公開される。告示は契約書作成を要するとするが、レビューした公開ページに締結済み契約・最終要求文書はなく、詳細仕様のZIPも取得不能である。
+  - Sources: `data/source_documents.csv` (`SRC-hokkaido-2026-notice`, `SRC-hokkaido-2026-result`), `data/review_coverage.csv`
+- 焼津市2025では、実施要領が契約交渉時の仕様書・契約書案変更を認め、公開契約書は空欄のある案である。要求機能一覧のExcel本文も source_unavailable。契約最終状態は選定結果から推測しない。
+  - Sources: `sources/SRC-yaizu-2025-guide.md`, `sources/SRC-yaizu-2025-contract-draft.md`
+
+案件全体の `publicly_reconstructable` は最終要求状態まで確認できることを示す。個別の公募stage有効要件に付いた同じラベルから、契約最終状態を推定しない。
+
 ## Additional evidence-pattern examples
 
 - 北海道2026RAGサービスは制限付一般競争入札で、ISO/IEC 27001は提案加点ではなく参加資格要件。

@@ -118,9 +118,9 @@ Failure modes:
 - 1点: 結論は正しいが条件・根拠が不足
 - 0点: 結論誤り、または根拠なし
 
-Total: 22 points.
+Total: 30 points.
 
-初期目標は満点ではなく、**0点回答をなくすこと**。特にEVAL-001〜011で旧仕様・スコープ拡張・質疑解釈による0点誤答が発生しないことを優先する。
+初期目標は満点ではなく、**0点回答をなくすこと**。特にEVAL-001〜015で旧仕様・スコープ拡張・質疑解釈・公開資料の限界を無視した0点誤答が発生しないことを優先する。
 
 ## EVAL-008 — Obu API endpoint vs data storage
 
@@ -185,3 +185,69 @@ Required evidence:
 Failure modes:
 - 一般知識の完全禁止と回答
 - 単なる「RAGあり」だけで条件を省略
+
+## EVAL-012 — Kitakyushu public Q&A boundary
+
+Question:
+北九州市2025生成AIサービスについて、公開仕様書と評価表を確認すれば応募時の最終有効要件をすべて確定できるか。
+
+Expected:
+できない。公式実施説明書では質問回答を参加申出書提出者全員へ電子メールで配布するとしており、公開回答本文を確認できない。また必須機能を定める別紙2機能要件一覧の本文も現在の取得経路ではsource_unavailable。公開資料から確認できるのは公募baselineまで。
+
+Required evidence:
+- SRC-kitakyushu-2025-guide
+- SRC-kitakyushu-2025-feature-matrix
+- EFF-kitakyushu-public-qa-limit
+
+Failure modes:
+- 仕様書が公開されているので最終要件まで完全に確定できると回答
+- 未取得Excelの中身を推測して補完
+
+## EVAL-013 — Kobe voicebot answer generation
+
+Question:
+神戸市税務部の「生成AI自動音声応答サービス」は、市民からの質問に生成AIが自由に回答文を生成する仕組みを要求しているか。
+
+Expected:
+いいえ。音声・文脈理解にはAI技術を利用するが、回答は市提供FAQを基にした回答データから行い、AIによる回答生成は認めない。
+
+Required evidence:
+- SRC-kobe-2026-voicebot-spec
+- EFF-kobe-voice-answer-policy
+- CLM-kobe-2026-voicebot-no-generated-answer
+
+Failure modes:
+- 案件名に「生成AI」があることだけから生成回答を許可していると推定
+- AIを使っていないと逆方向に一般化
+
+## EVAL-014 — Kobe contract-final reconstruction
+
+Question:
+神戸市税務ボイスボットの公開調達仕様書を読めば、契約締結後の最終仕様を完全に再現できるか。
+
+Expected:
+できない。実施要領では質問回答が仕様書より優先し、その質問回答は参加者へのEメール配布で公開本文を確認できない。さらに企画提案書が質問回答・仕様書の水準を上回る部分は提案書が優先し得る。公開仕様は公募時最低限要件として扱う。
+
+Required evidence:
+- SRC-kobe-2026-voicebot-guide
+- EFF-kobe-voice-document-priority
+- CLM-public-docs-may-not-reconstruct-contract-final
+
+Failure modes:
+- 公開仕様書を契約最終仕様と断定
+- 非公開Q&Aを「変更なし」と仮定
+
+## EVAL-015 — Kobe transfer granularity
+
+Question:
+神戸市税務ボイスボットは、問い合わせを特定の個人職員へ直接転送することを要求しているか。
+
+Expected:
+いいえ。仕様書は課または係単位への転送を想定しており、個別職員への転送を前提としていない。
+
+Required evidence:
+- SRC-kobe-2026-voicebot-spec
+- EFF-kobe-voice-transfer-scope
+
+Failure modes:
+- 「職員へ転送」という要約だけから個人転送と回答

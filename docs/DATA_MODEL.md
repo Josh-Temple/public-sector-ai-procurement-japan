@@ -294,6 +294,36 @@ case_id内の年は安定IDの一部であり、年度分析の根拠にしな�
 | last_verified | その確認範囲を最後に検証した日 |
 
 「仕様書を確認済み」を「案件全体を確認済み」と読み替えない。特に有効要件の判定には qa_amendment の確認状態が重要。
+## 14. Evidence coverage projection
+
+`data/evidence_coverage.csv`
+
+`data/review_coverage.csv` を案件単位の横持ち一覧へ変換した**生成projection**。手編集しない。
+
+標準role:
+- specification
+- qa_amendment
+- requirement_matrix
+- evaluation
+- result
+- contract_final
+
+projection固有の状態:
+- `not_assessed`: 現行hardeningモデルでそのroleをまだ評価していない。資料が存在しないという意味ではない。
+
+`public_reconstructability`:
+- `publicly_reconstructable`: 監査済み範囲について公開証拠から有効状態を追跡可能
+- `publicly_bounded`: 監査済みcore roleに not_public / source_unavailable / conflicting_sources がある
+- `not_assessed`: 案件単位の再構成可否をまだ判定していない
+
+`assessed_roles` や `reviewed_roles` は進捗管理用の件数であり、自治体・調達の品質点ではない。総合スコアやランキングに変換しない。
+
+生成:
+`python scripts/build_evidence_coverage.py`
+
+人間向け一覧:
+`docs/EVIDENCE_COVERAGE.md`
+
 ## Verification levels
 
 - `official_html_verified`: 公式HTML本文を確認。

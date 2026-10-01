@@ -45,6 +45,9 @@
 - Source document registry: `data/source_documents.csv`
 - Effective requirements and amendments: `data/effective_requirements.csv`
 - Review coverage: `data/review_coverage.csv`
+- Evidence coverage projection: `data/evidence_coverage.csv`
+- Human-readable coverage matrix: `docs/EVIDENCE_COVERAGE.md`
+- Coverage generator: `scripts/build_evidence_coverage.py`
 - Reasoning regression tests: `evals/REQUIREMENT_REASONING_V1.md`
 - Requirement matrix: `data/requirements.csv`
 - Granular requirement facts: `data/requirement_facts.csv`
@@ -86,9 +89,10 @@
 
 - Source documents: 31
 - Effective requirements: 40
-- Review coverage records: 29
+- Review coverage records: 31
 - Case timeline records: 8
 - Reasoning regression questions: 15
+- Cases with hardening roles assessed: 6 / 26
 
 代表再監査済み: おうみ共同調達、福島県2026、大府市2026、焼津市2025、北九州市2025、神戸市2026税務ボイスボット。案件総数26件すべてが同じ深度で再監査済みという意味ではない。
 

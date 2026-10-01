@@ -161,3 +161,27 @@ Evidenceが十分に集まった後に追加を検討する。
 - 候補軸: specification / Q&A / requirement matrix / evaluation / result / contract-final の各確認状態。
 - ただし一つの総合「成熟度スコア」にはしない。欠落理由（not_reviewed / source_unavailable / not_public）を保持する。
 - 公開資料のみでcontract-finalを再構成できない案件では、AI回答が自動的に範囲限定されるかを回帰評価する。
+
+
+## Evidence hardening after research pass 10
+
+### 北海道 2026
+- 制限付一般競争入札として再監査。
+- 公式告示・入札結果はreviewed。
+- 詳細仕様の正本である業務処理要領は公式ZIP内だが SOURCE_UNAVAILABLE。
+- qualitative proposal evaluation は調達方式上 NOT_APPLICABLE。ISO/IEC 27001は加点ではなく入札参加資格。
+- 質問回答・契約最終文書は今回 NOT_ASSESSED。
+- 2025実証の仕様を2026本調達へ流用しない。
+
+### 越谷市 2024
+- 仕様書・公開Q&A・開催要領・審査結果を代表再監査済み。
+- 独立要求機能表はなく、仕様書4章に必須要件・提案事項を内包するため requirement_matrix は NOT_APPLICABLE。
+- 月100万文字以上は必須、上限なしは加点提案。
+- モデル固定指定なし、問い合わせ時間差異は提案書記載で評価可能、提案事項も契約限度額内。
+- KGI 20%削減は業務成否を規定する検収条件ではない。
+- 評価5項目（100点）・公開得点2社を構造化。
+- 契約最終文書は今回 NOT_ASSESSED。
+
+### Coverage model
+- `not_applicable` を追加。
+- 未探索をnot_applicableで埋めず、調達方式・文書構造から一次資料で非該当と確認できた場合のみ使用する。

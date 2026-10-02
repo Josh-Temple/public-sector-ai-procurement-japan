@@ -4,10 +4,10 @@ title: 群馬2026生成AI共同調達は共通選定後に団体別再見積・�
 kind: fact
 status: reviewed
 scope: "群馬県情報化推進協議会 2026 生成AIサービス導入・提供業務の契約構造"
-last_verified: "2026-10-01"
+last_verified: "2026-10-02"
 evidence:
   - source: SRC-gunma-2026-joint-genai-guide
-    locator: "公募要領 3(3)(4)(7)、7(3)エ"
+    locator: "PDF p.1-2 3(3)(4)(7); PDF p.3 7(3)エ"
 ---
 
 # Claim

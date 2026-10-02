@@ -34,6 +34,7 @@
 | Evidence coverage matrix | `data/evidence_coverage.csv` / `docs/EVIDENCE_COVERAGE.md` | `data/review_coverage.csv` |
 | 回帰評価・誤読テスト | `evals/` | Effective requirements / claims |
 | Web-only / Repository-firstの独立比較設計 | `evals/benchmark/BENCHMARK_V1_METHOD.md` | RunnerにはPublic本文だけを渡し、Gold・evalsを閲覧させない |
+| BENCH-V1の独立実行結果 | `research/BENCHMARK_V1_RESULT_2026-10-02.md` | Frozen scoreと探索負担を分けて読む |
 | 公開資料での再構成限界 | `data/review_coverage.csv` / `data/effective_requirements.csv` | Source documents |
 | 再利用可能な主張 | `claims/` | 根拠sourceとdata |
 | 未解決事項・次の調査 | `research/COLLECTION_BACKLOG_2026-09-30.md` | 最新research pass |
@@ -74,6 +75,9 @@ research memoの分析結果は有用だが、現在の事実を確認すると�
 - おうみ共同調達では、当初仕様の複数要件が公式質疑で変更されている。
   - Source: `sources/SRC-oumi-2026-qa.md`
   - Claim: `claims/CLM-oumi-2026-effective-amendments.md`
+- おうみ共同調達ではRAG自体は公募時の必須機能で、参加団体ごとに100GB以上の容量要件がある。後続Q&Aで複数機能は緩和されたが、RAG自体の任意化は確認されていない。
+  - Source: `sources/SRC-oumi-2026-spec.md`
+  - Claim: `claims/CLM-oumi-2026-rag-required.md`
 - 福島県2026案件は機能範囲が拡大しているが、公式仕様上は次段階の本格導入に向けた実証である。
   - Source: `sources/SRC-fukushima-2026-spec.md`
   - Claim: `claims/CLM-fukushima-2026-remains-pilot.md`

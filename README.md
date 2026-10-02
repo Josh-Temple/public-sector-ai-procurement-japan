@@ -51,6 +51,9 @@
 - Evidence coverage projection: `data/evidence_coverage.csv`
 - Human-readable coverage matrix: `docs/EVIDENCE_COVERAGE.md`
 - Coverage generator: `scripts/build_evidence_coverage.py`
+- Case evidence comparison: `data/case_evidence_summary.csv`
+- Human-readable case evidence summary: `docs/CASE_EVIDENCE_SUMMARY.md`
+- Case evidence summary generator: `scripts/build_case_evidence_summary.py`
 - Reasoning regression tests: `evals/REQUIREMENT_REASONING_V1.md`
 - Requirement matrix: `data/requirements.csv`
 - Granular requirement facts: `data/requirement_facts.csv`
@@ -94,7 +97,7 @@ Web-onlyの壁時計時間は計測できなかったため、速度優位は主
 
 ## Next
 
-仕様書・評価基準の深掘りを進め、18案件について比較可能な要件を構造化しました。共同調達では案件固有の参加団体・団体別上限を別テーブル化し始めています。新規案件数の拡大より、代表案件の証拠完全性・公開再構成可能性・質疑反映を優先します。次は案件ごとの確認範囲を比較可能な形で要約できるかを検証します。
+仕様書・評価基準の深掘りを進め、18案件について比較可能な要件を構造化しました。共同調達では案件固有の参加団体・団体別上限を別テーブル化し始めています。新規案件数の拡大より、代表案件の証拠完全性・公開再構成可能性・質疑反映を優先します。案件ごとの文書review状態と、別途一次資料で確認した選定・契約・稼働状態を `data/case_evidence_summary.csv` に統合し、Source IDまで追える比較projectionを追加しました。次は未監査案件を一律に埋めず、異なる調達・資料構造を代表する案件でこのprojectionの不足を検証します。
 
 ## Current hardening phase
 

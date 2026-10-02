@@ -2,6 +2,10 @@
 
 日本の公共部門におけるAI調達を、公式一次資料から収集・構造化するためのリポジトリです。
 
+**公開サイト:** https://josh-temple.github.io/public-sector-ai-procurement-japan/
+
+**5つの設計論点:** https://josh-temple.github.io/public-sector-ai-procurement-japan/insights.html
+
 ## Scope
 
 当面は、日本の地方公共団体（都道府県・市区町村・共同調達組織）による生成AI関連の調達を対象にします。

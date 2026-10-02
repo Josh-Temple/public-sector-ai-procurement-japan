@@ -121,6 +121,9 @@ research memoの分析結果は有用だが、現在の事実を確認すると�
   - Source: `sources/SRC-kobe-2026-voicebot-guide.md`
   - Claim: `claims/CLM-public-docs-may-not-reconstruct-contract-final.md`
 - 神戸市税務ボイスボットはAIを利用するが、市民向け回答のAI生成は公募時最低限要件で禁止されている。
+- 神戸市2026仕様書作成支援AIでは、LLMが文書間・文書内の不整合を抽出し、RAG等を参照した修正案を生成したうえで、利用者が修正案の採用・不採用を選択する公募時最低限要件がある。
+  - Source: `sources/SRC-kobe-2026-spec-authoring-spec.md`
+  - Claim: `claims/CLM-kobe-2026-spec-authoring-human-in-loop.md`
   - Source: `sources/SRC-kobe-2026-voicebot-spec.md`
   - Claim: `claims/CLM-kobe-2026-voicebot-no-generated-answer.md`
 

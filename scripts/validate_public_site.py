@@ -16,10 +16,12 @@ BASE_URL = "https://josh-temple.github.io/public-sector-ai-procurement-japan/"
 PUBLIC_PAGES = {
     "index.html": BASE_URL,
     "insights.html": BASE_URL + "insights.html",
+    "checklist.html": BASE_URL + "checklist.html",
 }
 REQUIRED_FILES = {
     "index.html",
     "insights.html",
+    "checklist.html",
     "robots.txt",
     "sitemap.xml",
     "assets/app.js",

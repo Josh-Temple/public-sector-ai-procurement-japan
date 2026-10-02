@@ -297,7 +297,7 @@ const RESEARCH_HIGHLIGHTS = [
     featured: false
   },
   {
-    caseId: "fukushima-2026-genai-support",
+    caseId: "fukushima-2026-genai-pilot-expansion",
     claimId: "CLM-fukushima-2026-remains-pilot",
     sourceId: "SRC-fukushima-2026-spec",
     title: "機能範囲が広がっても、案件段階は「本格導入」ではなく実証",

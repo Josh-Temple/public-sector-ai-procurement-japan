@@ -88,3 +88,16 @@ For effective requirements, evaluation criteria, specialized-AI requirements, an
 - evaluation, specialized-requirement, result, and timeline rows link to their official source URL when available.
 
 This keeps the initial dialog scannable on mobile while allowing the existing dense Sendai, Oumi, Yaizu, Kitakyushu, Saitama, and Kobe cases to be read through without leaving the case detail merely because of the former eight-row presentation cap.
+
+
+## Automated validation
+
+`scripts/validate_public_site.py` performs deterministic local checks without fetching external sites. It verifies:
+
+- required public entry files and local assets exist;
+- canonical and Open Graph URLs match the deployed GitHub Pages URLs;
+- `robots.txt` points to the public sitemap and the sitemap contains the stable entry pages;
+- every explicit `?case=<case_id>` deep link in public HTML resolves to a case in `data/cases.csv`;
+- every CSV path declared in `assets/app.js` exists in the repository.
+
+The Pages workflow runs this validation before building the deployment artifact. `.github/workflows/public-site-check.yml` runs the same validator on pull requests that touch the public UI, its data inputs, or the validator itself.

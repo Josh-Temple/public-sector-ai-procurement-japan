@@ -1,0 +1,27 @@
+name: Validate public site
+
+on:
+  pull_request:
+    paths:
+      - "index.html"
+      - "insights.html"
+      - "robots.txt"
+      - "sitemap.xml"
+      - "assets/**"
+      - "data/**"
+      - "scripts/validate_public_site.py"
+      - ".github/workflows/pages.yml"
+      - ".github/workflows/public-site-check.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Validate public site
+        run: python3 scripts/validate_public_site.py

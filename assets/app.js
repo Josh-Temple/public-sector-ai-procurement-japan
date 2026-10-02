@@ -8,6 +8,10 @@ const DATA_FILES = {
   sources: "./data/source_documents.csv",
   evaluations: "./data/evaluation_criteria.csv",
   effective: "./data/effective_requirements.csv",
+  specialized: "./data/specialized_requirements.csv",
+  vendorScores: "./data/vendor_scores.csv",
+  bids: "./data/bid_results.csv",
+  timelines: "./data/case_timeline.csv",
 };
 
 const state = {
@@ -17,6 +21,10 @@ const state = {
   sourceById: new Map(),
   evaluationsByCase: new Map(),
   effectiveByCase: new Map(),
+  specializedByCase: new Map(),
+  vendorScoresByCase: new Map(),
+  bidsByCase: new Map(),
+  timelineByCase: new Map(),
   activeCase: null,
 };
 
@@ -229,6 +237,102 @@ function truthy(value) {
   return (value || "").toLowerCase() === "true";
 }
 
+const RESEARCH_HIGHLIGHTS = [
+  {
+    caseId: "kyoto-2026-general-genai",
+    claimId: "CLM-kyoto-2026-rag-out-of-scope",
+    sourceId: "SRC-kyoto-2026-general-genai-spec",
+    title: "京都市はRAGを「不要」としたのではなく、この調達の対象外とした",
+    summary: "既存サービスでRAGニーズを充足しているため、当該汎用生成AI調達では要件外。調達スコープと組織全体の利用状況は分けて読む必要があります。"
+  },
+  {
+    caseId: "kobe-2026-tax-voicebot",
+    claimId: "CLM-kobe-2026-voicebot-no-generated-answer",
+    sourceId: "SRC-kobe-2026-voicebot-spec",
+    title: "AIを使うボイスボットでも、市民向け回答の生成AI利用を禁止する設計がある",
+    summary: "神戸市税務ボイスボットは音声・文脈理解にAIを使う一方、回答は市提供FAQ由来の回答データに限定しています。"
+  },
+  {
+    caseId: "oumi-2026-joint-genai",
+    claimId: "CLM-oumi-2026-effective-amendments",
+    sourceId: "SRC-oumi-2026-qa",
+    title: "仕様書だけでは現行要件を読み違える案件がある",
+    summary: "おうみ共同調達では公式Q&Aにより、LLM数、Deep Research、テンプレート数、AIエージェント、認証、接続条件など複数要件が変更されました。"
+  },
+  {
+    caseId: "hokkaido-2026-genai-rag-service",
+    claimId: "CLM-hokkaido-2026-qualification-not-proposal-score",
+    sourceId: "SRC-hokkaido-2026-notice",
+    title: "同じセキュリティ条件でも「加点項目」と「参加資格」は別物",
+    summary: "北海道2026 RAG調達ではISO/IEC 27001は提案評価の加点ではなく、制限付一般競争入札の参加資格です。"
+  },
+  {
+    caseId: "obu-2026-genai-service",
+    claimId: "CLM-obu-2026-domestic-storage-not-api-endpoint",
+    sourceId: "SRC-obu-2026-qa",
+    title: "国内保存要件は、API接続先まで国内限定する意味とは限らない",
+    summary: "大府市は市データの国内保存を要求しつつ、生成AI APIの接続先所在地そのものを国内に限定していません。"
+  },
+  {
+    caseId: "gunma-2026-joint-genai",
+    claimId: "CLM-joint-procurement-stage-not-casewide",
+    sourceId: "SRC-gunma-2026-joint-genai-guide",
+    title: "共同調達では「選定済み」から案件全体の「契約済み」を推定できない",
+    summary: "群馬・おうみでは共通選定後に参加団体ごとの契約が分かれるため、選定・契約・稼働を案件単位で一律に昇格させません。"
+  }
+];
+
+function renderResearchHighlights() {
+  const container = document.getElementById("research-highlights");
+  container.replaceChildren();
+  RESEARCH_HIGHLIGHTS.forEach((item, index) => {
+    const row = state.rows.find(candidate => candidate.case_id === item.caseId);
+    const source = state.sourceById.get(item.sourceId);
+
+    const article = document.createElement("article");
+    article.className = "highlight-item";
+
+    const n = document.createElement("span");
+    n.className = "highlight-index";
+    n.textContent = String(index + 1).padStart(2, "0");
+
+    const copy = document.createElement("div");
+    copy.className = "highlight-copy";
+    const title = document.createElement("h3");
+    title.textContent = item.title;
+    const summary = document.createElement("p");
+    summary.textContent = item.summary;
+    copy.append(title, summary);
+
+    const links = document.createElement("div");
+    links.className = "highlight-links";
+    if (row) {
+      const caseButton = document.createElement("button");
+      caseButton.type = "button";
+      caseButton.textContent = `${row.government_name}の案件を見る →`;
+      caseButton.addEventListener("click", () => openCaseDialog(row));
+      links.append(caseButton);
+    }
+    if (source?.url) {
+      const official = document.createElement("a");
+      official.href = source.url;
+      official.target = "_blank";
+      official.rel = "noreferrer";
+      official.textContent = "公式一次資料 ↗";
+      links.append(official);
+    }
+    const claim = document.createElement("a");
+    claim.href = `https://github.com/Josh-Temple/public-sector-ai-procurement-japan/blob/main/claims/${item.claimId}.md`;
+    claim.target = "_blank";
+    claim.rel = "noreferrer";
+    claim.textContent = "Claimと適用範囲 ↗";
+    links.append(claim);
+
+    article.append(n, copy, links);
+    container.append(article);
+  });
+}
+
 function renderInsights(requirements, evidence) {
   const total = requirements.length;
   const rag = requirements.filter(row => truthy(row.rag)).length;
@@ -314,6 +418,107 @@ function renderEffectiveRequirements(caseId) {
   }
 }
 
+function renderSpecialized(caseId) {
+  const container = document.getElementById("case-dialog-specialized");
+  container.replaceChildren();
+  const rows = state.specializedByCase.get(caseId) || [];
+  if (!rows.length) {
+    const empty = document.createElement("p");
+    empty.className = "empty-detail";
+    empty.textContent = "業務特化型AIの構造化要件は未登録です。";
+    container.append(empty);
+    return;
+  }
+  rows.slice(0, 8).forEach(row => {
+    const item = document.createElement("div");
+    item.className = "detail-row";
+    const key = document.createElement("strong");
+    key.textContent = row.requirement_key || row.requirement_area || "要件";
+    const value = document.createElement("p");
+    value.textContent = [row.value, row.unit_or_format].filter(Boolean).join(" / ") || "—";
+    const requiredness = document.createElement("span");
+    requiredness.className = "points";
+    requiredness.textContent = row.requiredness || "—";
+    item.append(key, value, requiredness);
+    container.append(item);
+  });
+}
+
+function renderPublicResults(caseId) {
+  const container = document.getElementById("case-dialog-results");
+  container.replaceChildren();
+  const scores = state.vendorScoresByCase.get(caseId) || [];
+  const bids = state.bidsByCase.get(caseId) || [];
+  if (!scores.length && !bids.length) {
+    const empty = document.createElement("p");
+    empty.className = "empty-detail";
+    empty.textContent = "構造化された公開得点・入札結果は未登録です。";
+    container.append(empty);
+    return;
+  }
+
+  scores.slice(0, 8).forEach(row => {
+    const item = document.createElement("div");
+    item.className = "detail-row";
+    const vendor = document.createElement("strong");
+    vendor.textContent = row.vendor_name || row.vendor_label || "事業者";
+    const summary = document.createElement("p");
+    summary.textContent = row.selected === "true" ? "選定" : (row.rank ? `${row.rank}位` : "公開得点");
+    const score = document.createElement("span");
+    score.className = "points";
+    score.textContent = row.total_score ? `${row.total_score}${row.total_score_max ? " / " + row.total_score_max : ""}点` : "—";
+    item.append(vendor, summary, score);
+    container.append(item);
+  });
+
+  bids.slice(0, 8).forEach(row => {
+    const item = document.createElement("div");
+    item.className = "detail-row";
+    const vendor = document.createElement("strong");
+    vendor.textContent = row.bidder_name || row.bidder_label || "入札者";
+    const summary = document.createElement("p");
+    summary.textContent = [row.selected === "true" ? "落札" : "", row.tax_basis].filter(Boolean).join(" / ") || "入札結果";
+    const amount = document.createElement("span");
+    amount.className = "points";
+    amount.textContent = formatMoney(row.bid_amount_jpy);
+    item.append(vendor, summary, amount);
+    container.append(item);
+  });
+}
+
+function renderTimeline(caseId) {
+  const container = document.getElementById("case-dialog-timeline");
+  container.replaceChildren();
+  const rows = state.timelineByCase.get(caseId) || [];
+  if (!rows.length) {
+    const empty = document.createElement("p");
+    empty.className = "empty-detail";
+    empty.textContent = "構造化された時系列は未登録です。";
+    container.append(empty);
+    return;
+  }
+  rows.forEach(row => {
+    const facts = [
+      ["公告", row.announcement_date],
+      ["サービス開始", row.service_start],
+      ["サービス終了", row.service_end],
+    ].filter(([, value]) => value);
+    facts.forEach(([label, value]) => {
+      const item = document.createElement("div");
+      item.className = "detail-row";
+      const key = document.createElement("strong");
+      key.textContent = label;
+      const description = document.createElement("p");
+      description.textContent = row.notes || "";
+      const date = document.createElement("span");
+      date.className = "points";
+      date.textContent = value;
+      item.append(key, description, date);
+      container.append(item);
+    });
+  });
+}
+
 function renderEvaluation(caseId) {
   const container = document.getElementById("case-dialog-evaluation");
   container.replaceChildren();
@@ -387,6 +592,9 @@ function openCaseDialog(row) {
 
   renderEffectiveRequirements(row.case_id);
   renderEvaluation(row.case_id);
+  renderSpecialized(row.case_id);
+  renderPublicResults(row.case_id);
+  renderTimeline(row.case_id);
 
   const source = document.getElementById("case-dialog-source");
   if (row.source_url) {
@@ -646,14 +854,19 @@ async function init() {
   tbody.append(loading);
 
   try {
-    const [cases, requirements, structures, evidence, sources, evaluations, effective] = await Promise.all(
+    const [cases, requirements, structures, evidence, sources, evaluations, effective, specialized, vendorScores, bids, timelines] = await Promise.all(
       Object.values(DATA_FILES).map(loadCSV)
     );
     state.sourceById = new Map(sources.map(source => [source.source_id, source]));
     state.evaluationsByCase = groupByCase(evaluations);
     state.effectiveByCase = groupByCase(effective);
+    state.specializedByCase = groupByCase(specialized);
+    state.vendorScoresByCase = groupByCase(vendorScores);
+    state.bidsByCase = groupByCase(bids);
+    state.timelineByCase = groupByCase(timelines);
     state.rows = buildRows(cases, requirements, structures, evidence, sources);
     renderInsights(requirements, evidence);
+    renderResearchHighlights();
 
     document.getElementById("metric-cases").textContent = cases.length;
     document.getElementById("metric-requirements").textContent = requirements.length;

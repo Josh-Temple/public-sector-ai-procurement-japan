@@ -79,6 +79,16 @@ No entity-level stage table is added yet. The current rule is narrower:
 
 This avoids speculative schema expansion.
 
+## Fresh primary-source recheck
+
+On 2026-10-02 the relevant official materials were re-read rather than relying on prior repository summaries.
+
+- Kyoto: the official guide confirms public Q&A as the default, allows non-public treatment for sensitive content, and requires agreement with the preferred proposer before contract; contract amount and content are decided through consultation.
+- Kobe specification-authoring AI: the official guide confirms participant-wide e-mail Q&A with supplementary effect on procurement documents, and states that contract content is decided through consultation based on the specification and proposal.
+- Gunma joint procurement: the official guide confirms entity-specific ceilings, re-estimation after common selection, entity-specific estimates, and separate contracts with each contracting entity.
+
+These checks strengthen the same boundary already recorded in structured data; they do not upgrade any case to contract-final or operating.
+
 ## Result
 
 After this pass:

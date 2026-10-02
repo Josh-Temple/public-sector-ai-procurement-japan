@@ -45,3 +45,23 @@ The public page is intentionally more than a search table.
 - Clicking a case opens a detail view with procurement facts, major requirements, effective requirements, evaluation criteria, and links into the evidence chain.
 - The detail view reads `data/evaluation_criteria.csv` and `data/effective_requirements.csv` directly, so new structured research appears without duplicating facts in HTML.
 - Counts are descriptive of the current structured corpus and are not presented as representative estimates of all Japanese local governments.
+
+
+## Research highlights and richer case detail
+
+The home page includes a small editorial selection of reviewed Claims to demonstrate why source chaining matters. Each highlight routes to:
+
+- the relevant case detail,
+- an official primary Source when the Source registry has a URL,
+- the canonical reviewed Claim with its scope limit.
+
+The highlight text is presentation copy, not a new canonical fact layer. The Claim remains authoritative for scope and evidence.
+
+Case detail also reads these canonical datasets when available:
+
+- `data/specialized_requirements.csv`
+- `data/vendor_scores.csv`
+- `data/bid_results.csv`
+- `data/case_timeline.csv`
+
+Missing structured detail is shown as unregistered rather than inferred from other fields.

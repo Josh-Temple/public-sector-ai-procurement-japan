@@ -6,6 +6,8 @@ const DATA_FILES = {
   structures: "./data/procurement_structure.csv",
   evidence: "./data/case_evidence_summary.csv",
   sources: "./data/source_documents.csv",
+  evaluations: "./data/evaluation_criteria.csv",
+  effective: "./data/effective_requirements.csv",
 };
 
 const state = {
@@ -13,6 +15,9 @@ const state = {
   filtered: [],
   selected: new Set(),
   sourceById: new Map(),
+  evaluationsByCase: new Map(),
+  effectiveByCase: new Map(),
+  activeCase: null,
 };
 
 function parseCSV(text) {
@@ -68,6 +73,16 @@ function mapByCase(rows) {
   return new Map(rows.map(row => [row.case_id, row]));
 }
 
+function groupByCase(rows) {
+  const map = new Map();
+  rows.forEach(row => {
+    if (!row.case_id) return;
+    if (!map.has(row.case_id)) map.set(row.case_id, []);
+    map.get(row.case_id).push(row);
+  });
+  return map;
+}
+
 function formatMoney(value) {
   if (!value) return "—";
   const n = Number(value);
@@ -112,6 +127,7 @@ function reviewStateLabel(value) {
   const labels = {
     reviewed: "確認済み",
     not_public: "非公開",
+    not_reviewed: "未レビュー",
     source_unavailable: "資料取得不可",
     not_found_in_reviewed_sources: "確認範囲では未発見",
     not_applicable: "対象外",
@@ -209,6 +225,180 @@ function openEvidenceDialog(row) {
   dialog.showModal();
 }
 
+function truthy(value) {
+  return (value || "").toLowerCase() === "true";
+}
+
+function renderInsights(requirements, evidence) {
+  const total = requirements.length;
+  const rag = requirements.filter(row => truthy(row.rag)).length;
+  const learning = requirements.filter(row => truthy(row.data_learning_prohibited)).length;
+  const lgwan = requirements.filter(row => truthy(row.lgwan_or_lgwan_asp)).length;
+  const bounded = evidence.filter(row => row.public_reconstructability === "publicly_bounded").length;
+
+  document.getElementById("insight-rag").textContent = rag;
+  document.getElementById("insight-rag-denom").textContent = ` / ${total}`;
+  document.getElementById("insight-learning").textContent = learning;
+  document.getElementById("insight-learning-denom").textContent = ` / ${total}`;
+  document.getElementById("insight-lgwan").textContent = lgwan;
+  document.getElementById("insight-lgwan-denom").textContent = ` / ${total}`;
+  document.getElementById("insight-bounded").textContent = bounded;
+}
+
+function applyThemeFilter(theme) {
+  resetFilters(false);
+  if (theme === "rag") document.getElementById("rag").value = "true";
+  if (theme === "bounded") document.getElementById("evidence").value = "publicly_bounded";
+  if (theme === "joint") document.getElementById("search").value = "共同";
+  if (theme === "learning") document.getElementById("search").dataset.requirementFilter = "learning";
+  if (theme === "lgwan") document.getElementById("search").dataset.requirementFilter = "lgwan";
+  if (theme === "evaluated") document.getElementById("search").dataset.requirementFilter = "evaluated";
+  applyFilters();
+  document.getElementById("search-heading").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function detailValue(value) {
+  return value == null || value === "" ? "—" : value;
+}
+
+function addFact(container, label, value) {
+  const wrap = document.createElement("div");
+  const dt = document.createElement("dt");
+  const dd = document.createElement("dd");
+  dt.textContent = label;
+  dd.textContent = detailValue(value);
+  wrap.append(dt, dd);
+  container.append(wrap);
+}
+
+function addRequirement(container, label, value) {
+  const wrap = document.createElement("dl");
+  wrap.className = "requirement-item";
+  const dt = document.createElement("dt");
+  const dd = document.createElement("dd");
+  dt.textContent = label;
+  dd.textContent = detailValue(value);
+  wrap.append(dt, dd);
+  container.append(wrap);
+}
+
+function renderEffectiveRequirements(caseId) {
+  const container = document.getElementById("case-dialog-effective");
+  container.replaceChildren();
+  const rows = state.effectiveByCase.get(caseId) || [];
+  if (!rows.length) {
+    const empty = document.createElement("p");
+    empty.className = "empty-detail";
+    empty.textContent = "構造化された有効要件は未登録です。";
+    container.append(empty);
+    return;
+  }
+  rows.slice(0, 8).forEach(row => {
+    const item = document.createElement("div");
+    item.className = "detail-row";
+    const key = document.createElement("strong");
+    key.textContent = row.requirement_key || row.requirement_area || "要件";
+    const value = document.createElement("p");
+    value.textContent = row.effective_value || row.original_value || "—";
+    const stateText = document.createElement("span");
+    stateText.className = "points";
+    stateText.textContent = reviewStateLabel(row.review_status || "not_assessed");
+    item.append(key, value, stateText);
+    container.append(item);
+  });
+  if (rows.length > 8) {
+    const more = document.createElement("p");
+    more.className = "empty-detail";
+    more.textContent = `ほか ${rows.length - 8} 件。全データはRepositoryで確認できます。`;
+    container.append(more);
+  }
+}
+
+function renderEvaluation(caseId) {
+  const container = document.getElementById("case-dialog-evaluation");
+  container.replaceChildren();
+  const rows = state.evaluationsByCase.get(caseId) || [];
+  if (!rows.length) {
+    const empty = document.createElement("p");
+    empty.className = "empty-detail";
+    empty.textContent = "構造化された評価基準は未登録です。";
+    container.append(empty);
+    return;
+  }
+  rows.slice(0, 8).forEach(row => {
+    const item = document.createElement("div");
+    item.className = "detail-row";
+    const group = document.createElement("strong");
+    group.textContent = row.criterion_group || "評価項目";
+    const summary = document.createElement("p");
+    summary.textContent = row.criterion_summary || "—";
+    const points = document.createElement("span");
+    points.className = "points";
+    points.textContent = row.points ? `${row.points}点` : "—";
+    item.append(group, summary, points);
+    container.append(item);
+  });
+  if (rows.length > 8) {
+    const more = document.createElement("p");
+    more.className = "empty-detail";
+    more.textContent = `ほか ${rows.length - 8} 項目。全評価基準はRepositoryで確認できます。`;
+    container.append(more);
+  }
+}
+
+function openCaseDialog(row) {
+  state.activeCase = row;
+  const dialog = document.getElementById("case-dialog");
+  document.getElementById("case-dialog-title").textContent = row.procurement_title;
+  document.getElementById("case-dialog-government").textContent =
+    `${row.government_name} / ${row.prefecture} / FY${row.fiscal_year}`;
+  document.getElementById("case-dialog-purpose").textContent = row.purpose_summary || "目的概要は未登録です。";
+
+  const facts = document.getElementById("case-dialog-facts");
+  facts.replaceChildren();
+  addFact(facts, "調達方式", row.procurement_method);
+  addFact(facts, "選定事業者", row.selected_vendor);
+  addFact(facts, "上限額", formatMoney(row.budget_ceiling_jpy));
+  addFact(facts, "契約額", formatMoney(row.contract_amount_jpy));
+  addFact(facts, "応募者数", row.applicant_count);
+  addFact(facts, "契約期間", [row.contract_start, row.contract_end].filter(Boolean).join(" — "));
+  addFact(facts, "Evidence", evidenceLabel(row.evidence));
+  addFact(facts, "登録Source", row.sourceCount ? `${row.sourceCount}件` : "—");
+
+  const req = document.getElementById("case-dialog-requirements");
+  req.replaceChildren();
+  const r = row.req;
+  if (r) {
+    addRequirement(req, "利用規模", r.user_scale);
+    addRequirement(req, "同時利用", r.concurrent_scale);
+    addRequirement(req, "LLM", r.llm_requirement);
+    addRequirement(req, "複数モデル", yn(r.multi_model));
+    addRequirement(req, "RAG", yn(r.rag));
+    addRequirement(req, "LGWAN", yn(r.lgwan_or_lgwan_asp));
+    addRequirement(req, "学習利用禁止", yn(r.data_learning_prohibited));
+    addRequirement(req, "国内リージョン", r.domestic_region_or_dc);
+    addRequirement(req, "研修・定着支援", r.training_or_adoption_support);
+  } else {
+    const empty = document.createElement("p");
+    empty.className = "empty-detail";
+    empty.textContent = "要件プロファイルは未登録です。";
+    req.append(empty);
+  }
+
+  renderEffectiveRequirements(row.case_id);
+  renderEvaluation(row.case_id);
+
+  const source = document.getElementById("case-dialog-source");
+  if (row.source_url) {
+    source.href = row.source_url;
+    source.hidden = false;
+  } else {
+    source.hidden = true;
+    source.removeAttribute("href");
+  }
+  dialog.showModal();
+}
+
 function fillSelect(id, values) {
   const select = document.getElementById(id);
   [...new Set(values.filter(Boolean))].sort((a,b) => a.localeCompare(b, "ja")).forEach(value => {
@@ -260,6 +450,7 @@ function applyFilters() {
   const method = document.getElementById("method").value;
   const rag = document.getElementById("rag").value;
   const evidence = document.getElementById("evidence").value;
+  const requirementFilter = document.getElementById("search").dataset.requirementFilter || "";
 
   state.filtered = state.rows.filter(row => {
     const haystack = [
@@ -274,7 +465,11 @@ function applyFilters() {
       && (!prefecture || row.prefecture === prefecture)
       && (!method || row.procurement_method === method)
       && matchesRag(row, rag)
-      && matchesEvidence(row, evidence);
+      && matchesEvidence(row, evidence)
+      && (!requirementFilter
+        || (requirementFilter === "learning" && truthy(row.req?.data_learning_prohibited))
+        || (requirementFilter === "lgwan" && truthy(row.req?.lgwan_or_lgwan_asp))
+        || (requirementFilter === "evaluated" && (state.evaluationsByCase.get(row.case_id) || []).length > 0));
   });
 
   state.filtered.sort((a, b) => {
@@ -302,9 +497,11 @@ function renderRows() {
     selectTd.append(check);
 
     const titleTd = document.createElement("td");
-    const title = document.createElement("span");
-    title.className = "case-title";
+    const title = document.createElement("button");
+    title.type = "button";
+    title.className = "case-title-button";
     title.textContent = `${row.government_name}｜${row.procurement_title}`;
+    title.addEventListener("click", () => openCaseDialog(row));
     const sub = document.createElement("span");
     sub.className = "case-sub";
     sub.textContent = `${row.prefecture} / ${categoryLabel(row.category)} / Sources ${row.sourceCount}`;
@@ -434,11 +631,12 @@ function renderCompare() {
   table.append(body);
 }
 
-function resetFilters() {
+function resetFilters(run = true) {
   ["search", "prefecture", "method", "rag", "evidence"].forEach(id => {
     document.getElementById(id).value = "";
   });
-  applyFilters();
+  delete document.getElementById("search").dataset.requirementFilter;
+  if (run) applyFilters();
 }
 
 async function init() {
@@ -448,11 +646,14 @@ async function init() {
   tbody.append(loading);
 
   try {
-    const [cases, requirements, structures, evidence, sources] = await Promise.all(
+    const [cases, requirements, structures, evidence, sources, evaluations, effective] = await Promise.all(
       Object.values(DATA_FILES).map(loadCSV)
     );
     state.sourceById = new Map(sources.map(source => [source.source_id, source]));
+    state.evaluationsByCase = groupByCase(evaluations);
+    state.effectiveByCase = groupByCase(effective);
     state.rows = buildRows(cases, requirements, structures, evidence, sources);
+    renderInsights(requirements, evidence);
 
     document.getElementById("metric-cases").textContent = cases.length;
     document.getElementById("metric-requirements").textContent = requirements.length;
@@ -465,14 +666,32 @@ async function init() {
     fillSelect("prefecture", cases.map(row => row.prefecture));
     fillSelect("method", cases.map(row => row.procurement_method));
 
-    ["search", "prefecture", "method", "rag", "evidence"].forEach(id => {
-      document.getElementById(id).addEventListener(id === "search" ? "input" : "change", applyFilters);
+    document.getElementById("search").addEventListener("input", () => {
+      delete document.getElementById("search").dataset.requirementFilter;
+      applyFilters();
+    });
+    ["prefecture", "method", "rag", "evidence"].forEach(id => {
+      document.getElementById(id).addEventListener("change", applyFilters);
     });
     document.getElementById("reset").addEventListener("click", resetFilters);
+    document.querySelectorAll("[data-theme-filter]").forEach(button => {
+      button.addEventListener("click", () => applyThemeFilter(button.dataset.themeFilter));
+    });
     document.getElementById("clear-compare").addEventListener("click", () => {
       state.selected.clear();
       renderCompare();
       renderRows();
+    });
+    document.getElementById("close-case").addEventListener("click", () => {
+      document.getElementById("case-dialog").close();
+    });
+    document.getElementById("case-dialog").addEventListener("click", event => {
+      if (event.target === event.currentTarget) event.currentTarget.close();
+    });
+    document.getElementById("case-dialog-evidence").addEventListener("click", () => {
+      if (!state.activeCase) return;
+      document.getElementById("case-dialog").close();
+      openEvidenceDialog(state.activeCase);
     });
     document.getElementById("close-evidence").addEventListener("click", () => {
       document.getElementById("evidence-dialog").close();

@@ -34,6 +34,60 @@
       <p class="scope-note">公開一次資料に基づく調査用データです。未確認は「存在しない」を意味しません。</p>
     </section>
 
+    <section class="insights shell" aria-labelledby="insights-heading">
+      <div class="section-heading split-heading">
+        <div>
+          <p class="eyebrow">WHAT THE DATA SHOWS</p>
+          <h2 id="insights-heading">自治体のAI調達で見えてくること</h2>
+        </div>
+        <p class="section-lead">要件プロファイルを持つ案件を母数に、公開データから自動集計します。</p>
+      </div>
+      <div class="insight-grid">
+        <article class="insight">
+          <p class="insight-number"><span id="insight-rag">—</span><small id="insight-rag-denom"> / —</small></p>
+          <h3>RAGを要求</h3>
+          <p>庁内文書や既存データを検索・参照して回答する要件。</p>
+          <button type="button" class="inline-action" data-theme-filter="rag">該当案件を見る →</button>
+        </article>
+        <article class="insight">
+          <p class="insight-number"><span id="insight-learning">—</span><small id="insight-learning-denom"> / —</small></p>
+          <h3>入力データの学習利用を禁止</h3>
+          <p>入力・出力データをモデル学習に利用させない条件を明示。</p>
+          <button type="button" class="inline-action" data-theme-filter="learning">該当案件を見る →</button>
+        </article>
+        <article class="insight">
+          <p class="insight-number"><span id="insight-lgwan">—</span><small id="insight-lgwan-denom"> / —</small></p>
+          <h3>LGWAN対応を要求</h3>
+          <p>閉域ネットワーク側からの利用条件を明示している案件。</p>
+          <button type="button" class="inline-action" data-theme-filter="lgwan">該当案件を見る →</button>
+        </article>
+        <article class="insight">
+          <p class="insight-number"><span id="insight-bounded">—</span><small>件</small></p>
+          <h3>公開資料だけでは境界あり</h3>
+          <p>公募資料から契約最終状態までを完全には再構成できない案件。</p>
+          <button type="button" class="inline-action" data-theme-filter="bounded">該当案件を見る →</button>
+        </article>
+      </div>
+    </section>
+
+    <section class="themes shell" aria-labelledby="themes-heading">
+      <div class="section-heading split-heading">
+        <div>
+          <p class="eyebrow">EXPLORE BY QUESTION</p>
+          <h2 id="themes-heading">仕様検討の問いから探す</h2>
+        </div>
+        <p class="section-lead">「どの自治体が何を書いたか」から比較を始めます。</p>
+      </div>
+      <div class="theme-links">
+        <button type="button" class="theme-link" data-theme-filter="rag"><span>01</span><strong>RAGを要求している案件</strong><small>検索拡張・庁内文書参照</small></button>
+        <button type="button" class="theme-link" data-theme-filter="lgwan"><span>02</span><strong>LGWAN対応案件</strong><small>接続環境・閉域利用</small></button>
+        <button type="button" class="theme-link" data-theme-filter="learning"><span>03</span><strong>学習利用を禁止する案件</strong><small>入力・出力データの扱い</small></button>
+        <button type="button" class="theme-link" data-theme-filter="joint"><span>04</span><strong>共同調達を見る</strong><small>共通選定と個別契約</small></button>
+        <button type="button" class="theme-link" data-theme-filter="evaluated"><span>05</span><strong>評価基準を確認できる案件</strong><small>価格以外に何を採点するか</small></button>
+        <button type="button" class="theme-link" data-theme-filter="bounded"><span>06</span><strong>Evidenceの境界を見る</strong><small>公開資料でどこまで追えるか</small></button>
+      </div>
+    </section>
+
     <section class="controls shell" aria-labelledby="search-heading">
       <div class="section-heading">
         <p class="eyebrow">SEARCH / FILTER</p>
@@ -135,6 +189,45 @@
       </div>
     </section>
   </main>
+
+  <dialog id="case-dialog" class="case-dialog" aria-labelledby="case-dialog-title">
+    <div class="dialog-shell case-dialog-shell">
+      <div class="dialog-head">
+        <div>
+          <p class="eyebrow">CASE DETAIL</p>
+          <h2 id="case-dialog-title">案件詳細</h2>
+        </div>
+        <button id="close-case" class="dialog-close" type="button" aria-label="閉じる">×</button>
+      </div>
+      <p id="case-dialog-government" class="dialog-case"></p>
+      <p id="case-dialog-purpose" class="case-purpose"></p>
+      <dl id="case-dialog-facts" class="case-facts"></dl>
+
+      <section class="detail-section" aria-labelledby="detail-requirements-heading">
+        <p class="eyebrow">REQUIREMENTS</p>
+        <h3 id="detail-requirements-heading">主要要件</h3>
+        <div id="case-dialog-requirements" class="requirement-grid"></div>
+      </section>
+
+      <section class="detail-section" aria-labelledby="detail-effective-heading">
+        <p class="eyebrow">EFFECTIVE REQUIREMENTS</p>
+        <h3 id="detail-effective-heading">Q&A・訂正を反映した要件</h3>
+        <div id="case-dialog-effective" class="detail-list"></div>
+      </section>
+
+      <section class="detail-section" aria-labelledby="detail-evaluation-heading">
+        <p class="eyebrow">EVALUATION</p>
+        <h3 id="detail-evaluation-heading">評価基準</h3>
+        <div id="case-dialog-evaluation" class="detail-list"></div>
+      </section>
+
+      <div class="case-dialog-actions">
+        <button id="case-dialog-evidence" class="text-button" type="button">Evidence chainを見る</button>
+        <a id="case-dialog-source" class="text-button" target="_blank" rel="noreferrer">代表する公式資料 ↗</a>
+      </div>
+      <p class="dialog-note">表示内容はRepositoryの構造化データから生成しています。空欄・未監査は不存在を意味しません。</p>
+    </div>
+  </dialog>
 
   <dialog id="evidence-dialog" class="evidence-dialog" aria-labelledby="evidence-dialog-title">
     <div class="dialog-shell">

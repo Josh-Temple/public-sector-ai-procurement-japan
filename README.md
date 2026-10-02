@@ -26,6 +26,7 @@
 このリポジトリは、人間だけでなく複数のAIから再利用できる知識基盤として段階的に整備しています。
 
 - Entry point: `INDEX.md`
+- Public comparison UI: `index.html` / `docs/PUBLIC_SITE.md`
 - 回答品質の独立比較: [Benchmark V1](evals/benchmark/BENCHMARK_V1_METHOD.md) / `research/BENCHMARK_V1_RESULT_2026-10-02.md`
 - AI / agent guidance: `AGENTS.md`
 - Structured data model: `docs/DATA_MODEL.md`

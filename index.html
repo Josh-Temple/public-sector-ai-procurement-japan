@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="日本の自治体による生成AI調達を、公式一次資料に基づいて検索・比較する公開データベース。">
+  <title>自治体AI調達データベース | Public Sector AI Procurement Japan</title>
+  <link rel="stylesheet" href="./assets/site.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">本文へ移動</a>
+  <header class="site-header">
+    <div class="shell header-inner">
+      <div>
+        <p class="eyebrow">PUBLIC SECTOR AI PROCUREMENT / JAPAN</p>
+        <h1>自治体AI調達データベース</h1>
+      </div>
+      <a class="repo-link" href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan">GitHub / 根拠データ</a>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero shell">
+      <p class="hero-copy">
+        自治体の生成AI調達を、案件名だけでなく、要求仕様・調達方式・公開証拠の確認範囲まで横断して見ます。
+        「仕様書にある」と「契約最終状態まで確認できる」は分けて表示します。
+      </p>
+      <dl class="metrics" aria-label="データベース概要">
+        <div><dt>案件</dt><dd id="metric-cases">—</dd></div>
+        <div><dt>要件比較あり</dt><dd id="metric-requirements">—</dd></div>
+        <div><dt>Evidence監査あり</dt><dd id="metric-audited">—</dd></div>
+        <div><dt>一次資料</dt><dd id="metric-sources">—</dd></div>
+      </dl>
+      <p class="scope-note">公開一次資料に基づく調査用データです。未確認は「存在しない」を意味しません。</p>
+    </section>
+
+    <section class="controls shell" aria-labelledby="search-heading">
+      <div class="section-heading">
+        <p class="eyebrow">SEARCH / FILTER</p>
+        <h2 id="search-heading">案件を探す</h2>
+      </div>
+      <div class="filter-grid">
+        <label class="wide">
+          <span>キーワード</span>
+          <input id="search" type="search" placeholder="自治体、案件名、事業者、カテゴリ…" autocomplete="off">
+        </label>
+        <label>
+          <span>都道府県</span>
+          <select id="prefecture"><option value="">すべて</option></select>
+        </label>
+        <label>
+          <span>調達方式</span>
+          <select id="method"><option value="">すべて</option></select>
+        </label>
+        <label>
+          <span>RAG</span>
+          <select id="rag">
+            <option value="">すべて</option>
+            <option value="true">要件あり</option>
+            <option value="false">要件外 / 不要</option>
+            <option value="soft">望ましい・任意等</option>
+            <option value="unknown">未確認</option>
+          </select>
+        </label>
+        <label>
+          <span>Evidence</span>
+          <select id="evidence">
+            <option value="">すべて</option>
+            <option value="assessed">監査あり</option>
+            <option value="publicly_bounded">公開範囲に境界あり</option>
+            <option value="not_assessed">未監査</option>
+          </select>
+        </label>
+        <button id="reset" class="text-button" type="button">条件をクリア</button>
+      </div>
+      <p id="result-count" class="result-count" aria-live="polite"></p>
+    </section>
+
+    <section id="compare-section" class="compare shell" hidden aria-labelledby="compare-heading">
+      <div class="section-heading inline-heading">
+        <div>
+          <p class="eyebrow">COMPARE</p>
+          <h2 id="compare-heading">選択した案件を比較</h2>
+        </div>
+        <button id="clear-compare" class="text-button" type="button">比較を解除</button>
+      </div>
+      <div class="table-wrap">
+        <table id="compare-table"></table>
+      </div>
+    </section>
+
+    <section class="results shell" aria-labelledby="results-heading">
+      <div class="section-heading">
+        <p class="eyebrow">CASES</p>
+        <h2 id="results-heading">案件一覧</h2>
+      </div>
+      <div class="table-wrap" tabindex="0" aria-label="案件一覧。横スクロールできます">
+        <table class="case-table">
+          <thead>
+            <tr>
+              <th scope="col">比較</th>
+              <th scope="col">自治体 / 案件</th>
+              <th scope="col">年度</th>
+              <th scope="col">方式</th>
+              <th scope="col">RAG</th>
+              <th scope="col">LGWAN</th>
+              <th scope="col">選定事業者</th>
+              <th scope="col">Evidence</th>
+              <th scope="col">根拠</th>
+            </tr>
+          </thead>
+          <tbody id="case-rows"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="reading shell" aria-labelledby="reading-heading">
+      <div class="section-heading">
+        <p class="eyebrow">HOW TO READ</p>
+        <h2 id="reading-heading">このデータの読み方</h2>
+      </div>
+      <div class="reading-grid">
+        <div>
+          <h3>選定 ≠ 契約 ≠ 稼働</h3>
+          <p>受託候補者の選定、契約締結、サービス稼働は別々の証拠で確認します。</p>
+        </div>
+        <div>
+          <h3>仕様 ≠ 最終要件</h3>
+          <p>質問回答・訂正・契約協議で条件が変わり得るため、公募時仕様だけで最終状態を断定しません。</p>
+        </div>
+        <div>
+          <h3>未確認 ≠ 存在しない</h3>
+          <p><code>not_assessed</code> や空欄は、現時点の確認範囲を示すもので、不存在の判定ではありません。</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell">
+      <p>Source-first public research. Data and methodology are maintained in the repository.</p>
+    </div>
+  </footer>
+
+  <script src="./assets/app.js" defer></script>
+</body>
+</html>

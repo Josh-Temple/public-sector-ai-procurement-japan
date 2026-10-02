@@ -4,6 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="自治体の生成AI調達を一次資料で比較して見えてきた、AI利用境界、RAG、要件変更、共同調達、セキュリティ要件の5つの設計論点。">
+  <meta property="og:title" content="自治体AI調達から見える5つの設計論点 | Public Sector AI Procurement Japan">
+  <meta property="og:description" content="自治体の生成AI調達を一次資料で比較して見えてきた、AI利用境界、RAG、要件変更、共同調達、セキュリティ要件の5つの設計論点。">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Public Sector AI Procurement Japan">
+  <meta name="twitter:card" content="summary">
   <title>自治体AI調達から見える5つの設計論点 | Public Sector AI Procurement Japan</title>
   <link rel="stylesheet" href="./assets/site.css">
 </head>
@@ -55,6 +60,9 @@
         埼玉県の2026申請・相談デジタルサポートは別の統制方法を採ります。県民向け生成AIの回答自体を許しつつ、参照した元データやページへのリンク等を見せ、根拠が見つからない場合は「不明」と回答できることを要求しています。評価表でもナレッジ表示40点、根拠なし回答制御50点を割り当てています。
       </p>
       <div class="highlight-links">
+        <a href="./index.html?case=kobe-2026-tax-voicebot">税務ボイスボットの案件詳細 →</a>
+        <a href="./index.html?case=kobe-2026-spec-authoring-ai">仕様書作成支援AIの案件詳細 →</a>
+        <a href="./index.html?case=saitama-2026-ai-digital-support">埼玉県の案件詳細 →</a>
         <a href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan/blob/main/claims/CLM-kobe-2026-voicebot-no-generated-answer.md">税務ボイスボットのClaim ↗</a>
         <a href="https://www.city.kobe.lg.jp/documents/83354/shiyosyo.pdf" target="_blank" rel="noreferrer">公式仕様書 ↗</a>
         <a href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan/blob/main/claims/CLM-kobe-2026-spec-authoring-human-in-loop.md">仕様書作成支援AIのClaim ↗</a>
@@ -62,7 +70,7 @@
         <a href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan/blob/main/claims/CLM-saitama-2026-citizen-grounding-control.md">埼玉県のClaim ↗</a>
         <a href="https://www.pref.saitama.lg.jp/documents/281399/080413answer.pdf" target="_blank" rel="noreferrer">埼玉県公式Q&A ↗</a>
       </div>
-      <p class="scope-note">この比較は神戸市の2案件の公募時要件に限定します。自治体AI全般の標準設計を示すものではありません。</p>
+      <p class="scope-note">この比較は神戸市2案件と埼玉県1案件の公募時要件に限定します。自治体AI全般の標準設計を示すものではありません。</p>
     </section>
 
     <section class="reading shell" aria-labelledby="point-2">
@@ -82,6 +90,7 @@
         調達仕様は契約スコープを示すもので、組織全体の技術構成をそのまま示すとは限りません。
       </p>
       <div class="highlight-links">
+        <a href="./index.html?case=kyoto-2026-general-genai">京都市の案件詳細 →</a>
         <a href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan/blob/main/claims/CLM-kyoto-2026-rag-out-of-scope.md">Claimと適用範囲 ↗</a>
         <a href="https://www.city.kyoto.lg.jp/sogo/cmsfiles/contents/0000349/349781/01_guide.pdf" target="_blank" rel="noreferrer">京都市公式資料 ↗</a>
       </div>
@@ -104,6 +113,7 @@
         このRepositoryでは元仕様と後続資料を分け、変更後の状態を <code>effective_requirements.csv</code> に保持しています。
       </p>
       <div class="highlight-links">
+        <a href="./index.html?case=oumi-2026-joint-genai">おうみ共同調達の案件詳細 →</a>
         <a href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan/blob/main/claims/CLM-oumi-2026-effective-amendments.md">Claimと変更例 ↗</a>
         <a href="https://www.city.omihachiman.lg.jp/material/files/group/115/AI_kaitou.pdf" target="_blank" rel="noreferrer">公式質問回答 ↗</a>
       </div>
@@ -128,6 +138,8 @@
         そのためこのRepositoryは、選定・契約・稼働を別証拠として管理し、確認できない段階を推測で埋めません。
       </p>
       <div class="highlight-links">
+        <a href="./index.html?case=oumi-2026-joint-genai">おうみ共同調達の案件詳細 →</a>
+        <a href="./index.html?case=gunma-2026-joint-genai">群馬共同調達の案件詳細 →</a>
         <a href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan/blob/main/claims/CLM-joint-procurement-stage-not-casewide.md">共同調達のstageに関するClaim ↗</a>
         <a href="https://www.pref.gunma.jp/uploaded/attachment/686869.pdf" target="_blank" rel="noreferrer">群馬県公式資料 ↗</a>
         <a href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan/blob/main/claims/CLM-public-docs-may-not-reconstruct-contract-final.md">契約最終要件の公開再構成に関するClaim ↗</a>
@@ -152,6 +164,8 @@
         認証名が同じでも、「持っていれば評価が上がる」のか「持っていなければ入札に参加できない」のかで調達上の意味は異なります。
       </p>
       <div class="highlight-links">
+        <a href="./index.html?case=obu-2026-genai-service">大府市の案件詳細 →</a>
+        <a href="./index.html?case=hokkaido-2026-genai-rag-service">北海道の案件詳細 →</a>
         <a href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan/blob/main/claims/CLM-obu-2026-domestic-storage-not-api-endpoint.md">大府市のClaim ↗</a>
         <a href="https://www.city.obu.aichi.jp/_res/projects/default_project/_page_/001/038/173/kaitou.pdf" target="_blank" rel="noreferrer">大府市公式質問回答 ↗</a>
         <a href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan/blob/main/claims/CLM-hokkaido-2026-qualification-not-proposal-score.md">北海道のClaim ↗</a>

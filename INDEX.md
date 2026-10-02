@@ -29,8 +29,9 @@
 | 入札額 | `data/bid_results.csv` | 案件の公式結果資料 |
 | 収集済み一次資料の意味・注意 | `sources/` | `data/source_documents.csv` |
 | 一次資料の再取得性・snapshot状態 | `data/source_documents.csv` | `docs/KNOWLEDGE_MODEL.md` |
-| 選定済み / 契約済み / 稼働中の区別 | `data/case_stage.csv` | `data/case_timeline.csv`, `data/source_documents.csv` |
-| 案件ごとの確認範囲・未確認理由 | `data/review_coverage.csv` | `data/source_documents.csv` |
+| 選定済み / 契約済み / 稼働中の区別 | `data/case_stage.csv` | `data/case_timeline.csv`, `data/source_documents.csv`（共同調達では団体別状態をcase-levelへ推定集約しない） |
+| 案件ごとの確認範囲を横断比較 | `data/case_evidence_summary.csv` / `docs/CASE_EVIDENCE_SUMMARY.md` | `data/review_coverage.csv`, `data/case_stage.csv` |
+| 個別roleの未確認理由・根拠Source | `data/review_coverage.csv` | `data/source_documents.csv` |
 | Evidence coverage matrix | `data/evidence_coverage.csv` / `docs/EVIDENCE_COVERAGE.md` | `data/review_coverage.csv` |
 | 回帰評価・誤読テスト | `evals/` | Effective requirements / claims |
 | Web-only / Repository-firstの独立比較設計 | `evals/benchmark/BENCHMARK_V1_METHOD.md` | RunnerにはPublic本文だけを渡し、Gold・evalsを閲覧させない |
@@ -91,8 +92,10 @@ research memoの分析結果は有用だが、現在の事実を確認すると�
   - Source registry: `data/source_documents.csv`
   - Claim: `claims/CLM-kyoto-2026-multiple-procurement-units.md`
 - 群馬の共同調達は共通選定後に団体別再見積・個別契約を行う。ただし契約予定団体一覧本文は未取得である。
-  - Source registry: `data/source_documents.csv`
+  - Source: `sources/SRC-gunma-2026-joint-genai-guide.md`
   - Claim: `claims/CLM-gunma-2026-entity-specific-contracting.md`
+- 共同調達では、共通選定後の契約・稼働状態を案件全体へ自動集約しない。おうみ・群馬はいずれも団体別契約構造を持つ。
+  - Claim: `claims/CLM-joint-procurement-stage-not-casewide.md`
 
 この例は、「RAG要件なし」を「組織としてRAGを利用していない」と誤読しないための再利用可能な知識として残している。
 

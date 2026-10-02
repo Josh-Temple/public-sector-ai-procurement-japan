@@ -53,3 +53,21 @@ yaizu-2025-genai-service,contract_final,SRC-yaizu-2025-contract-draft,not_found_
 yaizu-2025-genai-service,procurement_guide,SRC-yaizu-2025-guide,reviewed,,2026-10-01,第20項の契約交渉・契約書案/仕様書の変更可能性を確認
 oumi-2026-joint-genai,procurement_guide,SRC-oumi-2026-guide,reviewed,,2026-10-01,選定後の仕様協議、議会基本契約と各市の利用契約、契約期間と実利用期間の区別を確認
 oumi-2026-joint-genai,contract_final,SRC-oumi-2026-result,not_found_in_reviewed_sources,not_found_in_reviewed_sources,2026-10-01,公式案件ページと掲載された実施要領・仕様・質問回答・評価・結果を確認した範囲で、締結済み基本契約、各市の利用契約、協議後最終仕様は未発見。他の公開先に存在しないとの断定ではない
+kyoto-2026-general-genai,specification,SRC-kyoto-2026-general-genai-spec,reviewed,,2026-10-02,募集要項に別紙1仕様書を含む一体PDFを確認
+kyoto-2026-general-genai,qa_amendment,,not_found_in_reviewed_sources,not_found_in_reviewed_sources,2026-10-02,募集要項は質問回答を市Webで公表するとするが、今回確認した2026案件の公式掲載範囲では回答本文を発見できず。質問がなかったとの断定ではない
+kyoto-2026-general-genai,requirement_matrix,SRC-kyoto-2026-general-genai-spec,not_applicable,not_applicable,2026-10-02,独立要求機能一覧ではなく別紙1仕様書本文に要求を内包
+kyoto-2026-general-genai,evaluation,SRC-kyoto-2026-general-genai-spec,reviewed,,2026-10-02,募集要項一体PDFの評価基準・選定方法を確認
+kyoto-2026-general-genai,result,SRC-kyoto-2026-general-genai-result,reviewed,,2026-10-02,4者、第一交渉権者サテライトオフィス、74.1点を公式結果で確認
+kyoto-2026-general-genai,contract_final,SRC-kyoto-2026-general-genai-spec,not_found_in_reviewed_sources,not_found_in_reviewed_sources,2026-10-02,第一交渉権者と契約内容を協議して契約する手続を確認したが、今回レビューした公式資料では締結済み最終契約・最終要求文書を確認できず。不存在の断定ではない
+kobe-2026-spec-authoring-ai,specification,SRC-kobe-2026-spec-authoring-spec,reviewed,,2026-10-02,仕様書本文と6章機能要件表を確認
+kobe-2026-spec-authoring-ai,qa_amendment,SRC-kobe-2026-spec-authoring-qa-private,not_public,not_public,2026-10-02,実施要領上、質問回答は参加予定者全員へEメール配布され入札説明書等を補足。一般公開本文は確認できない
+kobe-2026-spec-authoring-ai,requirement_matrix,SRC-kobe-2026-spec-authoring-spec,not_applicable,not_applicable,2026-10-02,独立した要求機能表ではなく仕様書6章の表に機能要件を内包
+kobe-2026-spec-authoring-ai,evaluation,SRC-kobe-2026-spec-authoring-evaluation,reviewed,,2026-10-02,100点満点の評価項目・配点を確認
+kobe-2026-spec-authoring-ai,result,SRC-kobe-2026-spec-authoring-page,reviewed,,2026-10-02,"2者、契約候補者富士通Japan 73点、契約金額9,999,000円を公式ページで確認"
+kobe-2026-spec-authoring-ai,contract_final,SRC-kobe-2026-spec-authoring-contract-draft,not_found_in_reviewed_sources,not_found_in_reviewed_sources,2026-10-02,公募時契約書案と、契約内容を市との協議で決定するルールを確認。署名済み最終契約・最終要求文書は今回レビュー範囲で未確認
+gunma-2026-joint-genai,specification,SRC-gunma-2026-spec,source_unavailable,source_unavailable,2026-10-02,公募要領で別添仕様書の存在を確認したが、今回の公式取得経路では本文・直接URLを再取得できず
+gunma-2026-joint-genai,qa_amendment,,not_found_in_reviewed_sources,not_found_in_reviewed_sources,2026-10-02,公募要領は質問回答を県Webで公表し回答を要領・仕様の追加訂正として扱うとするが、今回の公式検索では当該回答本文を発見できず。提案固有質問は質問者のみ回答の場合あり
+gunma-2026-joint-genai,requirement_matrix,SRC-gunma-2026-requirement-matrix,source_unavailable,source_unavailable,2026-10-02,公募要領で別紙機能要件一覧の存在を確認したが本文を再取得できず
+gunma-2026-joint-genai,evaluation,SRC-gunma-2026-evaluation,source_unavailable,source_unavailable,2026-10-02,公募要領で提案評価項目・評価基準およびRAG機能評価シートの存在を確認したが本文を再取得できず
+gunma-2026-joint-genai,result,,not_found_in_reviewed_sources,not_found_in_reviewed_sources,2026-10-02,公募要領は優先交渉事業者名を県Webで公表するとするが、今回確認した公式検索範囲では結果本文を発見できず。二次情報から補完しない
+gunma-2026-joint-genai,contract_final,SRC-gunma-2026-joint-genai-guide,not_found_in_reviewed_sources,not_found_in_reviewed_sources,2026-10-02,選定後に団体別再見積・各契約予定団体との個別契約を行う構造を確認したが、団体別締結済み契約・最終要求文書は今回レビュー範囲で未確認

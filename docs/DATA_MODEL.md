@@ -317,6 +317,8 @@ case_id内の年は安定IDの一部であり、年度分析の根拠にしな�
 - 仕様書上の予定開始日を、実稼働確認日へ変換しない。
 - `cases.csv` の `status` は案件の要約であり、current-state質問では本projectionと根拠sourceを優先する。
 - rowが存在しない案件は「未確認」であり、「未契約」「未稼働」を意味しない。
+- 共同調達で各参加団体が個別契約する場合、case-level の `contract_state` / `operation_state` を団体別状態の単純な代表値として使わない。全団体に共通する状態を一次資料で確認できない限り、case-level は未確認のまま保持する。
+- 団体別の契約・稼働証拠が実際に取得され、複数団体で状態差が生じる場合に限って entity-level stage の追加schemaを検討する。未取得の将来要件だけで先にschemaを増やさない。
 
 ## 14. Review coverage
 
@@ -363,6 +365,34 @@ projection固有の状態:
 
 人間向け一覧:
 `docs/EVIDENCE_COVERAGE.md`
+
+## 16. Case evidence summary projection
+
+`data/case_evidence_summary.csv`
+
+案件ごとの確認範囲を、文書roleと選定・契約・稼働の段階を混同せず1行で比較する**生成projection**。手編集しない。
+
+入力:
+- `data/cases.csv`
+- `data/review_coverage.csv`
+- `data/evidence_coverage.csv`
+- `data/case_stage.csv`
+
+文書roleについては `*_state` と `*_source_id` を対にし、仕様・質疑・評価・結果・契約最終状態の確認状況から根拠Sourceへ直接辿れるようにする。
+
+選定・契約・稼働については `case_stage.csv` の確認済み状態だけを投影する。case_stageのrowが存在しない案件は `not_assessed` とし、「未選定」「未契約」「未稼働」とは解釈しない。
+
+このprojectionでは次を推論しない:
+- `cases.csv` の selected / awarded から契約締結済みを推論しない。
+- 契約期間・予定開始日から実稼働を推論しない。
+- review role数やblocker数を品質スコアへ変換しない。
+- `publicly_bounded` を調達品質の否定として扱わない。
+
+生成順序:
+`python scripts/build_evidence_coverage.py && python scripts/build_case_evidence_summary.py`
+
+人間向け一覧:
+`docs/CASE_EVIDENCE_SUMMARY.md`
 
 ## Verification levels
 

@@ -127,6 +127,18 @@ Benchmarkの特定問題だけに答えやすいデータを追加するので�
 - assessed/reviewed role数を品質スコアにしない。
 - `publicly_bounded` は公開証拠の限界であり、調達品質の否定ではない。
 
+### 8.1 Case evidence summary projection
+
+`data/case_evidence_summary.csv` と `docs/CASE_EVIDENCE_SUMMARY.md` は生成物であり、直接編集しない。
+
+このprojectionは文書review状態と `case_stage.csv` の選定・契約・稼働状態を同じ行に並べるが、両者を相互推論しない。特に、選定結果から契約締結を、契約や予定日から実稼働を補完しない。
+
+文書roleは対応する `*_source_id` から `data/source_documents.csv` へ辿る。意思決定に使う主張は、必要に応じてさらに公式URLとlocatorまで戻る。
+
+上流を更新した場合は、原則として次の順で再生成する。
+
+`python scripts/build_evidence_coverage.py && python scripts/build_case_evidence_summary.py`
+
 ## 9. 更新ルール
 
 次の変更は、原則としてbranch / pull requestで行う。

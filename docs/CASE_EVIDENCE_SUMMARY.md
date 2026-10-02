@@ -1,4 +1,4 @@
-# Case evidence summary — 2026-10-01
+# Case evidence summary — 2026-10-02
 
 This is a generated comparison projection for what has actually been reviewed for each case. It is not a procurement, vendor, or government quality score.
 
@@ -14,8 +14,8 @@ For source tracing, use the paired `*_source_id` columns in the CSV and resolve 
 | sendai-2026-genai-service | 仙台市 | · | · | · | · | · | · | not_assessed | not_assessed | not_assessed | not_assessed |  |
 | obu-2026-genai-service | 大府市 | R | R | U | U | R | · | not_assessed | not_assessed | not_assessed | publicly_bounded | requirement_matrix:source_unavailable;evaluation:source_unavailable |
 | yaizu-2025-genai-service | 焼津市 | R | R | U | R | R | F | not_assessed | not_assessed | not_assessed | publicly_bounded | requirement_matrix:source_unavailable;contract_final:not_found_in_reviewed_sources |
-| kyoto-2026-general-genai | 京都市 | · | · | · | · | · | · | selected_candidate_confirmed | not_verified | not_verified | not_assessed |  |
-| kobe-2026-spec-authoring-ai | 神戸市 | · | · | · | · | · | · | not_assessed | not_assessed | not_assessed | not_assessed |  |
+| kyoto-2026-general-genai | 京都市 | R | F | — | R | R | F | selected_candidate_confirmed | not_verified | not_verified | publicly_bounded | qa_amendment:not_found_in_reviewed_sources;contract_final:not_found_in_reviewed_sources |
+| kobe-2026-spec-authoring-ai | 神戸市 | R | P | — | R | R | F | selected_candidate_confirmed | not_verified | not_verified | publicly_bounded | qa_amendment:not_public;contract_final:not_found_in_reviewed_sources |
 | saitama-2026-ai-digital-support | 埼玉県 | · | · | · | · | · | · | not_assessed | not_assessed | not_assessed | not_assessed |  |
 | nishiwaki-2025-genai-service | 西脇市 | · | · | · | · | · | · | not_assessed | not_assessed | not_assessed | not_assessed |  |
 | toyooka-2025-genai-service | 豊岡市 | · | · | · | · | · | · | not_assessed | not_assessed | not_assessed | not_assessed |  |
@@ -33,7 +33,7 @@ For source tracing, use the paired `*_source_id` columns in the CSV and resolve 
 | fukushima-2025-genai-pilot | 福島県 | · | · | · | · | · | · | not_assessed | not_assessed | not_assessed | not_assessed |  |
 | fukushima-2026-genai-pilot-expansion | 福島県 | R | N | · | R | R | · | not_assessed | not_assessed | not_assessed | not_assessed |  |
 | kagoshima-2026-genai-service | 鹿児島県 | · | · | · | · | · | · | not_assessed | not_assessed | not_assessed | not_assessed |  |
-| gunma-2026-joint-genai | 群馬県情報化推進協議会 | · | · | · | · | · | · | not_assessed | not_assessed | not_assessed | not_assessed |  |
+| gunma-2026-joint-genai | 群馬県情報化推進協議会 | U | F | U | U | F | F | not_assessed | not_assessed | not_assessed | publicly_bounded | specification:source_unavailable;qa_amendment:not_found_in_reviewed_sources;requirement_matrix:source_unavailable;evaluation:source_unavailable;result:not_found_in_reviewed_sources;contract_final:not_found_in_reviewed_sources |
 | hokkaido-2025-genai-rag-pilot | 北海道 | · | · | · | · | · | · | not_assessed | not_assessed | not_assessed | not_assessed |  |
 | hokkaido-2026-genai-rag-service | 北海道 | U | · | · | — | R | F | not_assessed | not_assessed | not_assessed | publicly_bounded | specification:source_unavailable;contract_final:not_found_in_reviewed_sources |
 

@@ -42,6 +42,8 @@ The workflow uses the current GitHub Pages Actions flow documented by GitHub. Gi
 The public page is intentionally more than a search table.
 
 - `insights.html` provides a stable, shareable narrative entry point for five reviewed design issues. It is presentation copy only; the linked reviewed Claims remain authoritative for scope and evidence.
+- The public HTML includes basic Open Graph and Twitter summary metadata for cleaner link previews without introducing a separate content source.
+- Each insight section links back into the canonical case-detail deep link before exposing Claim and primary-source links.
 - Summary indicators are calculated in the browser from the current requirement and evidence CSVs.
 - Theme links apply filters to the same canonical case list rather than using hand-maintained landing pages.
 - Clicking a case opens a detail view with procurement facts, major requirements, effective requirements, evaluation criteria, and links into the evidence chain.

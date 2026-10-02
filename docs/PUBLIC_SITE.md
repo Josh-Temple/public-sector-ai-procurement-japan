@@ -70,3 +70,18 @@ Case detail also reads these canonical datasets when available:
 - `data/case_timeline.csv`
 
 Missing structured detail is shown as unregistered rather than inferred from other fields.
+
+
+## Complete case-detail expansion
+
+Dense case detail is previewed with the first eight structured rows, but it is no longer truncated.
+
+For effective requirements, evaluation criteria, specialized-AI requirements, and published result rows:
+
+- the first eight rows are shown immediately;
+- a count states how many structured rows exist;
+- users can expand the remaining rows in place and collapse back to the first eight;
+- effective-requirement rows link to the changed-by Source when available, otherwise the base Source;
+- evaluation, specialized-requirement, result, and timeline rows link to their official source URL when available.
+
+This keeps the initial dialog scannable on mobile while allowing the existing dense Sendai, Oumi, Yaizu, Kitakyushu, Saitama, and Kobe cases to be read through without leaving the case detail merely because of the former eight-row presentation cap.

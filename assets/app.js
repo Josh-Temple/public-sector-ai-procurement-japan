@@ -377,6 +377,7 @@ function publicLabel(value) {
     optional: "任意",
     desirable: "望ましい",
     context: "参考",
+    conditional: "条件付き",
     tax_excluded_bid: "税抜入札額",
     tax_included: "税込",
     tax_excluded: "税抜",
@@ -423,6 +424,13 @@ function changeTypeLabel(value) {
     evaluation_context: "評価上の補足",
   };
   return labels[value] || value || "確認済み";
+}
+
+function specializedValue(row) {
+  let value = row.value;
+  if (String(value).toLowerCase() === "true") value = "あり";
+  if (String(value).toLowerCase() === "false") value = "なし";
+  return [value, row.unit_or_format].filter(Boolean).join(" / ") || "—";
 }
 
 function specializedAreaLabel(value) {
@@ -566,7 +574,7 @@ function renderSpecialized(caseId) {
 
     const value = document.createElement("p");
     const key = row.requirement_key ? `${row.requirement_key}：` : "";
-    value.textContent = `${key}${[row.value, row.unit_or_format].filter(Boolean).join(" / ") || "—"}`;
+    value.textContent = `${key}${specializedValue(row)}`;
     appendInlineSource(value, "", row.source_url, "仕様");
 
     const requiredness = document.createElement("span");

@@ -82,6 +82,16 @@
 - Joint-procurement contract-final audit pass: `research/RESEARCH_PASS_13_2026-10-01.md`
 - General-bid contract-final evidence pass: `research/RESEARCH_PASS_14_2026-10-01.md`
 
+## Benchmark V1 result
+
+2026-10-02、20問の独立ベンチマークを1回実行した。Blind qualityはRepository-first 189/200、Web-only 190/200で、Repository-firstの正答率優位は確認されなかった。一方、Web検索queryは7対66、freshな公式文書openは4対21で、Repository-firstはWeb探索量を大きく減らした。
+
+Web-onlyの壁時計時間は計測できなかったため、速度優位は主張しない。1回・20問の記述的結果であり、他モデル・他質問・全国自治体へ一般化しない。
+
+結果と限界: `research/BENCHMARK_V1_RESULT_2026-10-02.md`
+
+この実験で見つかった主な改善点は、構造化された正しい値から一次資料の該当locatorまで直接追えるEvidence chainを強くすることである。
+
 ## Next
 
 仕様書・評価基準の深掘りを進め、18案件について比較可能な要件を構造化しました。共同調達では案件固有の参加団体・団体別上限を別テーブル化し始めています。新規案件数の拡大より、代表案件の証拠完全性・公開再構成可能性・質疑反映を優先します。次は案件ごとの確認範囲を比較可能な形で要約できるかを検証します。

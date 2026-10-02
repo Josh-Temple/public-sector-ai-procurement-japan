@@ -12,6 +12,7 @@ const state = {
   rows: [],
   filtered: [],
   selected: new Set(),
+  sourceById: new Map(),
 };
 
 function parseCSV(text) {
@@ -105,6 +106,107 @@ function categoryLabel(value) {
 
 function safeText(value) {
   return value == null || value === "" ? "—" : value;
+}
+
+function reviewStateLabel(value) {
+  const labels = {
+    reviewed: "確認済み",
+    not_public: "非公開",
+    source_unavailable: "資料取得不可",
+    not_found_in_reviewed_sources: "確認範囲では未発見",
+    not_applicable: "対象外",
+    not_assessed: "未監査",
+    conflicting_sources: "資料間に不整合",
+    selected_candidate_confirmed: "受託候補者の選定確認済み",
+    contracted_confirmed: "契約確認済み",
+    operating_confirmed: "稼働確認済み",
+    not_verified: "未確認",
+  };
+  return labels[value] || safeText(value);
+}
+
+function evidenceSummaryText(row) {
+  const evidence = row.evidence;
+  if (!evidence) return "Evidence監査情報はありません。";
+  const parts = [`判定: ${evidenceLabel(evidence)}`];
+  if (evidence.last_verified) parts.push(`最終確認: ${evidence.last_verified}`);
+  if (evidence.blocking_roles) parts.push(`公開再構成の阻害要素: ${evidence.blocking_roles}`);
+  return parts.join(" / ");
+}
+
+function appendEvidenceSource(container, sourceId) {
+  if (!sourceId) {
+    container.textContent = "対応するSource IDなし";
+    return;
+  }
+  const source = state.sourceById.get(sourceId);
+  if (!source) {
+    container.textContent = sourceId;
+    return;
+  }
+  if (source.url) {
+    const link = document.createElement("a");
+    link.href = source.url;
+    link.target = "_blank";
+    link.rel = "noreferrer";
+    link.textContent = source.title || sourceId;
+    container.append(link);
+  } else {
+    const title = document.createElement("span");
+    title.textContent = source.title || sourceId;
+    container.append(title);
+  }
+  const meta = document.createElement("small");
+  meta.textContent = [sourceId, source.access_state].filter(Boolean).join(" / ");
+  container.append(meta);
+}
+
+function openEvidenceDialog(row) {
+  const dialog = document.getElementById("evidence-dialog");
+  const evidence = row.evidence || {};
+  document.getElementById("evidence-dialog-case").textContent =
+    `${row.government_name}｜${row.procurement_title}`;
+  document.getElementById("evidence-dialog-summary").textContent = evidenceSummaryText(row);
+
+  const roles = [
+    ["仕様書", "specification"],
+    ["質問回答・訂正", "qa_amendment"],
+    ["要求機能一覧", "requirement_matrix"],
+    ["評価基準", "evaluation"],
+    ["選定結果", "result"],
+    ["契約最終状態", "contract_final"],
+    ["選定ステージ", "selection"],
+    ["契約ステージ", "contract"],
+    ["運用ステージ", "operation"],
+  ];
+  const list = document.getElementById("evidence-dialog-list");
+  list.replaceChildren();
+
+  roles.forEach(([label, key]) => {
+    const item = document.createElement("div");
+    item.className = "evidence-item";
+
+    const role = document.createElement("div");
+    role.className = "evidence-role";
+    role.textContent = label;
+    const stateText = document.createElement("span");
+    stateText.className = "evidence-state";
+    stateText.textContent = reviewStateLabel(evidence[`${key}_state`] || "not_assessed");
+    role.append(stateText);
+
+    const source = document.createElement("div");
+    source.className = "evidence-source";
+    appendEvidenceSource(source, evidence[`${key}_source_id`]);
+
+    item.append(role, source);
+    list.append(item);
+  });
+
+  const notes = [];
+  if (evidence.notes) notes.push(evidence.notes);
+  notes.push("公開資料の確認状態を示します。未監査・未発見は、不存在を意味しません。");
+  document.getElementById("evidence-dialog-note").textContent = notes.join("\n\n");
+  dialog.showModal();
 }
 
 function fillSelect(id, values) {
@@ -230,17 +332,24 @@ function renderRows() {
     evTd.append(badge);
 
     const sourceTd = document.createElement("td");
+    const sourceActions = document.createElement("div");
+    sourceActions.className = "source-actions";
     if (row.source_url) {
       const a = document.createElement("a");
       a.className = "source-link";
       a.href = row.source_url;
       a.target = "_blank";
       a.rel = "noreferrer";
-      a.textContent = "公式資料 ↗";
-      sourceTd.append(a);
-    } else {
-      sourceTd.textContent = "—";
+      a.textContent = "代表資料 ↗";
+      sourceActions.append(a);
     }
+    const evidenceButton = document.createElement("button");
+    evidenceButton.type = "button";
+    evidenceButton.className = "evidence-button";
+    evidenceButton.textContent = "Evidence chain";
+    evidenceButton.addEventListener("click", () => openEvidenceDialog(row));
+    sourceActions.append(evidenceButton);
+    sourceTd.append(sourceActions);
 
     tr.append(selectTd, titleTd, yearTd, methodTd, ragTd, lgwanTd, vendorTd, evTd, sourceTd);
     frag.append(tr);
@@ -342,6 +451,7 @@ async function init() {
     const [cases, requirements, structures, evidence, sources] = await Promise.all(
       Object.values(DATA_FILES).map(loadCSV)
     );
+    state.sourceById = new Map(sources.map(source => [source.source_id, source]));
     state.rows = buildRows(cases, requirements, structures, evidence, sources);
 
     document.getElementById("metric-cases").textContent = cases.length;
@@ -363,6 +473,12 @@ async function init() {
       state.selected.clear();
       renderCompare();
       renderRows();
+    });
+    document.getElementById("close-evidence").addEventListener("click", () => {
+      document.getElementById("evidence-dialog").close();
+    });
+    document.getElementById("evidence-dialog").addEventListener("click", event => {
+      if (event.target === event.currentTarget) event.currentTarget.close();
     });
 
     applyFilters();

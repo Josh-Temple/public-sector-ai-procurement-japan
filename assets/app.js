@@ -117,6 +117,10 @@ function reviewStateLabel(value) {
     not_applicable: "対象外",
     not_assessed: "未監査",
     conflicting_sources: "資料間に不整合",
+    selected_candidate_confirmed: "受託候補者の選定確認済み",
+    contracted_confirmed: "契約確認済み",
+    operating_confirmed: "稼働確認済み",
+    not_verified: "未確認",
   };
   return labels[value] || safeText(value);
 }

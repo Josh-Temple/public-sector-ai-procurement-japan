@@ -1,4 +1,4 @@
-# Evidence coverage — 2026-10-02
+# Evidence coverage — 2026-10-03
 
 This is an evidence-review projection, not a procurement, vendor, or government quality score.
 
@@ -16,7 +16,7 @@ Legend: R reviewed; N explicitly not reviewed; U source unavailable; P source kn
 | yaizu-2025-genai-service | 焼津市 | R | R | U | R | R | F | publicly_bounded |
 | kyoto-2026-general-genai | 京都市 | R | F | — | R | R | F | publicly_bounded |
 | kobe-2026-spec-authoring-ai | 神戸市 | R | P | — | R | R | F | publicly_bounded |
-| saitama-2026-ai-digital-support | 埼玉県 | · | · | · | · | · | · | not_assessed |
+| saitama-2026-ai-digital-support | 埼玉県 | R | R | — | R | R | F | publicly_bounded |
 | nishiwaki-2025-genai-service | 西脇市 | · | · | · | · | · | · | not_assessed |
 | toyooka-2025-genai-service | 豊岡市 | · | · | · | · | · | · | not_assessed |
 | harima-2025-genai-service | 播磨町 | · | · | · | · | · | · | not_assessed |
@@ -40,7 +40,7 @@ Legend: R reviewed; N explicitly not reviewed; U source unavailable; P source kn
 ## Current reading
 
 - Cases in repository: 26
-- Cases with at least one role assessed: 12
+- Cases with at least one role assessed: 13
 - Cases with contract_final reviewed: 0
 - Cases publicly reconstructable through contract final: 0
 - assessed_roles and reviewed_roles count review states only; they are not quality scores.

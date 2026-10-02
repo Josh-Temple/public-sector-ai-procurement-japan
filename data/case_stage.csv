@@ -1,3 +1,4 @@
 case_id,selection_state,selection_date,selection_source_id,contract_state,contract_date,contract_source_id,operation_state,operation_start,operation_source_id,last_verified,notes
 kyoto-2026-general-genai,selected_candidate_confirmed,2026-03-12,SRC-kyoto-2026-general-genai-result,not_verified,,,not_verified,,,2026-10-02,京都市公式結果ページで第一交渉権者の選定を再確認。募集要項は候補者との協議後に契約するとし、契約締結・実稼働は本projectionの根拠sourceでは確認していない。selectedをcontracted/operatingへ昇格しない
 kobe-2026-spec-authoring-ai,selected_candidate_confirmed,2026-04-16,SRC-kobe-2026-spec-authoring-page,not_verified,,,not_verified,,,2026-10-02,公式ページで契約候補者・契約金額を確認したが、署名済み契約の締結日・最終契約本文・実稼働は確認していない。契約金額の公表だけでcontracted/operatingへ昇格しない
+saitama-2026-ai-digital-support,selected_candidate_confirmed,,SRC-saitama-2026-ai-support-page,not_verified,,,not_verified,,,2026-10-03,公式ページで委託先候補者Allganize Japan株式会社・参加者7者を確認。選定日、署名済み契約、契約最終仕様、実稼働開始はこの根拠から確認していない

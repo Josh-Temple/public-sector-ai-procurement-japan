@@ -71,3 +71,9 @@ gunma-2026-joint-genai,requirement_matrix,SRC-gunma-2026-requirement-matrix,sour
 gunma-2026-joint-genai,evaluation,SRC-gunma-2026-evaluation,source_unavailable,source_unavailable,2026-10-02,公募要領で提案評価項目・評価基準およびRAG機能評価シートの存在を確認したが本文を再取得できず
 gunma-2026-joint-genai,result,,not_found_in_reviewed_sources,not_found_in_reviewed_sources,2026-10-02,公募要領は優先交渉事業者名を県Webで公表するとするが、今回確認した公式検索範囲では結果本文を発見できず。二次情報から補完しない
 gunma-2026-joint-genai,contract_final,SRC-gunma-2026-joint-genai-guide,not_found_in_reviewed_sources,not_found_in_reviewed_sources,2026-10-02,選定後に団体別再見積・各契約予定団体との個別契約を行う構造を確認したが、団体別締結済み契約・最終要求文書は今回レビュー範囲で未確認
+saitama-2026-ai-digital-support,specification,SRC-saitama-2026-ai-support-spec,reviewed,,2026-10-03,仕様本文をfresh re-read。県民/職員向け機能・非機能要件と、提案内容を踏まえ最終調達仕様を作成するルールを確認
+saitama-2026-ai-digital-support,qa_amendment,SRC-saitama-2026-ai-support-qa,reviewed,,2026-10-03,公開Q&A全体を確認し、対象業務・根拠表示・Web参照・Box同期・認証・保存禁止等の解釈を有効要件へ反映
+saitama-2026-ai-digital-support,requirement_matrix,SRC-saitama-2026-ai-support-spec,not_applicable,not_applicable,2026-10-03,独立した要求機能一覧ではなく仕様書2章・3章に要件を内包
+saitama-2026-ai-digital-support,evaluation,SRC-saitama-2026-ai-support-evaluation,reviewed,,2026-10-03,17項目・410点満点。根拠表示40点、根拠なし回答制御50点等を確認
+saitama-2026-ai-digital-support,result,SRC-saitama-2026-ai-support-page,reviewed,,2026-10-03,公式ページでAllganize Japan株式会社を委託先候補者、参加者7者と確認。結果表も確認
+saitama-2026-ai-digital-support,contract_final,SRC-saitama-2026-ai-support-contract-draft,not_found_in_reviewed_sources,not_found_in_reviewed_sources,2026-10-03,公募時契約書案は未確定欄を含み、仕様書冒頭は候補者提案を踏まえて調達仕様を作成し提案書とともに契約仕様とすると定める。レビューした公開範囲で候補者提案書・署名済み最終契約・最終調達仕様は確認できず、不存在の断定ではない

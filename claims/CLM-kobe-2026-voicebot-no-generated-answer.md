@@ -7,7 +7,9 @@ scope: "神戸市2026税務部ボイスボット調達の公募時回答方針"
 last_verified: "2026-10-01"
 evidence:
   - source: SRC-kobe-2026-voicebot-spec
-    locator: "7(2)-(3) 言葉のゆらぎ等への対応・回答内容"
+    locator: "PDF p.2、7(2)-(3) 言葉のゆらぎ等への対応・回答内容"
+  - source: SRC-kobe-2026-voicebot-guide
+    locator: "PDF p.3、7(2)オ 質問回答の配布; PDF p.7、9 契約時の文書優先順位・上位提案の扱い"
 ---
 
 # Claim

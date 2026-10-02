@@ -55,6 +55,18 @@ claimを作る場合は最低限、次を明示する。
 
 詳細は `docs/KNOWLEDGE_MODEL.md` を参照する。
 
+## 4.1 Evidence chain rule
+
+回答で再利用する主張は、値だけでなく適用範囲・例外・確認限界まで一次資料へ追跡できることを確認する。
+
+- Claim本文のscope limitを回答に使う場合、その限定を支えるSourceがClaimの `evidence` に含まれているか確認する。
+- 一つのClaimが仕様書と実施要領など複数文書に依存するなら、必要なSourceをすべて明示する。
+- 横断projectionの1つの `source_url` が、その行の全項目を支えていると仮定しない。
+- Source noteに別資料への言及があるだけでは、その別資料のlocatorを確認したことにはしない。
+- 正しい結論でも根拠chainが切れている場合、再利用可能なevidenceとしては未完成と扱う。
+
+Benchmarkの特定問題だけに答えやすいデータを追加するのではなく、通常の実務質問でも使える一般的なSource/Claim接続を修復する。
+
 ## 5. Verification と Freshness
 
 「一度検証したこと」と「現在の質問にそのまま使えること」は別である。

@@ -29,7 +29,7 @@
 | 入札額 | `data/bid_results.csv` | 案件の公式結果資料 |
 | 収集済み一次資料の意味・注意 | `sources/` | `data/source_documents.csv` |
 | 一次資料の再取得性・snapshot状態 | `data/source_documents.csv` | `docs/KNOWLEDGE_MODEL.md` |
-| 選定済み / 契約済み / 稼働中の区別 | `data/case_stage.csv` | `data/case_timeline.csv`, `data/source_documents.csv` |
+| 選定済み / 契約済み / 稼働中の区別 | `data/case_stage.csv` | `data/case_timeline.csv`, `data/source_documents.csv`（共同調達では団体別状態をcase-levelへ推定集約しない） |
 | 案件ごとの確認範囲を横断比較 | `data/case_evidence_summary.csv` / `docs/CASE_EVIDENCE_SUMMARY.md` | `data/review_coverage.csv`, `data/case_stage.csv` |
 | 個別roleの未確認理由・根拠Source | `data/review_coverage.csv` | `data/source_documents.csv` |
 | Evidence coverage matrix | `data/evidence_coverage.csv` / `docs/EVIDENCE_COVERAGE.md` | `data/review_coverage.csv` |

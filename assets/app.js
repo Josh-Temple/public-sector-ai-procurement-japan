@@ -274,6 +274,13 @@ const RESEARCH_HIGHLIGHTS = [
     summary: "大府市は市データの国内保存を要求しつつ、生成AI APIの接続先所在地そのものを国内に限定していません。"
   },
   {
+    caseId: "saitama-2026-ai-digital-support",
+    claimId: "CLM-saitama-2026-citizen-grounding-control",
+    sourceId: "SRC-saitama-2026-ai-support-qa",
+    title: "県民向け生成AIでも「根拠を見せる」「根拠がなければ不明と答える」を仕様化できる",
+    summary: "埼玉県は県民向けにも参照元の提示を求め、根拠がない場合の回答制御を必須化。企画提案評価でもこの2項目に計90/410点を配点しています。"
+  },
+  {
     caseId: "gunma-2026-joint-genai",
     claimId: "CLM-joint-procurement-stage-not-casewide",
     sourceId: "SRC-gunma-2026-joint-genai-guide",

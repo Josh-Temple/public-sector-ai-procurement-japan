@@ -85,3 +85,19 @@ For effective requirements, evaluation criteria, specialized-AI requirements, an
 - evaluation, specialized-requirement, result, and timeline rows link to their official source URL when available.
 
 This keeps the initial dialog scannable on mobile while allowing the existing dense Sendai, Oumi, Yaizu, Kitakyushu, Saitama, and Kobe cases to be read through without leaving the case detail merely because of the former eight-row presentation cap.
+
+
+## Case highlights
+
+Each case detail begins with up to five navigation-oriented highlights.
+
+The highlight layer is deliberately downstream of canonical knowledge:
+
+1. reviewed reusable Claims mapped to that case are shown first;
+2. remaining slots are filled from current structured data such as requirement-profile features, effective-requirement counts, specialized-AI counts, evaluation counts, published result counts, and case-level public-evidence boundaries;
+3. Claim highlights link to both the canonical Claim and its registered official Source;
+4. computed highlights navigate to the relevant detail section or Evidence-chain dialog.
+
+The home-page Research Highlights remain intentionally curated. Additional reviewed Claims can appear in a case detail with `featured: false` without expanding the home-page list.
+
+This layer does not create a new fact source or infer missing procurement states. It is a reading aid over Claims and existing structured data.

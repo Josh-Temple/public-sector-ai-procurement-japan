@@ -45,6 +45,7 @@ The public page is intentionally more than a search table.
 - Summary indicators are calculated in the browser from the current requirement and evidence CSVs.
 - Theme links apply filters to the same canonical case list rather than using hand-maintained landing pages.
 - Clicking a case opens a detail view with procurement facts, major requirements, effective requirements, evaluation criteria, and links into the evidence chain.
+- Individual cases have stable query-string entry points such as `?case=<case_id>`; these URLs open the corresponding detail view after canonical CSV data loads, so external writing can link directly to a case without maintaining separate case pages.
 - The detail view reads `data/evaluation_criteria.csv` and `data/effective_requirements.csv` directly, so new structured research appears without duplicating facts in HTML.
 - Counts are descriptive of the current structured corpus and are not presented as representative estimates of all Japanese local governments.
 

@@ -20,7 +20,9 @@ This keeps the public interface downstream of the repository data model.
 - `not_assessed` is displayed as unreviewed rather than absent.
 - `publicly_bounded` is displayed as a public-evidence boundary, not a procurement-quality judgment.
 - Selection, contract, and operation are not inferred from one another.
-- The main evidence link for each case points to the official `cases.csv source_url`.
+- The representative-source link for each case points to the official `cases.csv source_url`.
+- Each row also exposes an Evidence-chain dialog for specification, Q&A/amendment, requirement matrix, evaluation, result, contract-final, selection, contract, and operation states.
+- Evidence-chain source links resolve through `data/source_documents.csv`; missing URLs remain visibly bounded rather than being substituted with secondary sources.
 - Comparison is capped at three cases to keep the mobile layout usable.
 
 ## Deployment

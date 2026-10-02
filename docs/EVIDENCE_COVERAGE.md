@@ -1,4 +1,4 @@
-# Evidence coverage — 2026-10-01
+# Evidence coverage — 2026-10-02
 
 This is an evidence-review projection, not a procurement, vendor, or government quality score.
 
@@ -14,8 +14,8 @@ Legend: R reviewed; N explicitly not reviewed; U source unavailable; P source kn
 | sendai-2026-genai-service | 仙台市 | · | · | · | · | · | · | not_assessed |
 | obu-2026-genai-service | 大府市 | R | R | U | U | R | · | publicly_bounded |
 | yaizu-2025-genai-service | 焼津市 | R | R | U | R | R | F | publicly_bounded |
-| kyoto-2026-general-genai | 京都市 | · | · | · | · | · | · | not_assessed |
-| kobe-2026-spec-authoring-ai | 神戸市 | · | · | · | · | · | · | not_assessed |
+| kyoto-2026-general-genai | 京都市 | R | F | — | R | R | F | publicly_bounded |
+| kobe-2026-spec-authoring-ai | 神戸市 | R | P | — | R | R | F | publicly_bounded |
 | saitama-2026-ai-digital-support | 埼玉県 | · | · | · | · | · | · | not_assessed |
 | nishiwaki-2025-genai-service | 西脇市 | · | · | · | · | · | · | not_assessed |
 | toyooka-2025-genai-service | 豊岡市 | · | · | · | · | · | · | not_assessed |
@@ -33,14 +33,14 @@ Legend: R reviewed; N explicitly not reviewed; U source unavailable; P source kn
 | fukushima-2025-genai-pilot | 福島県 | · | · | · | · | · | · | not_assessed |
 | fukushima-2026-genai-pilot-expansion | 福島県 | R | N | · | R | R | · | not_assessed |
 | kagoshima-2026-genai-service | 鹿児島県 | · | · | · | · | · | · | not_assessed |
-| gunma-2026-joint-genai | 群馬県情報化推進協議会 | · | · | · | · | · | · | not_assessed |
+| gunma-2026-joint-genai | 群馬県情報化推進協議会 | U | F | U | U | F | F | publicly_bounded |
 | hokkaido-2025-genai-rag-pilot | 北海道 | · | · | · | · | · | · | not_assessed |
 | hokkaido-2026-genai-rag-service | 北海道 | U | · | · | — | R | F | publicly_bounded |
 
 ## Current reading
 
 - Cases in repository: 26
-- Cases with at least one role assessed: 9
+- Cases with at least one role assessed: 12
 - Cases with contract_final reviewed: 0
 - Cases publicly reconstructable through contract final: 0
 - assessed_roles and reviewed_roles count review states only; they are not quality scores.

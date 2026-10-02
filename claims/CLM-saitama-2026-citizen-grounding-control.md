@@ -7,7 +7,7 @@ scope: "埼玉県2026申請・相談デジタルサポートの公募時有効�
 last_verified: "2026-10-03"
 evidence:
   - source: SRC-saitama-2026-ai-support-spec
-    locator: "PDF p.3、2.3(4)-(5); PDF p.4、P-06〜P-07"
+    locator: "PDF file p.5（本文 p.3）、2.3(4)-(5); PDF file p.6（本文 p.4）、P-06〜P-07"
   - source: SRC-saitama-2026-ai-support-qa
     locator: "Q&A No.12"
   - source: SRC-saitama-2026-ai-support-evaluation

@@ -127,6 +127,7 @@ function reviewStateLabel(value) {
   const labels = {
     reviewed: "確認済み",
     not_public: "非公開",
+    not_reviewed: "未レビュー",
     source_unavailable: "資料取得不可",
     not_found_in_reviewed_sources: "確認範囲では未発見",
     not_applicable: "対象外",
@@ -665,8 +666,12 @@ async function init() {
     fillSelect("prefecture", cases.map(row => row.prefecture));
     fillSelect("method", cases.map(row => row.procurement_method));
 
-    ["search", "prefecture", "method", "rag", "evidence"].forEach(id => {
-      document.getElementById(id).addEventListener(id === "search" ? "input" : "change", applyFilters);
+    document.getElementById("search").addEventListener("input", () => {
+      delete document.getElementById("search").dataset.requirementFilter;
+      applyFilters();
+    });
+    ["prefecture", "method", "rag", "evidence"].forEach(id => {
+      document.getElementById(id).addEventListener("change", applyFilters);
     });
     document.getElementById("reset").addEventListener("click", resetFilters);
     document.querySelectorAll("[data-theme-filter]").forEach(button => {

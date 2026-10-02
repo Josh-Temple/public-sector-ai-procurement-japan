@@ -281,6 +281,46 @@ const RESEARCH_HIGHLIGHTS = [
     summary: "埼玉県は県民向けにも参照元の提示を求め、根拠がない場合の回答制御を必須化。企画提案評価でもこの2項目に計90/410点を配点しています。"
   },
   {
+    caseId: "kobe-2026-spec-authoring-ai",
+    claimId: "CLM-kobe-2026-spec-authoring-human-in-loop",
+    sourceId: "SRC-kobe-2026-spec-authoring-spec",
+    title: "AIの修正案を、そのまま反映せず利用者が採否選択する設計",
+    summary: "神戸市の仕様書作成支援AIは、文書の不整合を抽出して修正案を生成し、利用者が採用・不採用を選択できることを公募時要件としています。",
+    featured: false
+  },
+  {
+    caseId: "oumi-2026-joint-genai",
+    claimId: "CLM-oumi-2026-rag-required",
+    sourceId: "SRC-oumi-2026-spec",
+    title: "RAGは追加提案ではなく、公募時の必須機能",
+    summary: "参加団体ごとに庁内データ等をRAGへ登録・参照でき、全利用者合計100GB以上を求めています。公開Q&AでRAG自体の任意化は確認されていません。",
+    featured: false
+  },
+  {
+    caseId: "fukushima-2026-genai-pilot-expansion",
+    claimId: "CLM-fukushima-2026-remains-pilot",
+    sourceId: "SRC-fukushima-2026-spec",
+    title: "機能範囲が広がっても、案件段階は「本格導入」ではなく実証",
+    summary: "RAG・ガバナンス・活用促進を含みますが、公式仕様上は次段階の本格導入に向けて要件・体制・運用ルールを整理する実証です。",
+    featured: false
+  },
+  {
+    caseId: "yaizu-2025-genai-service",
+    claimId: "CLM-yaizu-2025-rag-grounding-not-absolute",
+    sourceId: "SRC-yaizu-2025-qa",
+    title: "RAGは登録データ優先だが、一般知識の100%排除までは求めない",
+    summary: "焼津市は登録データをできる限り優先する一方、生成AIの性質上、一般知識を完全排除できない前提を公式Q&Aで受け入れています。",
+    featured: false
+  },
+  {
+    caseId: "koshigaya-2024-genai-service-training",
+    claimId: "CLM-koshigaya-2024-minimum-vs-evaluated-usage",
+    sourceId: "SRC-koshigaya-2024-qa",
+    title: "月100万文字以上は必須、「上限なし」は加点提案",
+    summary: "最低利用量と、評価上有利になる追加提案を分けて読む必要がある案件です。",
+    featured: false
+  },
+  {
     caseId: "gunma-2026-joint-genai",
     claimId: "CLM-joint-procurement-stage-not-casewide",
     sourceId: "SRC-gunma-2026-joint-genai-guide",
@@ -292,7 +332,7 @@ const RESEARCH_HIGHLIGHTS = [
 function renderResearchHighlights() {
   const container = document.getElementById("research-highlights");
   container.replaceChildren();
-  RESEARCH_HIGHLIGHTS.forEach((item, index) => {
+  RESEARCH_HIGHLIGHTS.filter(item => item.featured !== false).forEach((item, index) => {
     const row = state.rows.find(candidate => candidate.case_id === item.caseId);
     const source = state.sourceById.get(item.sourceId);
 
@@ -335,6 +375,162 @@ function renderResearchHighlights() {
     links.append(claim);
 
     article.append(n, copy, links);
+    container.append(article);
+  });
+}
+
+function caseRequirementFeatures(row) {
+  const features = [];
+  if (truthy(row.req?.rag)) features.push("RAG");
+  if (truthy(row.req?.multi_model)) features.push("複数モデル");
+  if (truthy(row.req?.data_learning_prohibited)) features.push("学習利用禁止");
+  if (truthy(row.req?.lgwan_or_lgwan_asp)) features.push("LGWAN");
+  return features;
+}
+
+function computedCaseHighlights(row) {
+  const items = [];
+  const features = caseRequirementFeatures(row);
+  if (features.length) {
+    items.push({
+      title: `主要要件：${features.join(" / ")}`,
+      summary: "横断要件プロファイルで確認できる主要な技術・データ取扱条件です。",
+      target: "detail-requirements-heading",
+    });
+  }
+
+  const effectiveCount = (state.effectiveByCase.get(row.case_id) || []).length;
+  if (effectiveCount) {
+    items.push({
+      title: `Q&A・訂正反映後の有効要件を${effectiveCount}件構造化`,
+      summary: "元仕様だけでなく、後続の公式回答・訂正による緩和・明確化・代替許容まで追えます。",
+      target: "detail-effective-heading",
+    });
+  }
+
+  const specializedCount = (state.specializedByCase.get(row.case_id) || []).length;
+  if (specializedCount) {
+    items.push({
+      title: `業務特化型AIの要件を${specializedCount}件構造化`,
+      summary: "一般的な生成AI要件とは別に、この業務固有の機能・利用規模・統制条件を確認できます。",
+      target: "detail-specialized-heading",
+    });
+  }
+
+  const evaluationCount = (state.evaluationsByCase.get(row.case_id) || []).length;
+  if (evaluationCount) {
+    items.push({
+      title: `評価基準を${evaluationCount}項目比較可能`,
+      summary: "仕様上の必須条件とは別に、自治体が提案をどこで評価したかを確認できます。",
+      target: "detail-evaluation-heading",
+    });
+  }
+
+  const resultCount =
+    (state.vendorScoresByCase.get(row.case_id) || []).length +
+    (state.bidsByCase.get(row.case_id) || []).length;
+  if (resultCount) {
+    items.push({
+      title: `公開された得点・入札結果を${resultCount}件収録`,
+      summary: "公開結果がある場合は、選定された事業者だけでなく比較可能な得点・入札額も確認できます。",
+      target: "detail-results-heading",
+    });
+  }
+
+  if (row.evidence?.public_reconstructability === "publicly_bounded") {
+    items.push({
+      title: "公開資料だけでは契約最終状態まで再構成できない",
+      summary: "公募時の仕様・Q&A・結果が確認できても、非公開資料や契約時協議により最終仕様まで追えない境界があります。",
+      action: "evidence",
+    });
+  }
+
+  if (items.length < 3 && row.sourceCount) {
+    items.push({
+      title: `公式一次資料を${row.sourceCount}件登録`,
+      summary: "案件ページ・仕様書・評価・結果等の登録済みSourceから、確認範囲を辿れます。",
+      action: "evidence",
+    });
+  }
+
+  return items;
+}
+
+function renderCaseHighlights(row) {
+  const container = document.getElementById("case-dialog-highlights");
+  container.replaceChildren();
+
+  const claimItems = RESEARCH_HIGHLIGHTS
+    .filter(item => item.caseId === row.case_id)
+    .map(item => ({ ...item, kind: "claim" }));
+
+  const computed = computedCaseHighlights(row).map(item => ({ ...item, kind: "computed" }));
+  const items = [...claimItems, ...computed].slice(0, 5);
+
+  if (!items.length) {
+    const empty = document.createElement("p");
+    empty.className = "empty-detail";
+    empty.textContent = "案件別の注目点はまだ整理されていません。下の構造化データとEvidence chainを確認してください。";
+    container.append(empty);
+    return;
+  }
+
+  items.forEach((item, index) => {
+    const article = document.createElement("article");
+    article.className = "case-highlight-item";
+
+    const number = document.createElement("span");
+    number.className = "case-highlight-index";
+    number.textContent = String(index + 1).padStart(2, "0");
+
+    const copy = document.createElement("div");
+    copy.className = "case-highlight-copy";
+    const title = document.createElement("h4");
+    title.textContent = item.title;
+    const summary = document.createElement("p");
+    summary.textContent = item.summary;
+    copy.append(title, summary);
+
+    const actions = document.createElement("div");
+    actions.className = "case-highlight-actions";
+
+    if (item.kind === "claim") {
+      const claim = document.createElement("a");
+      claim.href = `https://github.com/Josh-Temple/public-sector-ai-procurement-japan/blob/main/claims/${item.claimId}.md`;
+      claim.target = "_blank";
+      claim.rel = "noreferrer";
+      claim.textContent = "Claimと適用範囲 ↗";
+      actions.append(claim);
+
+      const source = state.sourceById.get(item.sourceId);
+      if (source?.url) {
+        const official = document.createElement("a");
+        official.href = source.url;
+        official.target = "_blank";
+        official.rel = "noreferrer";
+        official.textContent = "公式一次資料 ↗";
+        actions.append(official);
+      }
+    } else if (item.action === "evidence") {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.textContent = "Evidence chain →";
+      button.addEventListener("click", () => {
+        document.getElementById("case-dialog").close();
+        openEvidenceDialog(row);
+      });
+      actions.append(button);
+    } else if (item.target) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.textContent = "該当データを見る ↓";
+      button.addEventListener("click", () => {
+        document.getElementById(item.target)?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+      actions.append(button);
+    }
+
+    article.append(number, copy, actions);
     container.append(article);
   });
 }
@@ -744,6 +940,7 @@ function openCaseDialog(row) {
     req.append(empty);
   }
 
+  renderCaseHighlights(row);
   renderEffectiveRequirements(row.case_id);
   renderEvaluation(row.case_id);
   renderSpecialized(row.case_id);

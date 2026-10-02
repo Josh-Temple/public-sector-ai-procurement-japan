@@ -136,6 +136,22 @@
     </section>
   </main>
 
+  <dialog id="evidence-dialog" class="evidence-dialog" aria-labelledby="evidence-dialog-title">
+    <div class="dialog-shell">
+      <div class="dialog-head">
+        <div>
+          <p class="eyebrow">EVIDENCE CHAIN</p>
+          <h2 id="evidence-dialog-title">根拠の確認範囲</h2>
+        </div>
+        <button id="close-evidence" class="dialog-close" type="button" aria-label="閉じる">×</button>
+      </div>
+      <p id="evidence-dialog-case" class="dialog-case"></p>
+      <div id="evidence-dialog-summary" class="dialog-summary"></div>
+      <div id="evidence-dialog-list" class="evidence-list"></div>
+      <p id="evidence-dialog-note" class="dialog-note"></p>
+    </div>
+  </dialog>
+
   <footer class="site-footer">
     <div class="shell">
       <p>Source-first public research. Data and methodology are maintained in the repository.</p>

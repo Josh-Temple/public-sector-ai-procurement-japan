@@ -149,6 +149,10 @@ th:last-child, td:last-child { padding-right: 0; }
 .detail-row strong { font-size: .8rem; }
 .detail-row p { margin: 0; font-size: .8rem; color: var(--muted); }
 .detail-row .points { white-space: nowrap; font-variant-numeric: tabular-nums; font-size: .78rem; }
+.inline-source { display: inline-block; margin-left: .45rem; color: var(--accent); font-size: .72rem; white-space: nowrap; }
+.detail-list-controls { display: flex; justify-content: space-between; gap: 18px; align-items: center; padding: 13px 0; border-bottom: 1px solid var(--line); }
+.detail-count { color: var(--muted); font-size: .76rem; }
+.detail-toggle { border: 0; border-bottom: 1px solid currentColor; padding: 0 0 2px; background: transparent; color: var(--accent); cursor: pointer; font-size: .76rem; }
 .empty-detail { margin: 0; padding: 13px 0; border-bottom: 1px solid var(--line); color: var(--muted); font-size: .8rem; }
 .case-dialog-actions { display: flex; gap: 24px; flex-wrap: wrap; margin-top: 30px; }
 .dialog-head { display: flex; justify-content: space-between; gap: 24px; align-items: start; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
@@ -211,6 +215,7 @@ code { font-size: 0.9em; }
   .case-facts, .requirement-grid { grid-template-columns: 1fr; }
   .case-facts div, .case-facts div + div, .requirement-item, .requirement-item:nth-child(2n) { padding-left: 0; border-right: 0; }
   .detail-row { grid-template-columns: 1fr; gap: 4px; }
+  .detail-list-controls { align-items: flex-start; flex-direction: column; gap: 6px; }
   .highlight-item { grid-template-columns: 32px minmax(0, 1fr); }
   .highlight-links { grid-column: 2; }
 }

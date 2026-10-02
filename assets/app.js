@@ -377,6 +377,7 @@ function publicLabel(value) {
     optional: "任意",
     desirable: "望ましい",
     context: "参考",
+    conditional: "条件付き",
     tax_excluded_bid: "税抜入札額",
     tax_included: "税込",
     tax_excluded: "税抜",
@@ -405,70 +406,197 @@ function addRequirement(container, label, value) {
   container.append(wrap);
 }
 
+function changeTypeLabel(value) {
+  const labels = {
+    relaxed: "緩和",
+    clarified_scope: "範囲明確化",
+    allowed_interpretation: "解釈明確化",
+    allowed_alternative: "代替許容",
+    threshold_defined: "数値具体化",
+    clarified_strict: "厳格化",
+    clarified_feasibility: "実現可能範囲",
+    clarified_definition: "定義明確化",
+    broadened_alternative: "選択肢拡大",
+    threshold_relaxed: "閾値緩和",
+    threshold_removed: "閾値削除",
+    removed: "削除",
+    context: "前提情報",
+    evaluation_context: "評価上の補足",
+  };
+  return labels[value] || value || "確認済み";
+}
+
+function specializedValue(row) {
+  let value = row.value;
+  if (String(value).toLowerCase() === "true") value = "あり";
+  if (String(value).toLowerCase() === "false") value = "なし";
+  return [value, row.unit_or_format].filter(Boolean).join(" / ") || "—";
+}
+
+function specializedAreaLabel(value) {
+  const labels = {
+    service_scope: "対象範囲",
+    service_scale: "利用規模",
+    citizen_access: "県民利用",
+    staff_access: "職員利用",
+    answer_policy: "回答方針",
+    speech_nlu: "音声・言語理解",
+    interaction: "対話",
+    routing: "振り分け",
+    logging: "ログ",
+    security: "セキュリティ",
+    operations: "運用",
+    document_review: "文書レビュー",
+    document_authoring: "文書作成",
+    workflow: "ワークフロー",
+    network: "ネットワーク",
+    rag: "RAG",
+    ui: "UI",
+    llm: "LLM",
+    nonfunctional: "非機能",
+    agent: "AIエージェント",
+    knowledge: "ナレッジ",
+    grounding: "回答根拠",
+    web: "Web参照",
+    integration: "外部連携",
+    admin: "管理",
+    availability: "可用性",
+    future_scale: "将来拡張",
+  };
+  return labels[value] || value || "要件";
+}
+
+function appendInlineSource(element, sourceId, fallbackUrl, label = "根拠") {
+  const source = sourceId ? state.sourceById.get(sourceId) : null;
+  const url = source?.url || fallbackUrl;
+  if (!url) return;
+  element.append(document.createTextNode(" "));
+  const link = document.createElement("a");
+  link.className = "inline-source";
+  link.href = url;
+  link.target = "_blank";
+  link.rel = "noreferrer";
+  link.textContent = `${label} ↗`;
+  element.append(link);
+}
+
+function renderExpandableRows(container, rows, renderRow, noun = "件", initialLimit = 8) {
+  container.replaceChildren();
+  if (!rows.length) return false;
+
+  let expanded = false;
+  const draw = () => {
+    container.replaceChildren();
+    const visible = expanded ? rows : rows.slice(0, initialLimit);
+    visible.forEach(row => container.append(renderRow(row)));
+
+    if (rows.length > initialLimit) {
+      const controls = document.createElement("div");
+      controls.className = "detail-list-controls";
+
+      const count = document.createElement("span");
+      count.className = "detail-count";
+      count.textContent = `${rows.length}${noun}中 ${visible.length}${noun}を表示`;
+
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "detail-toggle";
+      button.textContent = expanded
+        ? `先頭${initialLimit}${noun}に戻す`
+        : `残り${rows.length - initialLimit}${noun}を表示`;
+      button.addEventListener("click", () => {
+        expanded = !expanded;
+        draw();
+      });
+
+      controls.append(count, button);
+      container.append(controls);
+    }
+  };
+  draw();
+  return true;
+}
+
 function renderEffectiveRequirements(caseId) {
   const container = document.getElementById("case-dialog-effective");
-  container.replaceChildren();
   const rows = state.effectiveByCase.get(caseId) || [];
   if (!rows.length) {
+    container.replaceChildren();
     const empty = document.createElement("p");
     empty.className = "empty-detail";
     empty.textContent = "構造化された有効要件は未登録です。";
     container.append(empty);
     return;
   }
-  rows.slice(0, 8).forEach(row => {
+
+  renderExpandableRows(container, rows, row => {
     const item = document.createElement("div");
     item.className = "detail-row";
     const key = document.createElement("strong");
     key.textContent = row.requirement_key || row.requirement_area || "要件";
+
     const value = document.createElement("p");
     value.textContent = row.effective_value || row.original_value || "—";
+    appendInlineSource(
+      value,
+      row.changed_by_source_id || row.base_source_id,
+      "",
+      row.changed_by_source_id ? "変更根拠" : "根拠"
+    );
+
     const stateText = document.createElement("span");
     stateText.className = "points";
-    stateText.textContent = reviewStateLabel(row.review_status || "not_assessed");
+    stateText.textContent = changeTypeLabel(row.change_type);
+
     item.append(key, value, stateText);
-    container.append(item);
+    return item;
   });
-  if (rows.length > 8) {
-    const more = document.createElement("p");
-    more.className = "empty-detail";
-    more.textContent = `ほか ${rows.length - 8} 件。全データはRepositoryで確認できます。`;
-    container.append(more);
-  }
 }
 
 function renderSpecialized(caseId) {
   const container = document.getElementById("case-dialog-specialized");
-  container.replaceChildren();
   const rows = state.specializedByCase.get(caseId) || [];
   if (!rows.length) {
+    container.replaceChildren();
     const empty = document.createElement("p");
     empty.className = "empty-detail";
     empty.textContent = "業務特化型AIの構造化要件は未登録です。";
     container.append(empty);
     return;
   }
-  rows.slice(0, 8).forEach(row => {
+
+  renderExpandableRows(container, rows, row => {
     const item = document.createElement("div");
     item.className = "detail-row";
-    const key = document.createElement("strong");
-    key.textContent = row.requirement_key || row.requirement_area || "要件";
+
+    const area = document.createElement("strong");
+    area.textContent = specializedAreaLabel(row.requirement_area);
+
     const value = document.createElement("p");
-    value.textContent = [row.value, row.unit_or_format].filter(Boolean).join(" / ") || "—";
+    const key = row.requirement_key ? `${row.requirement_key}：` : "";
+    value.textContent = `${key}${specializedValue(row)}`;
+    appendInlineSource(value, "", row.source_url, "仕様");
+
     const requiredness = document.createElement("span");
     requiredness.className = "points";
     requiredness.textContent = publicLabel(row.requiredness);
-    item.append(key, value, requiredness);
-    container.append(item);
+
+    item.append(area, value, requiredness);
+    return item;
   });
 }
 
 function renderPublicResults(caseId) {
   const container = document.getElementById("case-dialog-results");
-  container.replaceChildren();
   const scores = state.vendorScoresByCase.get(caseId) || [];
   const bids = state.bidsByCase.get(caseId) || [];
-  if (!scores.length && !bids.length) {
+  const rows = [
+    ...scores.map(row => ({ ...row, _resultKind: "score" })),
+    ...bids.map(row => ({ ...row, _resultKind: "bid" })),
+  ];
+
+  if (!rows.length) {
+    container.replaceChildren();
     const empty = document.createElement("p");
     empty.className = "empty-detail";
     empty.textContent = "構造化された公開得点・入札結果は未登録です。";
@@ -476,39 +604,39 @@ function renderPublicResults(caseId) {
     return;
   }
 
-  scores.slice(0, 8).forEach(row => {
+  renderExpandableRows(container, rows, row => {
     const item = document.createElement("div");
     item.className = "detail-row";
-    const vendor = document.createElement("strong");
-    vendor.textContent = row.vendor_name || row.vendor_label || "事業者";
-    const summary = document.createElement("p");
-    summary.textContent = row.selected === "true" ? "選定" : (row.rank ? `${row.rank}位` : "公開得点");
-    const score = document.createElement("span");
-    score.className = "points";
-    if (row.total_score) {
-      score.textContent = `${row.total_score}${row.total_score_max ? " / " + row.total_score_max : ""}点`;
-    } else if (row.stage1_score || row.stage2_score) {
-      score.textContent = [row.stage1_score && `1次 ${row.stage1_score}`, row.stage2_score && `2次 ${row.stage2_score}`].filter(Boolean).join(" / ");
-    } else {
-      score.textContent = "—";
-    }
-    item.append(vendor, summary, score);
-    container.append(item);
-  });
 
-  bids.slice(0, 8).forEach(row => {
-    const item = document.createElement("div");
-    item.className = "detail-row";
     const vendor = document.createElement("strong");
-    vendor.textContent = row.bidder_name || row.bidder_label || "入札者";
     const summary = document.createElement("p");
-    summary.textContent = [row.selected === "true" ? "落札" : "", publicLabel(row.tax_basis)].filter(Boolean).join(" / ") || "入札結果";
-    const amount = document.createElement("span");
-    amount.className = "points";
-    amount.textContent = formatMoney(row.bid_amount_jpy);
-    item.append(vendor, summary, amount);
-    container.append(item);
-  });
+    const metric = document.createElement("span");
+    metric.className = "points";
+
+    if (row._resultKind === "score") {
+      vendor.textContent = row.vendor_name || row.vendor_label || "事業者";
+      summary.textContent = row.selected === "true" ? "選定" : (row.rank ? `${row.rank}位` : "公開得点");
+      appendInlineSource(summary, "", row.source_url, "結果");
+      if (row.total_score) {
+        metric.textContent = `${row.total_score}${row.total_score_max ? " / " + row.total_score_max : ""}点`;
+      } else if (row.stage1_score || row.stage2_score) {
+        metric.textContent = [
+          row.stage1_score && `1次 ${row.stage1_score}`,
+          row.stage2_score && `2次 ${row.stage2_score}`,
+        ].filter(Boolean).join(" / ");
+      } else {
+        metric.textContent = "—";
+      }
+    } else {
+      vendor.textContent = row.bidder_name || row.bidder_label || "入札者";
+      summary.textContent = [row.selected === "true" ? "落札" : "", publicLabel(row.tax_basis)].filter(Boolean).join(" / ") || "入札結果";
+      appendInlineSource(summary, "", row.source_url, "結果");
+      metric.textContent = formatMoney(row.bid_amount_jpy);
+    }
+
+    item.append(vendor, summary, metric);
+    return item;
+  }, "件");
 }
 
 function renderTimeline(caseId) {
@@ -535,6 +663,7 @@ function renderTimeline(caseId) {
       key.textContent = label;
       const description = document.createElement("p");
       description.textContent = row.notes || "";
+      appendInlineSource(description, row.source_id, "", "根拠");
       const date = document.createElement("span");
       date.className = "points";
       date.textContent = value;
@@ -546,34 +675,34 @@ function renderTimeline(caseId) {
 
 function renderEvaluation(caseId) {
   const container = document.getElementById("case-dialog-evaluation");
-  container.replaceChildren();
   const rows = state.evaluationsByCase.get(caseId) || [];
   if (!rows.length) {
+    container.replaceChildren();
     const empty = document.createElement("p");
     empty.className = "empty-detail";
     empty.textContent = "構造化された評価基準は未登録です。";
     container.append(empty);
     return;
   }
-  rows.slice(0, 8).forEach(row => {
+
+  renderExpandableRows(container, rows, row => {
     const item = document.createElement("div");
     item.className = "detail-row";
+
     const group = document.createElement("strong");
     group.textContent = row.criterion_group || "評価項目";
+
     const summary = document.createElement("p");
     summary.textContent = row.criterion_summary || "—";
+    appendInlineSource(summary, "", row.source_url, "評価表");
+
     const points = document.createElement("span");
     points.className = "points";
     points.textContent = row.points ? `${row.points}点` : "—";
+
     item.append(group, summary, points);
-    container.append(item);
-  });
-  if (rows.length > 8) {
-    const more = document.createElement("p");
-    more.className = "empty-detail";
-    more.textContent = `ほか ${rows.length - 8} 項目。全評価基準はRepositoryで確認できます。`;
-    container.append(more);
-  }
+    return item;
+  }, "項目");
 }
 
 function openCaseDialog(row) {

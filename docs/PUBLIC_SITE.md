@@ -31,6 +31,7 @@ This keeps the public interface downstream of the repository data model.
 
 - `index.html`
 - `insights.html`
+- `checklist.html`
 - `robots.txt`
 - `sitemap.xml`
 - `assets/`
@@ -44,8 +45,9 @@ The workflow uses the current GitHub Pages Actions flow documented by GitHub. Gi
 The public page is intentionally more than a search table.
 
 - `insights.html` provides a stable, shareable narrative entry point for five reviewed design issues. It is presentation copy only; the linked reviewed Claims remain authoritative for scope and evidence.
+- `checklist.html` translates reviewed case differences into eight specification-design questions. It is a decision prompt, not a legal or technical standard, and every example routes back to cases, Claims, or official sources.
 - The public HTML includes basic Open Graph and Twitter summary metadata for cleaner link previews without introducing a separate content source.
-- Canonical URLs and `og:url` point to the deployed GitHub Pages URLs, while `robots.txt` and `sitemap.xml` expose the two stable public entry pages for discovery.
+- Canonical URLs and `og:url` point to the deployed GitHub Pages URLs, while `robots.txt` and `sitemap.xml` expose the stable public entry pages for discovery.
 - Each insight section links back into the canonical case-detail deep link before exposing Claim and primary-source links.
 - Summary indicators are calculated in the browser from the current requirement and evidence CSVs.
 - Theme links apply filters to the same canonical case list rather than using hand-maintained landing pages.

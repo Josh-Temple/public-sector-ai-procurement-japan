@@ -19,6 +19,7 @@
 | 知りたいこと | まず見る場所 | 補助 |
 |---|---|---|
 | どんな案件があるか | `data/cases.csv` | README |
+| 人間向けの案件検索・比較 | `index.html` | `docs/PUBLIC_SITE.md`, `data/case_evidence_summary.csv` |
 | 現在有効な要件・質疑による変更 | `data/effective_requirements.csv` | `data/source_documents.csv` |
 | 横断的な機能要件projection | `data/requirements.csv` | `docs/DATA_MODEL.md` |
 | 細粒度の要求事項 | `data/requirement_facts.csv` | 該当research memo |

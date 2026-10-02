@@ -83,6 +83,19 @@ evidence:
 
 `reviewed` は「現在も有効」を意味しない。現在性は利用時に別途判断する。
 
+### Evidence-chain completeness
+
+Claimの本文だけでなく、scope limit・例外・不確実性も意思決定に影響する主張である。回答で再利用する重要な限定は、Claimの `evidence` から対応するSourceとlocatorへ直接辿れるようにする。
+
+原則:
+- 一つのClaimが複数文書に依存する場合、`evidence` に必要なSourceを複数列挙する。
+- Source note本文に別資料への言及があるだけで、その別資料をClaimの根拠として暗黙に扱わない。
+- `data/requirements.csv` のような横断projectionが複数資料を統合している場合、単一の `source_url` が全列を支えるとは限らない。意思決定上重要な項目は `effective_requirements.csv`、Source、Claim等から一次資料locatorまで戻る。
+- 「非公開」「取得不能」「契約最終状態ではない」といったboundaryも、可能な限りその境界を定める一次資料locatorを持たせる。
+- 正しい値を保持していることと、回答者がその値を一次資料まで追跡できることを別に検証する。
+
+目標とする経路は `structured fact / claim -> source ID -> official URL -> precise locator -> amendment / scope rule` である。
+
 ## 3. Scope is part of the claim
 
 次の情報は、必要な場合にscopeへ含める。

@@ -30,6 +30,7 @@ jobs:
           mkdir -p _site
           cp index.html _site/index.html
           cp insights.html _site/insights.html
+          cp checklist.html _site/checklist.html
           cp robots.txt _site/robots.txt
           cp sitemap.xml _site/sitemap.xml
           cp -r assets _site/assets

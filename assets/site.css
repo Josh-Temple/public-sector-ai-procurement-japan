@@ -96,7 +96,7 @@ th { text-align: left; color: var(--muted); font-size: 0.7rem; font-weight: 600;
 th, td { padding: 13px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
 th:first-child, td:first-child { padding-left: 0; }
 th:last-child, td:last-child { padding-right: 0; }
-.case-title-button { display: block; max-width: 410px; padding: 0; border: 0; background: transparent; color: inherit; font: inherit; font-weight: 650; text-align: left; cursor: pointer; line-height: 1.5; }
+.case-title-button { display: block; max-width: 410px; padding: 0; border: 0; background: transparent; color: inherit; font: inherit; font-weight: 650; text-align: left; cursor: pointer; line-height: 1.5; text-decoration: none; }
 .case-title-button:hover { text-decoration: underline; text-underline-offset: .18em; }
 .case-sub { display: block; margin-top: 2px; color: var(--muted); font-size: 0.75rem; }
 .badge { display: inline-block; padding: 1px 7px; border: 1px solid var(--line); font-size: 0.72rem; white-space: nowrap; }

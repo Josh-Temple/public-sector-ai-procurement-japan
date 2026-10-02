@@ -307,11 +307,10 @@ function renderResearchHighlights() {
     const links = document.createElement("div");
     links.className = "highlight-links";
     if (row) {
-      const caseButton = document.createElement("button");
-      caseButton.type = "button";
-      caseButton.textContent = `${row.government_name}の案件を見る →`;
-      caseButton.addEventListener("click", () => openCaseDialog(row));
-      links.append(caseButton);
+      const caseLink = document.createElement("a");
+      caseLink.href = `?case=${encodeURIComponent(row.case_id)}`;
+      caseLink.textContent = `${row.government_name}の案件を見る →`;
+      links.append(caseLink);
     }
     if (source?.url) {
       const official = document.createElement("a");
@@ -724,11 +723,10 @@ function renderRows() {
     selectTd.append(check);
 
     const titleTd = document.createElement("td");
-    const title = document.createElement("button");
-    title.type = "button";
+    const title = document.createElement("a");
+    title.href = `?case=${encodeURIComponent(row.case_id)}`;
     title.className = "case-title-button";
     title.textContent = `${row.government_name}｜${row.procurement_title}`;
-    title.addEventListener("click", () => openCaseDialog(row));
     const sub = document.createElement("span");
     sub.className = "case-sub";
     sub.textContent = `${row.prefecture} / ${categoryLabel(row.category)} / Sources ${row.sourceCount}`;
@@ -933,6 +931,12 @@ async function init() {
     });
 
     applyFilters();
+
+    const requestedCaseId = new URLSearchParams(window.location.search).get("case");
+    if (requestedCaseId) {
+      const requestedCase = state.rows.find(row => row.case_id === requestedCaseId);
+      if (requestedCase) openCaseDialog(requestedCase);
+    }
   } catch (error) {
     console.error(error);
     tbody.innerHTML = '<tr><td colspan="9" class="error">データを読み込めませんでした。GitHub上のCSVと公開設定を確認してください。</td></tr>';

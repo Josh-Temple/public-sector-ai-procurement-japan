@@ -92,8 +92,10 @@ research memoの分析結果は有用だが、現在の事実を確認すると�
   - Source registry: `data/source_documents.csv`
   - Claim: `claims/CLM-kyoto-2026-multiple-procurement-units.md`
 - 群馬の共同調達は共通選定後に団体別再見積・個別契約を行う。ただし契約予定団体一覧本文は未取得である。
-  - Source registry: `data/source_documents.csv`
+  - Source: `sources/SRC-gunma-2026-joint-genai-guide.md`
   - Claim: `claims/CLM-gunma-2026-entity-specific-contracting.md`
+- 共同調達では、共通選定後の契約・稼働状態を案件全体へ自動集約しない。おうみ・群馬はいずれも団体別契約構造を持つ。
+  - Claim: `claims/CLM-joint-procurement-stage-not-casewide.md`
 
 この例は、「RAG要件なし」を「組織としてRAGを利用していない」と誤読しないための再利用可能な知識として残している。
 

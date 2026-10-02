@@ -365,6 +365,19 @@ function detailValue(value) {
   return value == null || value === "" ? "—" : value;
 }
 
+function publicLabel(value) {
+  const labels = {
+    required: "必須",
+    optional: "任意",
+    desirable: "望ましい",
+    context: "参考",
+    tax_excluded_bid: "税抜入札額",
+    tax_included: "税込",
+    tax_excluded: "税抜",
+  };
+  return labels[value] || detailValue(value);
+}
+
 function addFact(container, label, value) {
   const wrap = document.createElement("div");
   const dt = document.createElement("dt");
@@ -438,7 +451,7 @@ function renderSpecialized(caseId) {
     value.textContent = [row.value, row.unit_or_format].filter(Boolean).join(" / ") || "—";
     const requiredness = document.createElement("span");
     requiredness.className = "points";
-    requiredness.textContent = row.requiredness || "—";
+    requiredness.textContent = publicLabel(row.requiredness);
     item.append(key, value, requiredness);
     container.append(item);
   });
@@ -466,7 +479,13 @@ function renderPublicResults(caseId) {
     summary.textContent = row.selected === "true" ? "選定" : (row.rank ? `${row.rank}位` : "公開得点");
     const score = document.createElement("span");
     score.className = "points";
-    score.textContent = row.total_score ? `${row.total_score}${row.total_score_max ? " / " + row.total_score_max : ""}点` : "—";
+    if (row.total_score) {
+      score.textContent = `${row.total_score}${row.total_score_max ? " / " + row.total_score_max : ""}点`;
+    } else if (row.stage1_score || row.stage2_score) {
+      score.textContent = [row.stage1_score && `1次 ${row.stage1_score}`, row.stage2_score && `2次 ${row.stage2_score}`].filter(Boolean).join(" / ");
+    } else {
+      score.textContent = "—";
+    }
     item.append(vendor, summary, score);
     container.append(item);
   });
@@ -477,7 +496,7 @@ function renderPublicResults(caseId) {
     const vendor = document.createElement("strong");
     vendor.textContent = row.bidder_name || row.bidder_label || "入札者";
     const summary = document.createElement("p");
-    summary.textContent = [row.selected === "true" ? "落札" : "", row.tax_basis].filter(Boolean).join(" / ") || "入札結果";
+    summary.textContent = [row.selected === "true" ? "落札" : "", publicLabel(row.tax_basis)].filter(Boolean).join(" / ") || "入札結果";
     const amount = document.createElement("span");
     amount.className = "points";
     amount.textContent = formatMoney(row.bid_amount_jpy);

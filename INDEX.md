@@ -92,6 +92,9 @@ research memoの分析結果は有用だが、現在の事実を確認すると�
 - 京都市では市長部局向けとは別に交通局も生成AIサービスを調達している。
   - Source registry: `data/source_documents.csv`
   - Claim: `claims/CLM-kyoto-2026-multiple-procurement-units.md`
+- 埼玉県2026申請・相談デジタルサポートでは、県民向けにも回答根拠の表示を求め、根拠がない場合は不明回答とする制御を要求する。評価表ではナレッジ表示40点、根拠なし回答制御50点。
+  - Source: `sources/SRC-saitama-2026-ai-support-spec.md`, `sources/SRC-saitama-2026-ai-support-qa.md`
+  - Claim: `claims/CLM-saitama-2026-citizen-grounding-control.md`
 - 群馬の共同調達は共通選定後に団体別再見積・個別契約を行う。ただし契約予定団体一覧本文は未取得である。
   - Source: `sources/SRC-gunma-2026-joint-genai-guide.md`
   - Claim: `claims/CLM-gunma-2026-entity-specific-contracting.md`

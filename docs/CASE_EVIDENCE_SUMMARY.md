@@ -1,4 +1,4 @@
-# Case evidence summary — 2026-10-02
+# Case evidence summary — 2026-10-03
 
 This is a generated comparison projection for what has actually been reviewed for each case. It is not a procurement, vendor, or government quality score.
 
@@ -16,7 +16,7 @@ For source tracing, use the paired `*_source_id` columns in the CSV and resolve 
 | yaizu-2025-genai-service | 焼津市 | R | R | U | R | R | F | not_assessed | not_assessed | not_assessed | publicly_bounded | requirement_matrix:source_unavailable;contract_final:not_found_in_reviewed_sources |
 | kyoto-2026-general-genai | 京都市 | R | F | — | R | R | F | selected_candidate_confirmed | not_verified | not_verified | publicly_bounded | qa_amendment:not_found_in_reviewed_sources;contract_final:not_found_in_reviewed_sources |
 | kobe-2026-spec-authoring-ai | 神戸市 | R | P | — | R | R | F | selected_candidate_confirmed | not_verified | not_verified | publicly_bounded | qa_amendment:not_public;contract_final:not_found_in_reviewed_sources |
-| saitama-2026-ai-digital-support | 埼玉県 | · | · | · | · | · | · | not_assessed | not_assessed | not_assessed | not_assessed |  |
+| saitama-2026-ai-digital-support | 埼玉県 | R | R | — | R | R | F | selected_candidate_confirmed | not_verified | not_verified | publicly_bounded | contract_final:not_found_in_reviewed_sources |
 | nishiwaki-2025-genai-service | 西脇市 | · | · | · | · | · | · | not_assessed | not_assessed | not_assessed | not_assessed |  |
 | toyooka-2025-genai-service | 豊岡市 | · | · | · | · | · | · | not_assessed | not_assessed | not_assessed | not_assessed |  |
 | harima-2025-genai-service | 播磨町 | · | · | · | · | · | · | not_assessed | not_assessed | not_assessed | not_assessed |  |

@@ -78,7 +78,40 @@ th:last-child, td:last-child { padding-right: 0; }
 .badge.boundary { border-color: var(--warn); color: var(--warn); }
 .badge.reviewed { border-color: var(--accent); color: var(--accent); }
 .compare-check { width: 17px; height: 17px; accent-color: var(--ink); }
+.source-actions { display: grid; gap: 4px; justify-items: start; }
 .source-link { white-space: nowrap; }
+.evidence-button {
+  border: 0;
+  border-bottom: 1px solid currentColor;
+  padding: 0;
+  background: transparent;
+  color: var(--accent);
+  cursor: pointer;
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+.evidence-dialog {
+  width: min(calc(100% - 28px), 820px);
+  max-height: min(86vh, 900px);
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 0;
+  background: var(--paper);
+  color: var(--ink);
+}
+.evidence-dialog::backdrop { background: rgba(22, 33, 58, 0.34); }
+.dialog-shell { padding: 28px; }
+.dialog-head { display: flex; justify-content: space-between; gap: 24px; align-items: start; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
+.dialog-close { border: 0; background: transparent; font-size: 1.8rem; line-height: 1; cursor: pointer; padding: 0 4px; }
+.dialog-case { margin: 20px 0 6px; font-weight: 650; }
+.dialog-summary { color: var(--muted); font-size: 0.84rem; margin-bottom: 20px; }
+.evidence-list { border-top: 1px solid var(--line); }
+.evidence-item { display: grid; grid-template-columns: minmax(130px, .8fr) minmax(0, 1.5fr); gap: 18px; padding: 13px 0; border-bottom: 1px solid var(--line); }
+.evidence-role { font-weight: 650; font-size: 0.84rem; }
+.evidence-state { display: block; color: var(--muted); font-size: 0.74rem; margin-top: 2px; }
+.evidence-source { font-size: 0.82rem; overflow-wrap: anywhere; }
+.evidence-source small { display: block; color: var(--muted); margin-top: 2px; }
+.dialog-note { margin: 18px 0 0; color: var(--muted); font-size: 0.8rem; white-space: pre-line; }
 .compare .table-wrap { background: rgba(255,255,255,0.15); }
 #compare-table { min-width: 760px; }
 #compare-table th:first-child { width: 180px; }
@@ -108,4 +141,6 @@ code { font-size: 0.9em; }
   .metrics div { padding: 14px 10px 16px 0; }
   .metrics div + div { padding-left: 10px; }
   .inline-heading { align-items: start; flex-direction: column; }
+  .dialog-shell { padding: 20px; }
+  .evidence-item { grid-template-columns: 1fr; gap: 6px; }
 }

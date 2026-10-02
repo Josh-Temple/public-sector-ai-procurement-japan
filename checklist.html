@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="自治体AI調達の実案件とreviewed Claimから整理した、仕様検討時に確認する8つの問い。AI利用境界、RAG、根拠表示、質疑反映、評価、データ取扱い、契約段階を一次資料へ辿れます。">
+  <meta property="og:title" content="自治体AI調達 仕様検討チェックリスト | Public Sector AI Procurement Japan">
+  <meta property="og:description" content="実際の自治体AI調達をもとに、仕様検討で確認したい8つの問いを一次資料・Claim付きで整理。">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Public Sector AI Procurement Japan">
+  <meta property="og:url" content="https://josh-temple.github.io/public-sector-ai-procurement-japan/checklist.html">
+  <meta name="twitter:card" content="summary">
+  <link rel="canonical" href="https://josh-temple.github.io/public-sector-ai-procurement-japan/checklist.html">
+  <title>自治体AI調達 仕様検討チェックリスト | Public Sector AI Procurement Japan</title>
+  <link rel="stylesheet" href="./assets/site.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">本文へ移動</a>
+  <header class="site-header">
+    <div class="shell header-inner">
+      <div>
+        <p class="eyebrow">PUBLIC SECTOR AI PROCUREMENT / JAPAN</p>
+        <h1>自治体AI調達 仕様検討チェックリスト</h1>
+      </div>
+      <div>
+        <a class="repo-link" href="./index.html">データベースへ戻る</a><br>
+        <a class="repo-link" href="./insights.html">5つの設計論点</a><br>
+        <a class="repo-link" href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan">GitHub / 根拠データ</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero shell">
+      <p class="hero-copy">
+        仕様書を書く前に「何を要求するか」だけでなく、「どこまでAIに任せるか」「根拠がない時にどう振る舞わせるか」「どの条件を必須・評価・参加資格に置くか」を切り分けます。
+      </p>
+      <p class="scope-note">
+        これは法令・政府標準・必須要件の一覧ではありません。2026年10月3日時点でRepositoryに保存されたreviewed Claimと公式一次資料から、実案件で差が出た論点を「確認する問い」に変換したものです。各案件の条件を他自治体へそのまま転用せず、リンク先のClaimの適用範囲を確認してください。
+      </p>
+    </section>
+
+    <section class="themes shell" aria-labelledby="checklist-index">
+      <div class="section-heading split-heading">
+        <div>
+          <p class="eyebrow">8 QUESTIONS</p>
+          <h2 id="checklist-index">仕様検討で先に決めたいこと</h2>
+        </div>
+        <p class="section-lead">項目を満たすことが目的ではなく、未決のまま仕様書へ流れ込む論点を見つけるための入口です。</p>
+      </div>
+      <div class="theme-links">
+        <a class="theme-link" href="#q1"><span>01</span><strong>どこで生成AIに回答・文章を生成させるか</strong><small>禁止 / 生成＋人判断 / 生成＋根拠制御</small></a>
+        <a class="theme-link" href="#q2"><span>02</span><strong>RAGを必須・任意・対象外のどこに置くか</strong><small>調達スコープと組織全体を分ける</small></a>
+        <a class="theme-link" href="#q3"><span>03</span><strong>回答根拠と「分からない」の扱いをどう定義するか</strong><small>根拠表示 / fallback / 一般知識</small></a>
+        <a class="theme-link" href="#q4"><span>04</span><strong>Q&A・訂正後の有効要件をどう管理するか</strong><small>元仕様と現行条件を分ける</small></a>
+        <a class="theme-link" href="#q5"><span>05</span><strong>必須・加点・参加資格をどう分けるか</strong><small>同じ条件でも調達上の意味が違う</small></a>
+        <a class="theme-link" href="#q6"><span>06</span><strong>データ取扱いの対象をどこまで具体化するか</strong><small>保存場所 / API接続 / 学習 / 一時保持</small></a>
+        <a class="theme-link" href="#q7"><span>07</span><strong>選定・契約・稼働を別々に確認できるか</strong><small>共同調達では団体別状態にも注意</small></a>
+        <a class="theme-link" href="#q8"><span>08</span><strong>実証・本格導入・今回の調達範囲を区別できるか</strong><small>案件名や機能数だけで段階を推定しない</small></a>
+      </div>
+    </section>
+
+    <section class="reading shell" aria-labelledby="q1">
+      <div class="section-heading split-heading">
+        <div><p class="eyebrow">01 / GENERATION BOUNDARY</p><h2 id="q1">どこで生成AIに回答・文章を生成させるか</h2></div>
+        <p class="section-lead">「AIを使う / 使わない」では粗すぎます。生成を許す工程と、人間や固定データに残す工程を分けます。</p>
+      </div>
+      <p>
+        神戸市税務ボイスボットは音声・文脈理解にAIを使いながら、市民への回答は市提供FAQ由来の回答データに限定し、AIによる回答生成を禁止しています。一方、神戸市の仕様書作成支援AIではLLMが修正案を生成し、利用者が採用・不採用を選択します。埼玉県の県民向けAI相談は生成回答を許しつつ、根拠表示と根拠なし時の回答制御を組み合わせています。
+      </p>
+      <p><strong>確認すること:</strong> 生成を許す対象、最終判断者、固定回答が必要な領域、誤生成時の影響を工程ごとに分けているか。</p>
+      <div class="highlight-links">
+        <a href="./index.html?case=kobe-2026-tax-voicebot">神戸市税務ボイスボット →</a>
+        <a href="./index.html?case=kobe-2026-spec-authoring-ai">神戸市仕様書作成支援AI →</a>
+        <a href="./index.html?case=saitama-2026-ai-digital-support">埼玉県AI相談 →</a>
+        <a href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan/blob/main/claims/CLM-kobe-2026-voicebot-no-generated-answer.md">回答生成禁止のClaim ↗</a>
+        <a href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan/blob/main/claims/CLM-kobe-2026-spec-authoring-human-in-loop.md">Human-in-the-loopのClaim ↗</a>
+        <a href="https://www.pref.saitama.lg.jp/documents/281399/080413answer.pdf" target="_blank" rel="noreferrer">埼玉県公式Q&A ↗</a>
+      </div>
+    </section>
+
+    <section class="reading shell" aria-labelledby="q2">
+      <div class="section-heading split-heading">
+        <div><p class="eyebrow">02 / RAG SCOPE</p><h2 id="q2">RAGを必須・任意・対象外のどこに置くか</h2></div>
+        <p class="section-lead">RAGが仕様にないことと、組織としてRAGを使わないことは同じではありません。</p>
+      </div>
+      <p>
+        おうみ共同調達ではRAGは公募時の必須機能で、参加団体ごとに100GB以上を要求しています。京都市2026汎用生成AI調達ではRAGを当該調達の対象外としていますが、理由は既存サービスでRAGニーズを満たしているためです。
+      </p>
+      <p><strong>確認すること:</strong> RAGの要否、対象データ、容量、権限分離、既存サービスとの役割分担を「今回の調達範囲」として明示できているか。</p>
+      <div class="highlight-links">
+        <a href="./index.html?case=oumi-2026-joint-genai">おうみ共同調達 →</a>
+        <a href="./index.html?case=kyoto-2026-general-genai">京都市汎用生成AI →</a>
+        <a href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan/blob/main/claims/CLM-oumi-2026-rag-required.md">おうみRAG必須のClaim ↗</a>
+        <a href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan/blob/main/claims/CLM-kyoto-2026-rag-out-of-scope.md">京都市RAG対象外のClaim ↗</a>
+        <a href="https://www.city.omihachiman.lg.jp/material/files/group/115/AI_Shiyousyo2.pdf" target="_blank" rel="noreferrer">おうみ公式仕様書 ↗</a>
+      </div>
+    </section>
+
+    <section class="reading shell" aria-labelledby="q3">
+      <div class="section-heading split-heading">
+        <div><p class="eyebrow">03 / GROUNDING</p><h2 id="q3">回答根拠と「分からない」の扱いをどう定義するか</h2></div>
+        <p class="section-lead">RAGを入れるだけでは、回答時の根拠提示や根拠不足時の挙動は決まりません。</p>
+      </div>
+      <p>
+        埼玉県は県民向けチャットボットにも元データや参照ページへのリンク等を提示する想定を明確化し、根拠が見つからない場合は回答が不明であると回答できることを要求しています。焼津市は登録データをできる限り優先する一方、一般知識からの回答を100%排除できない前提を公式Q&Aで受け入れています。
+      </p>
+      <p><strong>確認すること:</strong> 引用・リンクの見せ方、根拠不足時のfallback、一般知識の利用範囲、正答率やテスト方法を別々に定義しているか。</p>
+      <div class="highlight-links">
+        <a href="./index.html?case=saitama-2026-ai-digital-support">埼玉県AI相談 →</a>
+        <a href="./index.html?case=yaizu-2025-genai-service">焼津市生成AI →</a>
+        <a href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan/blob/main/claims/CLM-saitama-2026-citizen-grounding-control.md">埼玉県のClaim ↗</a>
+        <a href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan/blob/main/claims/CLM-yaizu-2025-rag-grounding-not-absolute.md">焼津市のClaim ↗</a>
+      </div>
+    </section>
+
+    <section class="reading shell" aria-labelledby="q4">
+      <div class="section-heading split-heading">
+        <div><p class="eyebrow">04 / EFFECTIVE REQUIREMENTS</p><h2 id="q4">Q&A・訂正後の有効要件をどう管理するか</h2></div>
+        <p class="section-lead">比較対象は最初に公開された仕様書ではなく、後続資料を反映した応募時の条件です。</p>
+      </div>
+      <p>
+        おうみ共同調達では公式質問回答により、LLM数、Deep Research、テンプレート数、自律的エージェント、認証、ネットワーク条件などが変更されています。元仕様だけを読み続けると、既に緩和・変更された条件を現行要件として扱うことになります。
+      </p>
+      <p><strong>確認すること:</strong> 仕様書・Q&A・訂正を一つの変更履歴として管理し、変更前と変更後を識別できるか。</p>
+      <div class="highlight-links">
+        <a href="./index.html?case=oumi-2026-joint-genai">おうみ共同調達 →</a>
+        <a href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan/blob/main/claims/CLM-oumi-2026-effective-amendments.md">変更例のClaim ↗</a>
+        <a href="https://www.city.omihachiman.lg.jp/material/files/group/115/AI_kaitou.pdf" target="_blank" rel="noreferrer">公式質問回答 ↗</a>
+      </div>
+    </section>
+
+    <section class="reading shell" aria-labelledby="q5">
+      <div class="section-heading split-heading">
+        <div><p class="eyebrow">05 / PROCUREMENT ROLE</p><h2 id="q5">必須・加点・参加資格をどう分けるか</h2></div>
+        <p class="section-lead">同じ条件でも、調達上の役割が違えば意味は大きく変わります。</p>
+      </div>
+      <p>
+        北海道2026 RAG調達ではISO/IEC 27001は提案の加点ではなく入札参加資格です。越谷市2024では月100万文字以上が必須である一方、「上限なし」は必須ではなく、上限量に応じた評価加点の対象です。
+      </p>
+      <p><strong>確認すること:</strong> その条件が「満たさないと参加できない」「満たさないと仕様不適合」「満たすと評価が上がる」のどれかを明示しているか。</p>
+      <div class="highlight-links">
+        <a href="./index.html?case=hokkaido-2026-genai-rag-service">北海道RAGサービス →</a>
+        <a href="./index.html?case=koshigaya-2024-genai-service-training">越谷市生成AI →</a>
+        <a href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan/blob/main/claims/CLM-hokkaido-2026-qualification-not-proposal-score.md">北海道のClaim ↗</a>
+        <a href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan/blob/main/claims/CLM-koshigaya-2024-minimum-vs-evaluated-usage.md">越谷市のClaim ↗</a>
+      </div>
+    </section>
+
+    <section class="reading shell" aria-labelledby="q6">
+      <div class="section-heading split-heading">
+        <div><p class="eyebrow">06 / DATA HANDLING</p><h2 id="q6">データ取扱いの対象をどこまで具体化するか</h2></div>
+        <p class="section-lead">「国内」「保存しない」「学習しない」は、対象を省略すると別の条件に読めます。</p>
+      </div>
+      <p>
+        大府市は市データの国内保存を要求しつつ、生成AI APIの接続先所在地そのものを国内に限定していません。埼玉県の公開Q&Aは、LLMサーバの保存禁止を「推論完了後の永続保存」と解釈し、推論中のコンテキストウィンドウ等での一時保持は対象外としています。
+      </p>
+      <p><strong>確認すること:</strong> 入力・出力・ログ・RAGデータ・一時保持・永続保存・学習利用・API接続先を同じ言葉でまとめず、対象別に条件を書いているか。</p>
+      <div class="highlight-links">
+        <a href="./index.html?case=obu-2026-genai-service">大府市生成AI →</a>
+        <a href="./index.html?case=saitama-2026-ai-digital-support">埼玉県AI相談 →</a>
+        <a href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan/blob/main/claims/CLM-obu-2026-domestic-storage-not-api-endpoint.md">大府市のClaim ↗</a>
+        <a href="https://www.city.obu.aichi.jp/_res/projects/default_project/_page_/001/038/173/kaitou.pdf" target="_blank" rel="noreferrer">大府市公式Q&A ↗</a>
+        <a href="https://www.pref.saitama.lg.jp/documents/281399/080413answer.pdf" target="_blank" rel="noreferrer">埼玉県公式Q&A ↗</a>
+      </div>
+    </section>
+
+    <section class="reading shell" aria-labelledby="q7">
+      <div class="section-heading split-heading">
+        <div><p class="eyebrow">07 / LIFECYCLE</p><h2 id="q7">選定・契約・稼働を別々に確認できるか</h2></div>
+        <p class="section-lead">候補者の選定結果だけでは、契約締結や実稼働を確認したことにはなりません。</p>
+      </div>
+      <p>
+        群馬の共同調達は共通選定後に各契約予定団体へ再見積を行い、団体ごとに個別契約します。おうみ共同調達も参加自治体ごとのサービス利用契約を持ちます。共通選定の状態を案件全体の契約・稼働へ自動的に丸めると、団体ごとの差を失います。
+      </p>
+      <p><strong>確認すること:</strong> 選定、契約締結、契約最終仕様、サービス開始を別の証拠で確認できるか。共同調達なら主体別の状態差があり得るか。</p>
+      <div class="highlight-links">
+        <a href="./index.html?case=gunma-2026-joint-genai">群馬共同調達 →</a>
+        <a href="./index.html?case=oumi-2026-joint-genai">おうみ共同調達 →</a>
+        <a href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan/blob/main/claims/CLM-joint-procurement-stage-not-casewide.md">stageのClaim ↗</a>
+        <a href="https://www.pref.gunma.jp/uploaded/attachment/686869.pdf" target="_blank" rel="noreferrer">群馬県公式資料 ↗</a>
+      </div>
+    </section>
+
+    <section class="reading shell" aria-labelledby="q8">
+      <div class="section-heading split-heading">
+        <div><p class="eyebrow">08 / PROCUREMENT STAGE</p><h2 id="q8">実証・本格導入・今回の調達範囲を区別できるか</h2></div>
+        <p class="section-lead">機能が高度でも、案件自体が本格導入フェーズとは限りません。</p>
+      </div>
+      <p>
+        福島県2026「生成AIサービス導入支援業務」はRAG・ガバナンス・活用促進まで含みますが、公式仕様では実証結果を分析し「次段階の本格導入」に向けた要件・体制・運用ルールを整理する事業です。京都市のRAG対象外も、組織全体の機能不在ではなく今回調達のスコープ境界でした。
+      </p>
+      <p><strong>確認すること:</strong> 今回の調達が実証、限定導入、本格導入、更新のどこに位置し、今回対象外の機能を別基盤で満たしていないか。</p>
+      <div class="highlight-links">
+        <a href="./index.html?case=fukushima-2026-genai-pilot-expansion">福島県2026実証 →</a>
+        <a href="./index.html?case=kyoto-2026-general-genai">京都市汎用生成AI →</a>
+        <a href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan/blob/main/claims/CLM-fukushima-2026-remains-pilot.md">福島県のClaim ↗</a>
+        <a href="https://www.pref.fukushima.lg.jp/uploaded/attachment/734795.pdf" target="_blank" rel="noreferrer">福島県公式仕様書 ↗</a>
+      </div>
+    </section>
+
+    <section class="reading shell" aria-labelledby="workflow">
+      <div class="section-heading split-heading">
+        <div><p class="eyebrow">HOW TO USE</p><h2 id="workflow">チェックリストの使い方</h2></div>
+        <p class="section-lead">既存自治体の文言をコピーする前に、自組織で決めるべき境界を特定します。</p>
+      </div>
+      <div class="reading-grid">
+        <div>
+          <h3>1. 未決事項を出す</h3>
+          <p>8つの問いに対して「決定済み / 要協議 / 今回対象外」を置き、対象外には理由と別の受け皿を残します。</p>
+        </div>
+        <div>
+          <h3>2. 実案件を比較する</h3>
+          <p>リンク先の案件詳細で、仕様・Q&A反映後要件・評価基準・Evidence chainを確認します。</p>
+        </div>
+        <div>
+          <h3>3. 文言ではなく役割を移す</h3>
+          <p>他自治体の条件をそのまま転記せず、なぜその条件を必須・加点・対象外に置いたかを自組織の前提に合わせて決めます。</p>
+        </div>
+      </div>
+      <p class="scope-note">
+        法令、国のガイドライン、組織内の情報セキュリティ規程、個人情報・機密情報の取扱い等はこのチェックリストだけで代替できません。
+      </p>
+      <p class="case-dialog-actions">
+        <a class="text-button" href="./index.html">案件データベースで比較する →</a>
+        <a class="text-button" href="./insights.html">5つの設計論点を読む →</a>
+        <a class="text-button" href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan">Repositoryで根拠を見る ↗</a>
+      </p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell">
+      <p>Evidence-backed prompts for specification design. The linked Claims and primary sources define the factual scope.</p>
+    </div>
+  </footer>
+</body>
+</html>

@@ -26,3 +26,7 @@ scope: "群馬県情報化推進協議会 2026 生成AIサービス共同調達�
 共同組織の構成員と、この案件の契約予定団体を同一視しない。別紙「契約予定団体一覧」の本文は今回の取得経路では再取得できていないため、団体名・団体別上限・利用予定期間をこのSourceだけから推測しない。
 
 また、共通の選定結果があっても各団体の契約締結・稼働開始は別々に生じ得る。団体別の契約・稼働証拠がない状態で、case-levelの契約・稼働状態へ集約しない。
+
+## Preservation status
+
+2026-10-03、登録済み公式URLはGitHub ActionsからHTTP 404となり直接再取得できなかった。過去に確認した本文に基づくSource noteは維持するが、現在freshに再取得可能とは扱わず、`data/source_documents.csv` では `source_unavailable` / `snapshot_unavailable` とする。

@@ -5,6 +5,8 @@ on:
     paths:
       - "index.html"
       - "insights.html"
+      - "checklist.html"
+      - "methodology.html"
       - "robots.txt"
       - "sitemap.xml"
       - "assets/**"

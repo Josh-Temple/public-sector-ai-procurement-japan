@@ -17,11 +17,13 @@ PUBLIC_PAGES = {
     "index.html": BASE_URL,
     "insights.html": BASE_URL + "insights.html",
     "checklist.html": BASE_URL + "checklist.html",
+    "methodology.html": BASE_URL + "methodology.html",
 }
 REQUIRED_FILES = {
     "index.html",
     "insights.html",
     "checklist.html",
+    "methodology.html",
     "robots.txt",
     "sitemap.xml",
     "assets/app.js",

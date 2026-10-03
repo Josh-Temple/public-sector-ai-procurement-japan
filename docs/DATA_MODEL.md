@@ -197,7 +197,7 @@ AI機能とは別に、買い方そのものを比較する。共同調達や一
 | access_state | accessible / source_unavailable 等 |
 | original_filename | 取得元のファイル名。HTML等で該当しない場合は空欄 |
 | snapshot_hash | 保存したsnapshotの内容hash。原則 `sha256:<hex>`。未保存なら空欄 |
-| snapshot_status | external_url_only / snapshot_pending / snapshotted / snapshot_unavailable |
+| snapshot_status | external_url_only / snapshot_pending / snapshotted / snapshot_unavailable / not_public |
 | snapshot_locator | durable snapshotの所在。公開repoにはsecretやbearer URLを書かない |
 
 URLが同じでも内容変更・削除があり得るため、再取得が重要な一次資料はsnapshot候補として扱う。
@@ -355,7 +355,7 @@ projection固有の状態:
 - `not_applicable`: 調達方式や文書構造上、そのrole自体が非該当。例: 価格競争型一般入札の提案評価表、仕様書内に要件を内包し独立要求表がない場合。一次資料で非該当と判断できる場合だけ使う。
 
 `public_reconstructability`:
-- `publicly_reconstructable`: 監査済み範囲について公開証拠から有効状態を追跡可能
+- `publicly_reconstructable`: 契約最終roleと最終要求の決定ルールまで公開証拠で確認済み（詳しい昇格条件は17節）
 - `publicly_bounded`: 監査済みcore roleに not_public / source_unavailable / conflicting_sources がある
 - `not_assessed`: 案件単位の再構成可否をまだ判定していない
 
@@ -413,7 +413,7 @@ projection固有の状態:
 `budget_ceiling_jpy` と `contract_amount_jpy` は現時点では公式資料に記載された raw amount を保持する。案件によって税込・税抜、初期費用込み、研修別契約、複数団体別契約など条件が異なるため、税区分と対象範囲を正規化するまでは案件間の単純な価格ランキングに使用しない。
 
 
-## 12. Evidence coverage and public reconstructability
+## 17. Evidence coverage and public reconstructability
 
 `data/evidence_coverage.csv` と `docs/EVIDENCE_COVERAGE.md` は `scripts/build_evidence_coverage.py` による生成物で、直接編集しない。
 

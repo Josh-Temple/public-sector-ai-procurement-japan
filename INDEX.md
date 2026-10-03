@@ -41,6 +41,7 @@
 | 再利用可能な主張 | `claims/` | 根拠sourceとdata |
 | 未解決事項・次の調査 | `research/COLLECTION_BACKLOG_2026-09-30.md` | 最新research pass |
 | データ項目の意味 | `docs/DATA_MODEL.md` | `docs/KNOWLEDGE_MODEL.md` |
+| Repository保守・原典保存・設定の未完了項目 | `docs/RELIABILITY.md` | integrity CI / source-preservation workflow |
 | AIの参照・更新ルール | `AGENTS.md` | このINDEX |
 
 ## Knowledge layers

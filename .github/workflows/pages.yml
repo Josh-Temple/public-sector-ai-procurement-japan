@@ -22,23 +22,19 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Verify main update came through a merged pull request
-        if: github.event_name == 'push'
+      - name: Require main branch
+        run: test "$GITHUB_REF" = "refs/heads/main"
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Verify main update came through merged pull requests
+        if: github.ref == 'refs/heads/main'
         uses: actions/github-script@v7
         with:
           script: |
-            const { owner, repo } = context.repo;
-            const { data: prs } = await github.rest.repos.listPullRequestsAssociatedWithCommit({
-              owner,
-              repo,
-              commit_sha: context.sha,
-            });
-            const mergedToMain = prs.some(pr => pr.merged_at && pr.base?.ref === 'main');
-            if (!mergedToMain) {
-              core.setFailed('Direct push to main detected. Repository policy requires changes to arrive through a merged pull request.');
-            }
-      - name: Checkout
-        uses: actions/checkout@v6
+            const verify = require('./scripts/verify_main_update.cjs');
+            await verify({ github, context, core });
       - name: Validate repository structure
         run: python3 scripts/validate_repository.py
       - name: Rebuild evidence projections

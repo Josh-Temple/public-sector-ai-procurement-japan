@@ -12,11 +12,19 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  actions: write
+
+concurrency:
+  group: source-preservation
+  cancel-in-progress: false
 
 jobs:
   preserve:
     runs-on: ubuntu-latest
     steps:
+      - name: Require main branch
+        run: test "$GITHUB_REF" = "refs/heads/main"
+
       - name: Checkout
         uses: actions/checkout@v6
 
@@ -31,26 +39,14 @@ jobs:
           count="$(python3 -c 'import json; print(len(json.load(open("_source_snapshot_manifest.json", encoding="utf-8"))))')"
           echo "count=$count" >> "$GITHUB_OUTPUT"
 
-      - name: Ensure private draft release exists
+      - name: Archive immutable snapshots in a verified draft release
         if: steps.prepare.outputs.count != '0'
         env:
           GH_TOKEN: ${{ github.token }}
-          SNAPSHOT_TAG: source-snapshots-private
         run: |
-          if ! gh release view "$SNAPSHOT_TAG" >/dev/null 2>&1; then
-            gh release create "$SNAPSHOT_TAG" \
-              --draft \
-              --title "Private source snapshots" \
-              --notes "Private research-preservation assets. Keep this release in draft state; do not publish without a separate rights review."
-          fi
-
-      - name: Upload snapshots to private draft release
-        if: steps.prepare.outputs.count != '0'
-        env:
-          GH_TOKEN: ${{ github.token }}
-          SNAPSHOT_TAG: source-snapshots-private
-        run: |
-          gh release upload "$SNAPSHOT_TAG" _source_snapshots/* --clobber
+          python3 scripts/source_snapshot.py archive \
+            --out-dir _source_snapshots \
+            --manifest _source_snapshot_manifest.json
 
       - name: Record snapshot hashes and locators
         if: steps.prepare.outputs.count != '0'
@@ -75,9 +71,34 @@ jobs:
           git checkout -b "$branch"
           git add data/source_documents.csv
           git commit -m "Record archived source snapshots"
-          git push origin "HEAD:$branch"
+          if git ls-remote --exit-code origin "refs/heads/$branch" >/dev/null 2>&1; then
+            existing="$(git ls-remote origin "refs/heads/$branch" | cut -f1)"
+            git fetch origin "$branch"
+            if ! git diff --quiet FETCH_HEAD HEAD -- data/source_documents.csv; then
+              echo "Existing preservation branch differs; manual review required."
+              exit 1
+            fi
+          else
+            git push origin "HEAD:$branch"
+          fi
+          if test "$(gh pr list --head "$branch" --state all --json number --jq 'length')" != '0'; then
+            echo "Preservation PR already exists."
+            exit 0
+          fi
           gh pr create \
             --base main \
             --head "$branch" \
             --title "Record archived source snapshots" \
             --body "Records SHA-256 hashes and private draft-release locators for source files successfully archived by the source-preservation workflow. No procurement facts are changed."
+
+      # GITHUB_TOKEN-created PRs do not trigger pull_request workflows. This
+      # explicit dispatch supplies validation; it never bypasses required checks.
+      - name: Validate generated PR branch
+        if: steps.prepare.outputs.count != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          branch="automation/source-snapshots-${GITHUB_RUN_ID}"
+          if gh pr list --head "$branch" --json number --jq 'length' | grep -q '^1$'; then
+            gh workflow run repository-integrity.yml --ref "$branch"
+          fi

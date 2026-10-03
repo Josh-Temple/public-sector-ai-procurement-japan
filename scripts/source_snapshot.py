@@ -12,6 +12,7 @@ import csv
 import hashlib
 import json
 import re
+import subprocess
 import sys
 import urllib.parse
 import urllib.request
@@ -28,6 +29,8 @@ def read_rows() -> tuple[list[str], list[dict[str, str]]]:
 
 
 def safe_asset_name(source_id: str, original_filename: str, url: str) -> str:
+    if not re.fullmatch(r"SRC-[A-Za-z0-9._-]+", source_id):
+        raise ValueError("unsafe source ID")
     suffix = Path(original_filename or urllib.parse.urlparse(url).path).suffix[:12]
     if not re.fullmatch(r"\.[A-Za-z0-9]{1,10}", suffix or ""):
         suffix = ".bin"
@@ -36,7 +39,7 @@ def safe_asset_name(source_id: str, original_filename: str, url: str) -> str:
 
 def validate_url(url: str) -> None:
     parsed = urllib.parse.urlparse(url)
-    if parsed.scheme != "https" or not parsed.hostname:
+    if parsed.scheme != "https" or not parsed.hostname or parsed.username or parsed.password:
         raise ValueError(f"snapshot URL must be HTTPS: {url}")
     host = parsed.hostname.lower()
     if host in {"localhost", "127.0.0.1", "::1"} or host.endswith(".local"):
@@ -72,6 +75,9 @@ def prepare(out_dir: Path, manifest_path: Path) -> int:
             raise RuntimeError(f"empty snapshot payload: {source_id}")
 
         digest = hashlib.sha256(payload).hexdigest()
+        # Immutable content-addressed assets preserve earlier versions on retries.
+        asset_name = f"{Path(asset_name).stem}-{digest}{Path(asset_name).suffix}"
+        path = out_dir / asset_name
         path.write_bytes(payload)
         manifest.append({
             "source_id": source_id,
@@ -90,14 +96,31 @@ def prepare(out_dir: Path, manifest_path: Path) -> int:
 
 
 def apply(manifest_path: Path, locator_prefix: str) -> int:
+    if locator_prefix != "github-draft-release:source-snapshots-private":
+        raise ValueError("unsupported snapshot locator prefix")
     fieldnames, rows = read_rows()
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     by_id = {item["source_id"]: item for item in manifest}
+    if len(by_id) != len(manifest):
+        raise ValueError("duplicate manifest source IDs")
     changed = 0
 
     for row in rows:
         item = by_id.get(row.get("source_id"))
         if not item:
+            continue
+        if row.get("url") != item.get("url") or row.get("access_state") != "accessible":
+            raise RuntimeError("source eligibility changed after download")
+        if not re.fullmatch(r"[a-f0-9]{64}", str(item.get("sha256", ""))):
+            raise ValueError("invalid snapshot digest")
+        expected = safe_asset_name(row["source_id"], row.get("original_filename", ""), row["url"])
+        expected = f"{Path(expected).stem}-{item['sha256']}{Path(expected).suffix}"
+        if item.get("asset_name") != expected or item.get("bytes", 0) <= 0:
+            raise ValueError("invalid snapshot asset metadata")
+        if (row.get("snapshot_status") == "snapshotted"
+                and row.get("snapshot_hash") == f"sha256:{item['sha256']}"
+                and row.get("snapshot_locator") == f"{locator_prefix}/{expected}"):
+            changed += 1
             continue
         if row.get("snapshot_status") != "snapshot_pending":
             raise RuntimeError(f"refusing to overwrite non-pending snapshot state: {row.get('source_id')}")
@@ -118,6 +141,67 @@ def apply(manifest_path: Path, locator_prefix: str) -> int:
     return 0
 
 
+def gh_json(*args: str) -> object:
+    return json.loads(subprocess.check_output(["gh", *args], text=True))
+
+
+def archive(manifest_path: Path, out_dir: Path) -> int:
+    """Upload only to a verified draft; never overwrite an existing asset."""
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    if not manifest:
+        print("SNAPSHOT_ARCHIVE_PASS assets=0")
+        return 0
+    tag = "source-snapshots-private"
+    # List first: a read/network error must not be mistaken for release absence.
+    repo = gh_json("repo", "view", "--json", "nameWithOwner")["nameWithOwner"]
+    releases = gh_json("api", f"repos/{repo}/releases?per_page=100")
+    matches = [r for r in releases if r["tag_name"] == tag]
+    if not matches:
+        if len(releases) == 100:
+            raise RuntimeError("release pagination required before creating archive")
+        subprocess.run(["gh", "release", "create", tag, "--draft", "--title",
+                        "Source snapshots (draft; do not publish)", "--notes",
+                        "Preservation only. Publishing requires a separate rights review."], check=True)
+        release = gh_json("release", "view", tag, "--json", "isDraft,databaseId")
+        release_id = release["databaseId"]
+    else:
+        release_id = matches[0]["id"]
+    for item in manifest:
+        release = gh_json("api", f"repos/{repo}/releases/{release_id}")
+        if not release["draft"]:
+            raise RuntimeError("snapshot archive is published; refusing upload")
+        name = item["asset_name"]
+        if Path(name).name != name or not re.fullmatch(r"SRC-[A-Za-z0-9._-]+", name):
+            raise ValueError("unsafe manifest asset name")
+        payload = (out_dir / name).read_bytes()
+        if not payload or hashlib.sha256(payload).hexdigest() != item["sha256"]:
+            raise RuntimeError("local snapshot hash mismatch")
+        assets = gh_json("api", f"repos/{repo}/releases/{release_id}/assets?per_page=100")
+        if len(assets) == 100:
+            raise RuntimeError("asset pagination required")
+        existing = [a for a in assets if a["name"] == name]
+        if existing:
+            # Verify bytes rather than trusting the asset filename or size alone.
+            downloaded = subprocess.check_output(["gh", "api", "-H", "Accept: application/octet-stream",
+                                                  f"repos/{repo}/releases/assets/{existing[0]['id']}"])
+            if hashlib.sha256(downloaded).hexdigest() != item["sha256"]:
+                raise RuntimeError("existing archive asset collision")
+        else:
+            subprocess.run(["gh", "release", "upload", tag, str(out_dir / name)], check=True)
+            assets = gh_json("api", f"repos/{repo}/releases/{release_id}/assets?per_page=100")
+            uploaded = [a for a in assets if a["name"] == name]
+            if len(uploaded) != 1:
+                raise RuntimeError("uploaded archive asset not found")
+            downloaded = subprocess.check_output(["gh", "api", "-H", "Accept: application/octet-stream",
+                                                  f"repos/{repo}/releases/assets/{uploaded[0]['id']}"])
+            if hashlib.sha256(downloaded).hexdigest() != item["sha256"]:
+                raise RuntimeError("uploaded archive asset hash mismatch")
+        if not gh_json("api", f"repos/{repo}/releases/{release_id}")["draft"]:
+            raise RuntimeError("archive draft state changed; refusing metadata promotion")
+    print(f"SNAPSHOT_ARCHIVE_PASS assets={len(manifest)}")
+    return 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     sub = parser.add_subparsers(dest="command", required=True)
@@ -130,9 +214,15 @@ def main() -> int:
     p_apply.add_argument("--manifest", required=True, type=Path)
     p_apply.add_argument("--locator-prefix", required=True)
 
+    p_archive = sub.add_parser("archive")
+    p_archive.add_argument("--manifest", required=True, type=Path)
+    p_archive.add_argument("--out-dir", required=True, type=Path)
+
     args = parser.parse_args()
     if args.command == "prepare":
         return prepare(args.out_dir, args.manifest)
+    if args.command == "archive":
+        return archive(args.manifest, args.out_dir)
     return apply(args.manifest, args.locator_prefix)
 
 

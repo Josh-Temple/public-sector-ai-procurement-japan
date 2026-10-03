@@ -6,6 +6,8 @@
 
 **5つの設計論点:** https://josh-temple.github.io/public-sector-ai-procurement-japan/insights.html
 
+**仕様検討チェックリスト:** https://josh-temple.github.io/public-sector-ai-procurement-japan/checklist.html
+
 ## Scope
 
 当面は、日本の地方公共団体（都道府県・市区町村・共同調達組織）による生成AI関連の調達を対象にします。
@@ -31,6 +33,7 @@
 
 - Entry point: `INDEX.md`
 - Public comparison UI: `index.html` / `docs/PUBLIC_SITE.md`
+- Shareable search state: `?theme=rag`, `?evidence=publicly_bounded`, `?q=...`, `?case=<case_id>`
 - 回答品質の独立比較: [Benchmark V1](evals/benchmark/BENCHMARK_V1_METHOD.md) / `research/BENCHMARK_V1_RESULT_2026-10-02.md`
 - AI / agent guidance: `AGENTS.md`
 - Structured data model: `docs/DATA_MODEL.md`

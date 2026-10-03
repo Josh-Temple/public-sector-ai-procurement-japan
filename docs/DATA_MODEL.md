@@ -206,6 +206,7 @@ URLが同じでも内容変更・削除があり得るため、再取得が重�
 - `snapshot_pending`: 再取得性リスクがあり、durable snapshotを作る候補
 - `snapshotted`: snapshotを保存し、locatorとhashで同一性を追跡できる
 - `snapshot_unavailable`: 権利・技術・取得制約等によりsnapshotを保存できない
+- `not_public`: 資料の存在は確認できるが本文が一般公開されておらず、公開取得物のsnapshotを作れない
 
 snapshotは内容の正しさを証明するものではない。将来同じ取得物を再検証できるようにするための保存である。空欄のhashや取得不能なsnapshotを推測して埋めない。
 

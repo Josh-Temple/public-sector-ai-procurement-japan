@@ -8,6 +8,8 @@
 
 **仕様検討チェックリスト:** https://josh-temple.github.io/public-sector-ai-procurement-japan/checklist.html
 
+**データの見方・方法:** https://josh-temple.github.io/public-sector-ai-procurement-japan/methodology.html
+
 ## Scope
 
 当面は、日本の地方公共団体（都道府県・市区町村・共同調達組織）による生成AI関連の調達を対象にします。

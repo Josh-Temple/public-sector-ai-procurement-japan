@@ -32,6 +32,7 @@ This keeps the public interface downstream of the repository data model.
 - `index.html`
 - `insights.html`
 - `checklist.html`
+- `methodology.html`
 - `robots.txt`
 - `sitemap.xml`
 - `assets/`
@@ -46,6 +47,7 @@ The public page is intentionally more than a search table.
 
 - `insights.html` provides a stable, shareable narrative entry point for five reviewed design issues. It is presentation copy only; the linked reviewed Claims remain authoritative for scope and evidence.
 - `checklist.html` translates reviewed case differences into eight specification-design questions. It is a decision prompt, not a legal or technical standard, and every example routes back to cases, Claims, or official sources.
+- `methodology.html` exposes the public data layers, evidence-state semantics, freshness rules, and direct CSV entry points without creating a second canonical data source.
 - The public HTML includes basic Open Graph and Twitter summary metadata for cleaner link previews without introducing a separate content source.
 - Canonical URLs and `og:url` point to the deployed GitHub Pages URLs, while `robots.txt` and `sitemap.xml` expose the stable public entry pages for discovery.
 - Each insight section links back into the canonical case-detail deep link before exposing Claim and primary-source links.
@@ -123,11 +125,12 @@ This layer does not create a new fact source or infer missing procurement states
 
 ## Public navigation and shareable search state
 
-The three stable public entry points use the same compact navigation:
+The four stable public entry points use the same compact navigation:
 
 - 調べる → `index.html`
 - 理解する → `insights.html`
 - 仕様を考える → `checklist.html`
+- データの見方 → `methodology.html`
 
 The database serializes discovery state into query parameters without creating a second data source.
 

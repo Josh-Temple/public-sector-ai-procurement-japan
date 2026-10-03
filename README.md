@@ -105,6 +105,10 @@
 
 CI also regenerates the Evidence projections and fails if committed generated outputs differ, runs the public-site validator, and syntax-checks `assets/app.js`.
 
+On pushes to `main`, both repository integrity and Pages deployment verify that the commit is associated with a merged pull request. This is a compensating guard for environments where GitHub branch-protection settings cannot be changed by the connected automation: a direct push is already present in Git history, but CI fails and the public site is not deployed from that push.
+
+For Source preservation, `.github/workflows/source-preservation.yml` archives only Sources explicitly marked `snapshot_pending`, `accessible`, and carrying an HTTPS URL. Binary assets are stored in the private draft release `source-snapshots-private`; the repository records only SHA-256 and a non-secret locator through a follow-up PR. Sources whose bodies cannot currently be acquired are `snapshot_unavailable`, not falsely marked as preserved.
+
 Local check:
 
 ```bash

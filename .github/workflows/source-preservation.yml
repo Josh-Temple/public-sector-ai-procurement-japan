@@ -1,0 +1,83 @@
+name: Preserve pending source snapshots
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "data/source_documents.csv"
+      - "scripts/source_snapshot.py"
+      - ".github/workflows/source-preservation.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  preserve:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Prepare eligible snapshots
+        id: prepare
+        run: |
+          rm -rf _source_snapshots
+          mkdir -p _source_snapshots
+          python3 scripts/source_snapshot.py prepare \
+            --out-dir _source_snapshots \
+            --manifest _source_snapshot_manifest.json
+          count="$(python3 -c 'import json; print(len(json.load(open("_source_snapshot_manifest.json", encoding="utf-8"))))')"
+          echo "count=$count" >> "$GITHUB_OUTPUT"
+
+      - name: Ensure private draft release exists
+        if: steps.prepare.outputs.count != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SNAPSHOT_TAG: source-snapshots-private
+        run: |
+          if ! gh release view "$SNAPSHOT_TAG" >/dev/null 2>&1; then
+            gh release create "$SNAPSHOT_TAG" \
+              --draft \
+              --title "Private source snapshots" \
+              --notes "Private research-preservation assets. Keep this release in draft state; do not publish without a separate rights review."
+          fi
+
+      - name: Upload snapshots to private draft release
+        if: steps.prepare.outputs.count != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SNAPSHOT_TAG: source-snapshots-private
+        run: |
+          gh release upload "$SNAPSHOT_TAG" _source_snapshots/* --clobber
+
+      - name: Record snapshot hashes and locators
+        if: steps.prepare.outputs.count != '0'
+        run: |
+          python3 scripts/source_snapshot.py apply \
+            --manifest _source_snapshot_manifest.json \
+            --locator-prefix "github-draft-release:source-snapshots-private"
+          python3 scripts/validate_repository.py
+
+      - name: Open metadata pull request
+        if: steps.prepare.outputs.count != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if git diff --quiet -- data/source_documents.csv; then
+            echo "No snapshot metadata changes."
+            exit 0
+          fi
+          branch="automation/source-snapshots-${GITHUB_RUN_ID}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$branch"
+          git add data/source_documents.csv
+          git commit -m "Record archived source snapshots"
+          git push origin "HEAD:$branch"
+          gh pr create \
+            --base main \
+            --head "$branch" \
+            --title "Record archived source snapshots" \
+            --body "Records SHA-256 hashes and private draft-release locators for source files successfully archived by the source-preservation workflow. No procurement facts are changed."

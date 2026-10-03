@@ -48,3 +48,5 @@ jobs:
         run: python3 scripts/validate_public_site.py
       - name: Check public JavaScript syntax
         run: node --check assets/app.js
+      - name: Check source snapshot helper syntax
+        run: python3 -m py_compile scripts/source_snapshot.py

@@ -1342,7 +1342,12 @@ async function init() {
     });
     ["rag", "evidence"].forEach(id => {
       document.getElementById(id).addEventListener("change", () => {
-        delete document.getElementById("search").dataset.activeTheme;
+        const search = document.getElementById("search");
+        const activeTheme = search.dataset.activeTheme || "";
+        if ((id === "rag" && activeTheme === "rag")
+          || (id === "evidence" && activeTheme === "bounded")) {
+          delete search.dataset.activeTheme;
+        }
         applyFilters();
         syncFilterUrl();
       });

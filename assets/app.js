@@ -551,15 +551,96 @@ function renderInsights(requirements, evidence) {
   document.getElementById("insight-bounded").textContent = bounded;
 }
 
-function applyThemeFilter(theme) {
+const SHAREABLE_THEMES = new Set(["rag", "learning", "lgwan", "joint", "evaluated", "bounded"]);
+
+function applyThemeControls(theme) {
   resetFilters(false);
+  const search = document.getElementById("search");
+  search.dataset.activeTheme = theme;
   if (theme === "rag") document.getElementById("rag").value = "true";
   if (theme === "bounded") document.getElementById("evidence").value = "publicly_bounded";
-  if (theme === "joint") document.getElementById("search").value = "共同";
-  if (theme === "learning") document.getElementById("search").dataset.requirementFilter = "learning";
-  if (theme === "lgwan") document.getElementById("search").dataset.requirementFilter = "lgwan";
-  if (theme === "evaluated") document.getElementById("search").dataset.requirementFilter = "evaluated";
+  if (theme === "joint") search.value = "共同";
+  if (theme === "learning") search.dataset.requirementFilter = "learning";
+  if (theme === "lgwan") search.dataset.requirementFilter = "lgwan";
+  if (theme === "evaluated") search.dataset.requirementFilter = "evaluated";
+}
+
+function currentFilterParams() {
+  const params = new URLSearchParams();
+  const search = document.getElementById("search");
+  const theme = search.dataset.activeTheme || "";
+  const q = search.value.trim();
+  const prefecture = document.getElementById("prefecture").value;
+  const method = document.getElementById("method").value;
+  const rag = document.getElementById("rag").value;
+  const evidence = document.getElementById("evidence").value;
+
+  if (theme && SHAREABLE_THEMES.has(theme)) params.set("theme", theme);
+  if (q && theme !== "joint") params.set("q", q);
+  if (prefecture) params.set("prefecture", prefecture);
+  if (method) params.set("method", method);
+  if (rag && theme !== "rag") params.set("rag", rag);
+  if (evidence && theme !== "bounded") params.set("evidence", evidence);
+  return params;
+}
+
+function replaceUrl(params) {
+  const query = params.toString();
+  const next = query ? `${window.location.pathname}?${query}` : window.location.pathname;
+  window.history.replaceState(null, "", next);
+}
+
+function syncFilterUrl({ preserveCase = false } = {}) {
+  const params = currentFilterParams();
+  if (preserveCase && state.activeCase) params.set("case", state.activeCase.case_id);
+  replaceUrl(params);
+}
+
+function buildCaseHref(caseId) {
+  const params = currentFilterParams();
+  params.set("case", caseId);
+  return `?${params.toString()}`;
+}
+
+function setSelectFromParam(id, value) {
+  if (!value) return;
+  const select = document.getElementById(id);
+  if ([...select.options].some(option => option.value === value)) select.value = value;
+}
+
+function hydrateFiltersFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const theme = params.get("theme");
+  if (theme && SHAREABLE_THEMES.has(theme)) applyThemeControls(theme);
+
+  const q = params.get("q");
+  if (q) document.getElementById("search").value = q;
+  setSelectFromParam("prefecture", params.get("prefecture"));
+  setSelectFromParam("method", params.get("method"));
+  setSelectFromParam("rag", params.get("rag"));
+  setSelectFromParam("evidence", params.get("evidence"));
+}
+
+async function copyCurrentFilterUrl() {
+  const params = currentFilterParams();
+  const url = new URL(window.location.pathname, window.location.origin);
+  url.search = params.toString();
+  const button = document.getElementById("share-filter-url");
+  const original = button.textContent;
+  try {
+    await navigator.clipboard.writeText(url.toString());
+    button.textContent = "URLをコピーしました";
+  } catch {
+    window.prompt("このURLをコピーしてください", url.toString());
+    button.textContent = "共有URLを表示しました";
+  }
+  window.setTimeout(() => { button.textContent = original; }, 1800);
+}
+
+function applyThemeFilter(theme) {
+  applyThemeControls(theme);
   applyFilters();
+  syncFilterUrl();
   document.getElementById("search-heading").scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
@@ -901,7 +982,7 @@ function renderEvaluation(caseId) {
   }, "項目");
 }
 
-function openCaseDialog(row) {
+function openCaseDialog(row, updateUrl = true) {
   state.activeCase = row;
   const dialog = document.getElementById("case-dialog");
   document.getElementById("case-dialog-title").textContent = row.procurement_title;
@@ -955,7 +1036,18 @@ function openCaseDialog(row) {
     source.hidden = true;
     source.removeAttribute("href");
   }
+  if (updateUrl) {
+    const params = currentFilterParams();
+    params.set("case", row.case_id);
+    replaceUrl(params);
+  }
   dialog.showModal();
+}
+
+function closeCaseDialog() {
+  document.getElementById("case-dialog").close();
+  state.activeCase = null;
+  syncFilterUrl();
 }
 
 function fillSelect(id, values) {
@@ -1057,7 +1149,7 @@ function renderRows() {
 
     const titleTd = document.createElement("td");
     const title = document.createElement("a");
-    title.href = `?case=${encodeURIComponent(row.case_id)}`;
+    title.href = buildCaseHref(row.case_id);
     title.className = "case-title-button";
     title.textContent = `${row.government_name}｜${row.procurement_title}`;
     const sub = document.createElement("span");
@@ -1193,8 +1285,13 @@ function resetFilters(run = true) {
   ["search", "prefecture", "method", "rag", "evidence"].forEach(id => {
     document.getElementById(id).value = "";
   });
-  delete document.getElementById("search").dataset.requirementFilter;
-  if (run) applyFilters();
+  const search = document.getElementById("search");
+  delete search.dataset.requirementFilter;
+  delete search.dataset.activeTheme;
+  if (run) {
+    applyFilters();
+    syncFilterUrl();
+  }
 }
 
 async function init() {
@@ -1228,15 +1325,30 @@ async function init() {
 
     fillSelect("prefecture", cases.map(row => row.prefecture));
     fillSelect("method", cases.map(row => row.procurement_method));
+    hydrateFiltersFromUrl();
 
     document.getElementById("search").addEventListener("input", () => {
-      delete document.getElementById("search").dataset.requirementFilter;
+      const search = document.getElementById("search");
+      delete search.dataset.requirementFilter;
+      delete search.dataset.activeTheme;
       applyFilters();
+      syncFilterUrl();
     });
-    ["prefecture", "method", "rag", "evidence"].forEach(id => {
-      document.getElementById(id).addEventListener("change", applyFilters);
+    ["prefecture", "method"].forEach(id => {
+      document.getElementById(id).addEventListener("change", () => {
+        applyFilters();
+        syncFilterUrl();
+      });
+    });
+    ["rag", "evidence"].forEach(id => {
+      document.getElementById(id).addEventListener("change", () => {
+        delete document.getElementById("search").dataset.activeTheme;
+        applyFilters();
+        syncFilterUrl();
+      });
     });
     document.getElementById("reset").addEventListener("click", resetFilters);
+    document.getElementById("share-filter-url").addEventListener("click", copyCurrentFilterUrl);
     document.querySelectorAll("[data-theme-filter]").forEach(button => {
       button.addEventListener("click", () => applyThemeFilter(button.dataset.themeFilter));
     });
@@ -1245,11 +1357,9 @@ async function init() {
       renderCompare();
       renderRows();
     });
-    document.getElementById("close-case").addEventListener("click", () => {
-      document.getElementById("case-dialog").close();
-    });
+    document.getElementById("close-case").addEventListener("click", closeCaseDialog);
     document.getElementById("case-dialog").addEventListener("click", event => {
-      if (event.target === event.currentTarget) event.currentTarget.close();
+      if (event.target === event.currentTarget) closeCaseDialog();
     });
     document.getElementById("case-dialog-evidence").addEventListener("click", () => {
       if (!state.activeCase) return;
@@ -1268,7 +1378,7 @@ async function init() {
     const requestedCaseId = new URLSearchParams(window.location.search).get("case");
     if (requestedCaseId) {
       const requestedCase = state.rows.find(row => row.case_id === requestedCaseId);
-      if (requestedCase) openCaseDialog(requestedCase);
+      if (requestedCase) openCaseDialog(requestedCase, false);
     }
   } catch (error) {
     console.error(error);

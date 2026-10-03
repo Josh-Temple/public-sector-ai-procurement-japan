@@ -119,3 +119,28 @@ The highlight layer is deliberately downstream of canonical knowledge:
 The home-page Research Highlights remain intentionally curated. Additional reviewed Claims can appear in a case detail with `featured: false` without expanding the home-page list.
 
 This layer does not create a new fact source or infer missing procurement states. It is a reading aid over Claims and existing structured data.
+
+
+## Public navigation and shareable search state
+
+The three stable public entry points use the same compact navigation:
+
+- 調べる → `index.html`
+- 理解する → `insights.html`
+- 仕様を考える → `checklist.html`
+
+The database serializes discovery state into query parameters without creating a second data source.
+
+Supported public state includes:
+
+- `?q=<keyword>`
+- `?prefecture=<value>`
+- `?method=<value>`
+- `?rag=true|false|soft|unknown`
+- `?evidence=assessed|publicly_bounded|not_assessed`
+- `?theme=rag|learning|lgwan|joint|evaluated|bounded`
+- `?case=<case_id>`
+
+Theme links write their state into the URL. Manual search/filter changes also update the URL. Case-detail links preserve the current filter state, so a shared case URL can retain the context in which the case was discovered.
+
+The "この条件を共有" button copies an absolute URL for the current list filter. Search-state URLs are a presentation convenience; the canonical CSVs remain authoritative.

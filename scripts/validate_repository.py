@@ -100,6 +100,14 @@ RECONSTRUCTABILITY = {
     "not_assessed",
 }
 
+SNAPSHOT_STATUSES = {
+    "external_url_only",
+    "snapshot_pending",
+    "snapshotted",
+    "snapshot_unavailable",
+    "not_public",
+}
+
 
 def read_csv(name: str, errors: list[str]) -> list[dict[str, str]]:
     path = DATA / name
@@ -279,6 +287,35 @@ def main() -> int:
                     f"data/{name}: unsupported public_reconstructability {value!r} "
                     f"for case {(row.get('case_id') or '').strip()!r}"
                 )
+
+    for row in tables["source_documents.csv"]:
+        source_id = (row.get("source_id") or "").strip()
+        access_state = (row.get("access_state") or "").strip()
+        snapshot_status = (row.get("snapshot_status") or "").strip()
+        snapshot_hash = (row.get("snapshot_hash") or "").strip()
+        snapshot_locator = (row.get("snapshot_locator") or "").strip()
+        url = (row.get("url") or "").strip()
+
+        if snapshot_status not in SNAPSHOT_STATUSES:
+            errors.append(
+                f"data/source_documents.csv: unsupported snapshot_status "
+                f"{snapshot_status!r} for source {source_id!r}"
+            )
+        if snapshot_status == "snapshotted" and (not snapshot_hash or not snapshot_locator):
+            errors.append(
+                f"data/source_documents.csv: snapshotted source {source_id!r} "
+                "must have both snapshot_hash and snapshot_locator"
+            )
+        if snapshot_status == "external_url_only" and not url:
+            errors.append(
+                f"data/source_documents.csv: external_url_only source {source_id!r} "
+                "must have a URL"
+            )
+        if snapshot_status == "not_public" and access_state != "not_public":
+            errors.append(
+                f"data/source_documents.csv: snapshot_status=not_public for source "
+                f"{source_id!r} requires access_state=not_public"
+            )
 
     expected_case_set = case_ids
     for name in ["evidence_coverage.csv", "case_evidence_summary.csv"]:

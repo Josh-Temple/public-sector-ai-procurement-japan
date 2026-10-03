@@ -107,7 +107,9 @@ CI also regenerates the Evidence projections and fails if committed generated ou
 
 On pushes to `main`, both repository integrity and Pages deployment verify that the commit is associated with a merged pull request. This is a compensating guard for environments where GitHub branch-protection settings cannot be changed by the connected automation: a direct push is already present in Git history, but CI fails and the public site is not deployed from that push.
 
-For Source preservation, `.github/workflows/source-preservation.yml` archives only Sources explicitly marked `snapshot_pending`, `accessible`, and carrying an HTTPS URL. Binary assets are stored in the private draft release `source-snapshots-private`; the repository records only SHA-256 and a non-secret locator through a follow-up PR. Sources whose bodies cannot currently be acquired are `snapshot_unavailable`, not falsely marked as preserved.
+For Source preservation, `.github/workflows/source-preservation.yml` archives only Sources explicitly marked `snapshot_pending`, `accessible`, and carrying an HTTPS URL. Eligible binary assets are stored only after verifying draft state in the access-restricted draft release `source-snapshots-private`; the repository records only SHA-256 and a non-secret locator through a follow-up PR. Sources whose bodies cannot currently be acquired are `snapshot_unavailable`, not falsely marked as preserved.
+
+Operational limits and settings: `docs/RELIABILITY.md`. A draft release is hidden from general visitors but is accessible to repository writers; it is not a separate private repository. No snapshots have yet been archived.
 
 Local check:
 
@@ -118,6 +120,9 @@ python3 scripts/build_case_evidence_summary.py
 git diff --exit-code -- data/evidence_coverage.csv docs/EVIDENCE_COVERAGE.md data/case_evidence_summary.csv docs/CASE_EVIDENCE_SUMMARY.md
 python3 scripts/validate_public_site.py
 node --check assets/app.js
+python3 -m compileall -q scripts
+python3 -m unittest discover -s tests -v
+node tests/test_main_guard.cjs
 ```
 
 ## Benchmark V1 result

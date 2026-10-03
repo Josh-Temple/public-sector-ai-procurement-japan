@@ -8,6 +8,7 @@ quality and does not treat not_assessed as absence.
 from __future__ import annotations
 
 import csv
+import datetime
 import re
 import sys
 from collections import Counter
@@ -81,6 +82,10 @@ SOURCE_REF_COLUMNS = {
     "effective_requirements.csv": ["base_source_id", "changed_by_source_id"],
     "review_coverage.csv": ["source_id"],
     "case_stage.csv": ["selection_source_id", "contract_source_id", "operation_source_id"],
+    "case_evidence_summary.csv": [f"{role}_source_id" for role in
+                                  ["specification", "qa_amendment", "requirement_matrix",
+                                   "evaluation", "result", "contract_final",
+                                   "selection", "contract", "operation"]],
 }
 
 REVIEW_STATES = {
@@ -180,6 +185,8 @@ def validate_claims(source_ids: set[str], errors: list[str]) -> None:
             )
 
         status = scalar(header, "status")
+        if status not in {"draft", "reviewed", "disputed", "superseded", "retracted"}:
+            errors.append(f"{path.relative_to(ROOT)}: unsupported claim status {status!r}")
         source_refs = re.findall(r"^\s*-?\s*source:\s*(SRC-[A-Za-z0-9._-]+)\s*$", header, flags=re.MULTILINE)
         locators = [
             value.strip().strip("\"'")
@@ -196,6 +203,8 @@ def validate_claims(source_ids: set[str], errors: list[str]) -> None:
             last_verified = scalar(header, "last_verified")
             if not last_verified or last_verified.lower() in {"null", "none", "~"}:
                 errors.append(f"{path.relative_to(ROOT)}: reviewed claim lacks last_verified")
+            elif not valid_date(last_verified):
+                errors.append(f"{path.relative_to(ROOT)}: invalid last_verified")
             if not source_refs:
                 errors.append(f"{path.relative_to(ROOT)}: reviewed claim lacks evidence sources")
             if len(locators) != len(source_refs):
@@ -236,12 +245,22 @@ def validate_source_notes(source_ids: set[str], errors: list[str]) -> None:
         errors.append(f"duplicate source note IDs: {duplicates}")
 
 
+def valid_date(value: str) -> bool:
+    try:
+        return bool(re.fullmatch(r"\d{4}-\d{2}-\d{2}", value)) and datetime.date.fromisoformat(value) <= datetime.date.today()
+    except ValueError:
+        return False
+
+
 def main() -> int:
     errors: list[str] = []
     tables = {name: read_csv(name, errors) for name in TABLES}
 
     for name, rows in tables.items():
         check_unique(name, rows, errors)
+        for row in rows:
+            if "last_verified" in row and ((row.get("last_verified") and not valid_date(row["last_verified"])) or (name not in {"evidence_coverage.csv", "case_evidence_summary.csv"} and not row.get("last_verified"))):
+                errors.append(f"data/{name}: missing or invalid last_verified")
 
     case_ids = {(row.get("case_id") or "").strip() for row in tables["cases.csv"]}
     case_ids.discard("")
@@ -278,6 +297,14 @@ def main() -> int:
                 f"data/review_coverage.csv: unsupported review_state {state!r} "
                 f"for case {(row.get('case_id') or '').strip()!r}"
             )
+        if state == "reviewed" and not row.get("source_id"):
+            errors.append("data/review_coverage.csv: reviewed row lacks source_id")
+
+    for row in tables["effective_requirements.csv"]:
+        if row.get("review_status") not in {"draft", "reviewed", "disputed", "superseded", "retracted"}:
+            errors.append("data/effective_requirements.csv: unsupported review_status")
+        if row.get("review_status") == "reviewed" and (not row.get("base_source_id") or not row.get("base_locator")):
+            errors.append("data/effective_requirements.csv: reviewed row lacks base evidence")
 
     for name in ["effective_requirements.csv", "evidence_coverage.csv", "case_evidence_summary.csv", "specialized_requirements.csv"]:
         for row in tables[name]:
@@ -295,6 +322,17 @@ def main() -> int:
         snapshot_hash = (row.get("snapshot_hash") or "").strip()
         snapshot_locator = (row.get("snapshot_locator") or "").strip()
         url = (row.get("url") or "").strip()
+
+        if access_state not in {"accessible", "source_unavailable", "not_public"}:
+            errors.append(f"data/source_documents.csv: invalid access_state for {source_id}")
+        if snapshot_hash and not re.fullmatch(r"sha256:[a-f0-9]{64}", snapshot_hash):
+            errors.append(f"data/source_documents.csv: invalid SHA-256 for {source_id}")
+        if snapshot_locator and not re.fullmatch(r"github-draft-release:source-snapshots-private/SRC-[A-Za-z0-9._-]+", snapshot_locator):
+            errors.append(f"data/source_documents.csv: unsafe or unsupported snapshot locator for {source_id}")
+        if snapshot_status != "snapshotted" and (snapshot_hash or snapshot_locator):
+            errors.append(f"data/source_documents.csv: unpreserved state has snapshot metadata for {source_id}")
+        if snapshot_status == "snapshot_pending" and (access_state != "accessible" or not url.startswith("https://")):
+            errors.append(f"data/source_documents.csv: ineligible pending source {source_id}")
 
         if snapshot_status not in SNAPSHOT_STATUSES:
             errors.append(

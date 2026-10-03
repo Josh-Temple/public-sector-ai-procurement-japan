@@ -47,7 +47,7 @@ snapshotを保存する場合は、原則として元ファイル名・durable�
 
 `reviewed` claimであっても、根拠原典を再取得できない場合は「現在freshに再確認した」とは扱わない。保存済みsnapshotに基づく確認と、発行元からのfresh取得を区別する。
 
-このpublic repositoryでは、原典バイナリを通常のGit履歴やPagesへ再配布しない。保存対象として明示した公開Sourceは、GitHubのdraft release `source-snapshots-private` に非公開資産として保存し、`data/source_documents.csv` にはSHA-256と `github-draft-release:...` locatorだけを記録する。draft releaseを公開へ切り替える場合は、別途権利確認を行う。
+このpublic repositoryでは、原典バイナリを通常のGit履歴やPagesへ再配布しない。保存対象として明示した公開Sourceは、GitHubのdraft release `source-snapshots-private` に一般公開されない資産として保存し（Repositoryへのwrite権限者は取得可能）、、`data/source_documents.csv` にはSHA-256と `github-draft-release:...` locatorだけを記録する。draft releaseを公開へ切り替える場合は、別途権利確認を行う。
 
 `snapshot_pending` は、現時点で取得可能かつ保存待ちの資料に使う。本文や直接URLを取得できず保存自体を実行できない場合は `snapshot_unavailable` とし、取得可能になった時点で再評価する。
 
@@ -209,3 +209,5 @@ claim化する前に:
 5. 現在性が必要ならfresh readする。
 
 この手順を満たさない内容は、research memoまたはdraft claimに留める。
+
+原典保存workflowはdraft状態をupload前後に確認し、内容hashをasset名に含め、既存assetを上書きしない。詳細と未実証範囲は `RELIABILITY.md` を参照する。

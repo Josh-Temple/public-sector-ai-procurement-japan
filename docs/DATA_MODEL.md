@@ -91,7 +91,7 @@ Excel本文が現在の実行環境で取得できない場合でも、公式質
 
 `data/specialized_requirements.csv`
 
-汎用生成AIのwide tableでは表現しにくい、業務特化型AIの要件をlong-formで保持する。現在は神戸市の税務ボイスボットを収録している。
+汎用生成AIのwide tableでは表現しにくい、業務特化型AIの要件をlong-formで保持する。収録件数・対象案件は `data/specialized_requirements.csv` を正とする。
 
 | field | meaning |
 |---|---|

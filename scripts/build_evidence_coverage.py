@@ -87,7 +87,7 @@ for case in cases:
     })
 
 with (DATA / "evidence_coverage.csv").open("w", encoding="utf-8", newline="") as f:
-    w = csv.DictWriter(f, fieldnames=fieldnames)
+    w = csv.DictWriter(f, fieldnames=fieldnames, lineterminator="\n")
     w.writeheader()
     w.writerows(output)
 

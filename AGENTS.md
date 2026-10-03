@@ -153,6 +153,19 @@ Benchmarkの特定問題だけに答えやすいデータを追加するので�
 
 単純な索引生成や表記修正を自動化する場合も、内容上の意味が変わらないことを確認する。
 
+merge前には原則として次を通す。
+
+```bash
+python3 scripts/validate_repository.py
+python3 scripts/build_evidence_coverage.py
+python3 scripts/build_case_evidence_summary.py
+git diff --exit-code -- data/evidence_coverage.csv docs/EVIDENCE_COVERAGE.md data/case_evidence_summary.csv docs/CASE_EVIDENCE_SUMMARY.md
+python3 scripts/validate_public_site.py
+node --check assets/app.js
+```
+
+生成projectionに差分が出た場合は、生成物を直接直さず上流データか生成スクリプトを確認する。
+
 AIが新しい情報を見つけた場合は、まず既存知識との重複・矛盾を確認する。矛盾が解消できなければ、片方を消さず `disputed` または未解決事項として残す。
 
 ## 10. 外部情報の扱い

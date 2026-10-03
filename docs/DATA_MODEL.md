@@ -91,7 +91,7 @@ Excel本文が現在の実行環境で取得できない場合でも、公式質
 
 `data/specialized_requirements.csv`
 
-汎用生成AIのwide tableでは表現しにくい、業務特化型AIの要件をlong-formで保持する。現在は神戸市の税務ボイスボットを収録している。
+汎用生成AIのwide tableでは表現しにくい、業務特化型AIの要件をlong-formで保持する。収録件数・対象案件は `data/specialized_requirements.csv` を正とする。
 
 | field | meaning |
 |---|---|
@@ -206,6 +206,7 @@ URLが同じでも内容変更・削除があり得るため、再取得が重�
 - `snapshot_pending`: 再取得性リスクがあり、durable snapshotを作る候補
 - `snapshotted`: snapshotを保存し、locatorとhashで同一性を追跡できる
 - `snapshot_unavailable`: 権利・技術・取得制約等によりsnapshotを保存できない
+- `not_public`: 資料の存在は確認できるが本文が一般公開されておらず、公開取得物のsnapshotを作れない
 
 snapshotは内容の正しさを証明するものではない。将来同じ取得物を再検証できるようにするための保存である。空欄のhashや取得不能なsnapshotを推測して埋めない。
 

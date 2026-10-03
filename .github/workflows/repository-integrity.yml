@@ -1,0 +1,30 @@
+name: Validate repository integrity
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Validate repository structure
+        run: python3 scripts/validate_repository.py
+      - name: Rebuild evidence projections
+        run: |
+          python3 scripts/build_evidence_coverage.py
+          python3 scripts/build_case_evidence_summary.py
+      - name: Verify generated projections are current
+        run: |
+          git diff --exit-code --             data/evidence_coverage.csv             docs/EVIDENCE_COVERAGE.md             data/case_evidence_summary.csv             docs/CASE_EVIDENCE_SUMMARY.md
+      - name: Validate public site
+        run: python3 scripts/validate_public_site.py
+      - name: Check public JavaScript syntax
+        run: node --check assets/app.js

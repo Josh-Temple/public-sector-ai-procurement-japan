@@ -96,6 +96,25 @@
 - General-bid contract-final evidence pass: `research/RESEARCH_PASS_14_2026-10-01.md`
 - Benchmark evidence-chain hardening pass: `research/RESEARCH_PASS_15_2026-10-02.md`
 - Representative case-evidence audit: `research/RESEARCH_PASS_16_2026-10-02.md`
+- Specialized-AI case deepening: `research/RESEARCH_PASS_17_2026-10-03.md`
+- Saitama evidence-chain deepening: `research/RESEARCH_PASS_18_2026-10-03.md`
+
+## Repository integrity
+
+`scripts/validate_repository.py` checks cross-file structural invariants without network access: primary-key uniqueness, case/source references, reviewed Claim evidence, snapshot-state consistency, and generated-projection case coverage.
+
+CI also regenerates the Evidence projections and fails if committed generated outputs differ, runs the public-site validator, and syntax-checks `assets/app.js`.
+
+Local check:
+
+```bash
+python3 scripts/validate_repository.py
+python3 scripts/build_evidence_coverage.py
+python3 scripts/build_case_evidence_summary.py
+git diff --exit-code -- data/evidence_coverage.csv docs/EVIDENCE_COVERAGE.md data/case_evidence_summary.csv docs/CASE_EVIDENCE_SUMMARY.md
+python3 scripts/validate_public_site.py
+node --check assets/app.js
+```
 
 ## Benchmark V1 result
 

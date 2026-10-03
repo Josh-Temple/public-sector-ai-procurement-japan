@@ -130,7 +130,7 @@ research memoの分析結果は有用だが、現在の事実を確認すると�
   - Source: `sources/SRC-kobe-2026-voicebot-spec.md`
   - Claim: `claims/CLM-kobe-2026-voicebot-no-generated-answer.md`
 
-## Public reconstruction boundaries
+## Additional public reconstruction examples
 
 - 仙台市2025では、仕様書案と公開Q&Aから公募時の有効要件を追える。FIXERとの契約締結日・応募数も公表されているが、募集要領は提案内容や契約金額の協議変更を認める。公開された案件ページ・公募資料の確認範囲では契約後の最終要求文書は見つからず、contract_final は `not_found_in_reviewed_sources`。
   - Sources: `sources/SRC-sendai-2025-guide.md`, `sources/SRC-sendai-2025-qa.md`
@@ -146,7 +146,7 @@ research memoの分析結果は有用だが、現在の事実を確認すると�
 ## Additional evidence-pattern examples
 
 - 北海道2026RAGサービスは制限付一般競争入札で、ISO/IEC 27001は提案加点ではなく参加資格要件。
-  - Source: `sources/SRC-hokkaido-2026-bid-notice.md`
+  - Source: `sources/SRC-hokkaido-2026-notice.md`
   - Claim: `claims/CLM-hokkaido-2026-qualification-not-proposal-score.md`
 - 越谷市2024では月100万文字以上が必須だが、「上限なし」は加点対象の提案事項。
   - Source: `sources/SRC-koshigaya-2024-qa.md`

@@ -130,7 +130,7 @@ for case in cases:
     output.append(row)
 
 with (DATA / "case_evidence_summary.csv").open("w", encoding="utf-8", newline="") as f:
-    writer = csv.DictWriter(f, fieldnames=fieldnames)
+    writer = csv.DictWriter(f, fieldnames=fieldnames, lineterminator="\n")
     writer.writeheader()
     writer.writerows(output)
 

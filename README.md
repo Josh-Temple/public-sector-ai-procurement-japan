@@ -1,5 +1,15 @@
 # public-sector-ai-procurement-japan
 
+## はじめて見る方へ
+
+まず[5つの設計論点](https://josh-temple.github.io/public-sector-ai-procurement-japan/insights.html)を読み、[比較サイト](https://josh-temple.github.io/public-sector-ai-procurement-japan/)で案件を選び、公式資料へ戻る順で確認できます。
+
+自治体のAI調達を、仕様書だけでなく質疑・訂正・評価・公開結果と接続して構造化する個人研究です。一次情報調査、要件比較、出典設計、CIによる整合性確認のEvidenceとして、`docs/DATA_MODEL.md`、`data/source_documents.csv`、`data/effective_requirements.csv`、`scripts/validate_repository.py`を確認できます。
+
+**確認上の限界:** 公開仕様は契約最終要件と同一とは限りません。比較実験は正答率・速度の優位を証明していません。調達支援の受託実績や所属組織の公式事業を示すものではありません。
+
+[全プロジェクトの案内](https://github.com/Josh-Temple)
+
 日本の公共部門におけるAI調達を、公式一次資料から収集・構造化するためのリポジトリです。
 
 **公開サイト:** https://josh-temple.github.io/public-sector-ai-procurement-japan/

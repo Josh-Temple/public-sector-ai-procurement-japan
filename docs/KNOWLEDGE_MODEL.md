@@ -47,6 +47,10 @@ snapshotを保存する場合は、原則として元ファイル名・durable�
 
 `reviewed` claimであっても、根拠原典を再取得できない場合は「現在freshに再確認した」とは扱わない。保存済みsnapshotに基づく確認と、発行元からのfresh取得を区別する。
 
+このpublic repositoryでは、原典バイナリを通常のGit履歴やPagesへ再配布しない。保存対象として明示した公開Sourceは、GitHubのdraft release `source-snapshots-private` に非公開資産として保存し、`data/source_documents.csv` にはSHA-256と `github-draft-release:...` locatorだけを記録する。draft releaseを公開へ切り替える場合は、別途権利確認を行う。
+
+`snapshot_pending` は、現時点で取得可能かつ保存待ちの資料に使う。本文や直接URLを取得できず保存自体を実行できない場合は `snapshot_unavailable` とし、取得可能になった時点で再評価する。
+
 ## 2. Claim
 
 Claimは、複数の回答・記事・分析で再利用する価値がある主張を表す。

@@ -35,7 +35,7 @@ class IntegrityTests(unittest.TestCase):
             ('review_coverage.csv', lambda rows: rows[0].update(source_id='SRC-missing')),
             ('review_coverage.csv', lambda rows: rows[0].update(review_state='invented')),
             ('case_stage.csv', lambda rows: rows[0].update(last_verified='2026-02-30')),
-            ('source_documents.csv', lambda rows: rows[0].update(snapshot_status='snapshotted')),
+            ('source_documents.csv', lambda rows: rows[0].update(snapshot_status='snapshotted', snapshot_hash='', snapshot_locator='')),
             ('source_documents.csv', lambda rows: rows[0].update(snapshot_status='snapshot_pending', access_state='not_public')),
             ('source_documents.csv', lambda rows: rows[0].update(snapshot_locator='https://example.org/?token=secret')),
             ('evidence_coverage.csv', lambda rows: rows.pop()),

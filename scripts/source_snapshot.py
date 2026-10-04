@@ -14,6 +14,7 @@ import json
 import re
 import subprocess
 import sys
+import time
 import urllib.parse
 import urllib.request
 from pathlib import Path
@@ -165,8 +166,15 @@ def archive(manifest_path: Path, out_dir: Path) -> int:
         subprocess.run(["gh", "release", "create", tag, "--draft", "--title",
                         "Source snapshots (draft; do not publish)", "--notes",
                         "Preservation only. Publishing requires a separate rights review."], check=True)
-        created = gh_json("api", f"repos/{repo}/releases?per_page=100")
-        created = [r for r in created if r["tag_name"] == tag]
+        # GitHub may briefly omit a newly created draft from list readback.
+        # Retry reads only; never create another release after an ambiguous write.
+        for attempt in range(5):
+            created = gh_json("api", f"repos/{repo}/releases?per_page=100")
+            created = [r for r in created if r["tag_name"] == tag]
+            if created:
+                break
+            if attempt < 4:
+                time.sleep(2 ** attempt)
         if len(created) != 1 or not created[0]["draft"]:
             raise RuntimeError("created draft archive could not be verified")
         release_id = created[0]["id"]

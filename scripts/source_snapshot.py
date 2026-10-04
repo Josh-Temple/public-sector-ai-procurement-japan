@@ -70,6 +70,7 @@ def prepare(out_dir: Path, manifest_path: Path) -> int:
             url,
             headers={"User-Agent": "public-sector-ai-procurement-japan snapshot-preservation/1.0"},
         )
+        print(f"SNAPSHOT_DOWNLOAD source_id={source_id}", flush=True)
         with urllib.request.urlopen(request, timeout=60) as response:
             payload = response.read()
         if not payload:

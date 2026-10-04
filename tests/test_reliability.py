@@ -98,15 +98,34 @@ class SnapshotTests(unittest.TestCase):
         (self.root / 'manifest.json').write_text('[]')
         with patch.object(self.s,'gh_json') as gh:
             self.s.archive(self.root / 'manifest.json', self.root / 'assets'); gh.assert_not_called()
-    def test_404_and_empty_do_not_promote(self):
+    def test_http_failure_skips_only_failed_source(self):
+        second=dict(self.row, source_id='SRC-test-second')
+        self.write([self.row, second])
         before=self.s.SOURCE_CSV.read_bytes()
-        for error in [HTTPError(self.row['url'],404,'missing',None,None), None]:
-            with patch.object(self.s.urllib.request,'urlopen') as fetch:
-                if error: fetch.side_effect=error
-                else: fetch.return_value.__enter__.return_value.read.return_value=b''
-                with self.assertRaises((HTTPError,RuntimeError)): self.prepare()
-            self.assertEqual(self.s.SOURCE_CSV.read_bytes(),before)
-            self.assertEqual(list((self.root / 'assets').iterdir()),[])
+        good=type('Response', (), {'__enter__': lambda self: self,
+                                   '__exit__': lambda self, *args: None,
+                                   'read': lambda self: b'%PDF-1.7 good fixture'})()
+        output=io.StringIO()
+        with patch.object(self.s.urllib.request, 'urlopen',
+                          side_effect=[HTTPError(self.row['url'],404,'missing',None,None), good]), \
+             contextlib.redirect_stdout(output):
+            self.assertEqual(self.prepare(), 0)
+        manifest=json.loads((self.root / 'manifest.json').read_text())
+        self.assertEqual([x['source_id'] for x in manifest], ['SRC-test-second'])
+        self.assertIn('SRC-test: HTTP 404; remains snapshot_pending', output.getvalue())
+        self.assertEqual(self.s.SOURCE_CSV.read_bytes(), before)
+        files=list((self.root / 'assets').iterdir())
+        self.assertEqual(len(files), 1)
+        self.assertEqual(files[0].read_bytes(), b'%PDF-1.7 good fixture')
+
+    def test_empty_payload_fails_without_promoting(self):
+        before=self.s.SOURCE_CSV.read_bytes()
+        with patch.object(self.s.urllib.request, 'urlopen') as fetch:
+            fetch.return_value.__enter__.return_value.read.return_value=b''
+            with self.assertRaisesRegex(RuntimeError, 'empty snapshot payload'):
+                self.prepare()
+        self.assertEqual(self.s.SOURCE_CSV.read_bytes(), before)
+        self.assertEqual(list((self.root / 'assets').iterdir()), [])
     def test_html_error_page_is_not_preserved_as_pdf(self):
         before = self.s.SOURCE_CSV.read_bytes()
         with patch.object(self.s.urllib.request, 'urlopen') as fetch:

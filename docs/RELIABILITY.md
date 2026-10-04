@@ -2,21 +2,17 @@
 
 ## Required GitHub settings
 
-As observed on 2026-10-03, main has no protection and there are no rulesets. The connected GitHub App cannot administer branch protection. A UI save was attempted but GitHub required sudo reauthentication; it did not complete.
+On 2026-10-04, classic branch protection rule `84193797` was created for `main` through GitHub settings after owner reauthentication. The saved rule was reopened and read back:
 
-**HUMAN_ACTION_REQUIRED:** Settings → Branches → Add classic branch protection rule:
+- Pull request required; approvals disabled (zero required reviewers).
+- Required check: `Repository-wide integrity`, accepted only from GitHub Actions.
+- Branch must be up to date before merging.
+- Do not allow bypassing the above settings: enabled, including administrators.
+- Force pushes and branch deletions: disabled.
 
-- Branch name pattern: `main`
-- Require a pull request before merging: enabled
-- Require approvals: disabled (no reviewer requirement)
-- Require status checks: `Repository-wide integrity` from GitHub Actions
-- Require branches to be up to date: enabled
-- Do not allow bypassing the above settings: enabled
-- Allow force pushes / Allow deletions: disabled
+The public branch API also reports `protected=true`. There is no additional ruleset; classic protection provides the server-side merge boundary. Recheck actual GitHub settings before relying on this dated observation.
 
-Use the uniquely named Repository integrity job, not the separate public-site job named `validate`. After saving, reopen the rule and confirm all values. The `protected` flag on the branch API must also become true.
-
-The compensating guard checks every first-parent commit added by a main push against merged PR associations and requires the tip to be the actual merged PR result. Squash/merge/rebase and workflow-generated PRs use the same rule. Direct bot pushes are deliberately not exempt. Main dispatches also check provenance; Pages dispatches on other branches fail. This prevents publication through these workflows; it does **not** undo a direct push, prevent deletion/modification of the workflow itself, or substitute for server-side protection.
+The compensating guard checks every first-parent commit added by a main push against merged PR associations and requires the tip to be the actual merged PR result. Squash/merge/rebase and workflow-generated PRs use the same rule. Direct bot pushes are deliberately not exempt. Integrity, Pages, and preservation main dispatches also check provenance; Pages dispatches on other branches fail. This prevents publication through these workflows; it does **not** undo a direct push, prevent deletion/modification of the workflow itself, or substitute for server-side protection.
 
 ## Preservation behavior
 
@@ -44,4 +40,12 @@ Stale benchmark PR #19 was already closed as superseded by merged #41. Frozen co
 
 **LICENSE_DECISION_REQUIRED:** No license is selected. Code, original prose, structured data, and external official materials need separate consideration. A license for original work would not automatically license third-party documents. No reuse permission is added by this work.
 
-Repository description/homepage/topics were empty at audit start. Suggested metadata: description “Official-source knowledge base for Japanese local-government AI procurement”; homepage is the working Pages URL; topics public-sector, procurement, generative-ai, local-government, japan. These settings require UI/admin access, not a normal content commit.
+Repository metadata was read back on 2026-10-04: a Japanese description covering official-source comparison and evidence boundaries, the working Pages homepage, and topics including public-sector, procurement, generative-ai, local-government, japan are already set. No metadata mutation was needed.
+
+## Follow-up integrity audit (2026-10-04)
+
+The audit found validator gaps rather than corrupt canonical rows: vendor/bid/entity duplicates were unchecked; empty case IDs could skip foreign-key validation; an existing Source belonging to another case could pass; reviewed amendments could lack a change locator; a snapshot locator could identify a different Source/hash; malformed CSV column widths and duplicate headers were not explicitly rejected. These now fail isolated corruption fixtures. Source registry rows without a case remain allowed for cross-case discovery evidence.
+
+Main provenance tests now exercise an actual temporary Git repository's push range, including an intermediate direct commit before a legitimate tip, a multi-commit rebase, forced pushes and branch creation. API associations remain mocked; production main runs provide the separate GitHub integration evidence.
+
+Preservation now checks main provenance before download/upload, retaining defense in depth alongside actual branch protection. Existing metadata and evidence were not reclassified, and no original binaries were added to Git or Pages. All 59 external-only Sources still lack durable snapshots; the zero-candidate run does not prove the nonempty upload/PR path. Prioritize an eligible public Source's real draft archive/PR demonstration before claiming full preservation coverage. Do not silently promote unavailable Sources or relax draft privacy.

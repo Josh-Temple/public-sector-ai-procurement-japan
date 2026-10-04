@@ -24,6 +24,13 @@ class IntegrityTests(unittest.TestCase):
     def test_corruptions_fail(self):
         changes = [
             ('cases.csv', lambda rows: rows.append(dict(rows[0]))),
+            ('vendor_scores.csv', lambda rows: rows.append(dict(rows[0]))),
+            ('bid_results.csv', lambda rows: rows.append(dict(rows[0]))),
+            ('joint_procurement_entities.csv', lambda rows: rows.append(dict(rows[0]))),
+            ('specialized_requirements.csv', lambda rows: rows[0].update(case_id='')),
+            ('effective_requirements.csv', lambda rows: rows[0].update(changed_by_source_id='SRC-saitama-2026-ai-support-qa', change_locator='')),
+            ('source_documents.csv', lambda rows: rows[0].update(access_state='not_public')),
+            ('source_documents.csv', lambda rows: rows[0].update(snapshot_status='snapshotted', snapshot_hash='sha256:'+'a'*64, snapshot_locator='github-draft-release:source-snapshots-private/SRC-wrong-'+'b'*64+'.pdf')),
             ('requirements.csv', lambda rows: rows[0].update(case_id='missing-case')),
             ('review_coverage.csv', lambda rows: rows[0].update(source_id='SRC-missing')),
             ('review_coverage.csv', lambda rows: rows[0].update(review_state='invented')),
@@ -44,6 +51,17 @@ class IntegrityTests(unittest.TestCase):
                 mutate(rows)
                 with path.open('w') as fh:
                     writer = csv.DictWriter(fh, fields); writer.writeheader(); writer.writerows(rows)
+                v = module('validate_repository'); v.ROOT = root; v.DATA = root / 'data'
+                with contextlib.redirect_stdout(io.StringIO()):
+                    self.assertEqual(v.main(), 1)
+
+    def test_malformed_csv_fails_without_crashing(self):
+        for broken in ['case_id,case_id\nx,y\n', 'case_id,government_name,procurement_title,category\nx,y\n', 'case_id,government_name,procurement_title,category\nx,y,z,a,extra\n']:
+            with self.subTest(csv=broken), tempfile.TemporaryDirectory() as td:
+                root = Path(td)
+                for folder in ['data', 'claims', 'sources']:
+                    shutil.copytree(ROOT / folder, root / folder)
+                (root / 'data' / 'cases.csv').write_text(broken)
                 v = module('validate_repository'); v.ROOT = root; v.DATA = root / 'data'
                 with contextlib.redirect_stdout(io.StringIO()):
                     self.assertEqual(v.main(), 1)

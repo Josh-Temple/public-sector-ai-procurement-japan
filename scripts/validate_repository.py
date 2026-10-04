@@ -50,9 +50,9 @@ REQUIRED_COLUMNS = {
     "requirements.csv": {"case_id"},
     "requirement_facts.csv": {"case_id", "requirement_no", "requirement_key"},
     "evaluation_criteria.csv": {"case_id", "criterion_id"},
-    "vendor_scores.csv": {"case_id"},
+    "vendor_scores.csv": {"case_id", "vendor_label"},
     "procurement_structure.csv": {"case_id"},
-    "bid_results.csv": {"case_id"},
+    "bid_results.csv": {"case_id", "bidder_label"},
     "joint_procurement_entities.csv": {"case_id", "entity_name"},
     "specialized_requirements.csv": {"case_id", "requirement_area", "requirement_key"},
     "case_stage.csv": {
@@ -72,6 +72,9 @@ UNIQUE_KEYS = {
     "requirements.csv": [("case_id",)],
     "requirement_facts.csv": [("case_id", "requirement_no", "requirement_key")],
     "evaluation_criteria.csv": [("case_id", "criterion_id")],
+    "vendor_scores.csv": [("case_id", "vendor_label")],
+    "bid_results.csv": [("case_id", "bidder_label")],
+    "joint_procurement_entities.csv": [("case_id", "entity_name")],
     "procurement_structure.csv": [("case_id",)],
     "specialized_requirements.csv": [("case_id", "requirement_area", "requirement_key")],
     "case_stage.csv": [("case_id",)],
@@ -125,7 +128,13 @@ def read_csv(name: str, errors: list[str]) -> list[dict[str, str]]:
         missing = REQUIRED_COLUMNS.get(name, set()) - columns
         if missing:
             errors.append(f"data/{name}: missing required columns: {sorted(missing)}")
-        return list(reader)
+        rows = list(reader)
+        if len(reader.fieldnames or []) != len(columns):
+            errors.append(f"data/{name}: duplicate column names")
+        for line, row in enumerate(rows, 2):
+            if None in row or any(value is None for value in row.values()):
+                errors.append(f"data/{name}:{line}: CSV row width mismatch")
+        return [{key: value or "" for key, value in row.items() if key is not None} for row in rows]
 
 
 def nonempty_key(row: dict[str, str], columns: tuple[str, ...]) -> tuple[str, ...] | None:
@@ -277,9 +286,12 @@ def main() -> int:
                 if (row.get("case_id") or "").strip()
                 and (row.get("case_id") or "").strip() not in case_ids
             })
+            if name != "source_documents.csv" and any(not (row.get("case_id") or "").strip() for row in rows):
+                errors.append(f"data/{name}: empty case_id")
             if unknown_cases:
                 errors.append(f"data/{name}: unknown case_id values: {unknown_cases}")
 
+    sources_by_id = {row.get("source_id"): row for row in tables["source_documents.csv"]}
     for name, columns in SOURCE_REF_COLUMNS.items():
         for row in tables[name]:
             for column in columns:
@@ -289,6 +301,10 @@ def main() -> int:
                         f"data/{name}: {column} references unknown source_id "
                         f"{source_id!r} for case {(row.get('case_id') or '').strip()!r}"
                     )
+
+                source = sources_by_id.get(source_id)
+                if source and source.get("case_id") and source["case_id"] != row.get("case_id"):
+                    errors.append(f"data/{name}: {column} belongs to a different case")
 
     for row in tables["review_coverage.csv"]:
         state = (row.get("review_state") or "").strip()
@@ -305,6 +321,9 @@ def main() -> int:
             errors.append("data/effective_requirements.csv: unsupported review_status")
         if row.get("review_status") == "reviewed" and (not row.get("base_source_id") or not row.get("base_locator")):
             errors.append("data/effective_requirements.csv: reviewed row lacks base evidence")
+
+        if row.get("review_status") == "reviewed" and row.get("changed_by_source_id") and not row.get("change_locator"):
+            errors.append("data/effective_requirements.csv: reviewed amendment lacks change_locator")
 
     for name in ["effective_requirements.csv", "evidence_coverage.csv", "case_evidence_summary.csv", "specialized_requirements.csv"]:
         for row in tables[name]:
@@ -344,6 +363,12 @@ def main() -> int:
                 f"data/source_documents.csv: snapshotted source {source_id!r} "
                 "must have both snapshot_hash and snapshot_locator"
             )
+        if snapshot_status == "snapshotted" and snapshot_hash and snapshot_locator:
+            asset = snapshot_locator.rsplit("/", 1)[-1]
+            if not asset.startswith(source_id + "-") or snapshot_hash.removeprefix("sha256:") not in asset:
+                errors.append(f"data/source_documents.csv: snapshot locator identity/hash mismatch for {source_id}")
+        if access_state == "not_public" and snapshot_status != "not_public":
+            errors.append(f"data/source_documents.csv: not_public source has incompatible snapshot state for {source_id}")
         if snapshot_status == "external_url_only" and not url:
             errors.append(
                 f"data/source_documents.csv: external_url_only source {source_id!r} "

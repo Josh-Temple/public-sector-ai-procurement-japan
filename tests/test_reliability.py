@@ -128,6 +128,39 @@ class SnapshotTests(unittest.TestCase):
         self.s.apply(manifest,prefix); self.assertEqual(once,self.s.SOURCE_CSV.read_bytes())
         self.write([dict(self.row,url='https://example.go.jp/changed.pdf')])
         with self.assertRaises(RuntimeError): self.s.apply(manifest,prefix)
+    def test_restore_registered_snapshots_and_failures(self):
+        payload = b'%PDF-1.7 restored fixture'
+        digest = hashlib.sha256(payload).hexdigest()
+        name = f'SRC-test-{digest}.pdf'
+        saved = dict(self.row, snapshot_status='snapshotted', snapshot_hash='sha256:'+digest,
+                     snapshot_locator='github-draft-release:source-snapshots-private/'+name)
+        self.write([saved]); before = self.s.SOURCE_CSV.read_bytes()
+        for failure in ['none', 'published', 'missing', 'collision', 'empty', 'state_change']:
+            with self.subTest(failure=failure):
+                answers = [{'nameWithOwner':'owner/repo'},
+                           [{'tag_name':'source-snapshots-private','id':1,'draft':failure!='published'}]]
+                if failure != 'published':
+                    answers += [[] if failure=='missing' else [{'name':name,'id':2}]]
+                    answers += [{'draft':failure!='state_change'}]
+                    if failure=='none': answers += [{'draft':True}]
+                data = b'wrong' if failure=='collision' else b'' if failure=='empty' else payload
+                with patch.object(self.s,'gh_json',side_effect=answers), \
+                     patch.object(self.s.subprocess,'check_output',return_value=data), \
+                     patch.object(self.s.subprocess,'run') as mutate, \
+                     patch.object(self.s.urllib.request,'urlopen') as official:
+                    if failure=='none': self.assertEqual(self.s.verify(),0)
+                    else:
+                        with self.assertRaises(RuntimeError): self.s.verify()
+                    mutate.assert_not_called(); official.assert_not_called()
+                self.assertEqual(self.s.SOURCE_CSV.read_bytes(),before)
+        self.write([dict(saved,snapshot_locator='https://example.org/?token=secret')])
+        with patch.object(self.s,'gh_json') as gh:
+            with self.assertRaises(ValueError): self.s.verify()
+            gh.assert_not_called()
+        self.write([self.row])
+        with patch.object(self.s,'gh_json') as gh:
+            self.assertEqual(self.s.verify(),0); gh.assert_not_called()
+
     def test_unsafe_names(self):
         with self.assertRaises(ValueError): self.s.safe_asset_name('../escape','x.pdf',self.row['url'])
     def test_published_archive_and_collision_refused(self):

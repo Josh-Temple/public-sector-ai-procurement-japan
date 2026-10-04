@@ -65,6 +65,11 @@ jobs:
             --locator-prefix "github-draft-release:source-snapshots-private"
           python3 scripts/validate_repository.py
 
+      - name: Restore and verify all registered snapshots
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/source_snapshot.py verify
+
       - name: Open metadata pull request
         if: steps.prepare.outputs.count != '0'
         env:

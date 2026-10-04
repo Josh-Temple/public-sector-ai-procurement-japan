@@ -216,6 +216,54 @@ def archive(manifest_path: Path, out_dir: Path) -> int:
     return 0
 
 
+def verify() -> int:
+    """Restore registered snapshots into memory, without upload or metadata edits."""
+    _, rows = read_rows()
+    rows = [row for row in rows if row.get("snapshot_status") == "snapshotted"]
+    if not rows:
+        print("SNAPSHOT_VERIFY_PASS assets=0")
+        return 0
+    # Validate every locator before accessing GitHub. Never follow stored URLs.
+    prefix = "github-draft-release:source-snapshots-private/"
+    for row in rows:
+        digest = row.get("snapshot_hash", "")
+        if not re.fullmatch(r"sha256:[a-f0-9]{64}", digest):
+            raise ValueError("invalid registered snapshot hash")
+        locator = row.get("snapshot_locator", "")
+        name = locator.removeprefix(prefix)
+        if (not locator.startswith(prefix) or Path(name).name != name
+                or not re.fullmatch(re.escape(row["source_id"]) + "-" + digest[7:]
+                                    + r"\.[A-Za-z0-9]{1,10}", name)):
+            raise ValueError("invalid registered snapshot locator")
+    repo = gh_json("repo", "view", "--json", "nameWithOwner")["nameWithOwner"]
+    releases = gh_json("api", f"repos/{repo}/releases?per_page=100")
+    matches = [r for r in releases if r["tag_name"] == "source-snapshots-private"]
+    if len(matches) != 1 or not matches[0]["draft"]:
+        raise RuntimeError("registered snapshot archive is missing, ambiguous or published")
+    release_id = matches[0]["id"]
+    assets = gh_json("api", f"repos/{repo}/releases/{release_id}/assets?per_page=100")
+    if len(assets) == 100:
+        raise RuntimeError("asset pagination required")
+    for row in rows:
+        if not gh_json("api", f"repos/{repo}/releases/{release_id}")["draft"]:
+            raise RuntimeError("archive draft state changed during restoration")
+        name = row["snapshot_locator"][len(prefix):]
+        matching = [a for a in assets if a["name"] == name]
+        if len(matching) != 1:
+            raise RuntimeError(f"registered snapshot asset missing or ambiguous: {row['source_id']}")
+        payload = subprocess.check_output([
+            "gh", "api", "-H", "Accept: application/octet-stream",
+            f"repos/{repo}/releases/assets/{matching[0]['id']}",
+        ])
+        if not payload or hashlib.sha256(payload).hexdigest() != row["snapshot_hash"][7:]:
+            raise RuntimeError(f"restored snapshot hash mismatch: {row['source_id']}")
+        print(f"SNAPSHOT_RESTORE_PASS source={row['source_id']} bytes={len(payload)}")
+    if not gh_json("api", f"repos/{repo}/releases/{release_id}")["draft"]:
+        raise RuntimeError("archive draft state changed after restoration")
+    print(f"SNAPSHOT_VERIFY_PASS assets={len(rows)}")
+    return 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     sub = parser.add_subparsers(dest="command", required=True)
@@ -232,7 +280,11 @@ def main() -> int:
     p_archive.add_argument("--manifest", required=True, type=Path)
     p_archive.add_argument("--out-dir", required=True, type=Path)
 
+    sub.add_parser("verify")
+
     args = parser.parse_args()
+    if args.command == "verify":
+        return verify()
     if args.command == "prepare":
         return prepare(args.out_dir, args.manifest)
     if args.command == "archive":

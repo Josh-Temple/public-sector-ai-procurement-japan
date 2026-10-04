@@ -57,6 +57,7 @@ jobs:
           mkdir -p _site
           cp index.html _site/index.html
           cp insights.html _site/insights.html
+          cp case-study.html _site/case-study.html
           cp checklist.html _site/checklist.html
           cp methodology.html _site/methodology.html
           cp robots.txt _site/robots.txt

@@ -107,12 +107,21 @@ class SnapshotTests(unittest.TestCase):
                 with self.assertRaises((HTTPError,RuntimeError)): self.prepare()
             self.assertEqual(self.s.SOURCE_CSV.read_bytes(),before)
             self.assertEqual(list((self.root / 'assets').iterdir()),[])
+    def test_html_error_page_is_not_preserved_as_pdf(self):
+        before = self.s.SOURCE_CSV.read_bytes()
+        with patch.object(self.s.urllib.request, 'urlopen') as fetch:
+            fetch.return_value.__enter__.return_value.read.return_value = b'<html>Access denied</html>'
+            with self.assertRaisesRegex(RuntimeError, 'not a PDF'):
+                self.prepare()
+        self.assertEqual(self.s.SOURCE_CSV.read_bytes(), before)
+        self.assertEqual(list((self.root / 'assets').iterdir()), [])
+
     def test_hash_apply_retry_and_stale_source(self):
         with patch.object(self.s.urllib.request,'urlopen') as fetch:
-            fetch.return_value.__enter__.return_value.read.return_value=b'fixture PDF'
+            fetch.return_value.__enter__.return_value.read.return_value=b'%PDF-1.7 fixture PDF'
             self.prepare()
         manifest=self.root / 'manifest.json'; item=json.loads(manifest.read_text())[0]
-        self.assertEqual(item['sha256'],hashlib.sha256(b'fixture PDF').hexdigest())
+        self.assertEqual(item['sha256'],hashlib.sha256(b'%PDF-1.7 fixture PDF').hexdigest())
         self.assertIn(item['sha256'],item['asset_name'])
         prefix='github-draft-release:source-snapshots-private'
         self.s.apply(manifest,prefix); once=self.s.SOURCE_CSV.read_bytes()

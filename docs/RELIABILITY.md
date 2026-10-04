@@ -24,7 +24,7 @@ Draft releases are hidden from general visitors but accessible to repository wri
 
 Metadata changes go through a PR. `GITHUB_TOKEN`-created PRs do not trigger normal PR CI; preservation explicitly dispatches integrity CI on its branch. Required checks are never bypassed. Runs are serialized; a retry verifies/reuses assets and the existing run-specific PR branch. Merging snapshot metadata leaves no eligible pending rows, so the follow-up main push does not loop.
 
-Current registry has 68 Sources: external_url_only 59, snapshot_unavailable 6, not_public 3, snapshot_pending 0, snapshotted 0. `external_url_only` means no durable snapshot, not necessarily current accessibility. Historical reviewed evidence is retained when originals become inaccessible. Access states: accessible 53, source_unavailable 12, not_public 3. Source status is the last recorded observation, not continuous live monitoring.
+Current registry has 68 Sources: external_url_only 57, snapshot_unavailable 6, not_public 3, snapshot_pending 2, snapshotted 0. `external_url_only` means no durable snapshot, not necessarily current accessibility. Historical reviewed evidence is retained when originals become inaccessible. Access states: accessible 53, source_unavailable 12, not_public 3. Source status is the last recorded observation, not continuous live monitoring.
 
 The 0-candidate production path has executed successfully. Eligible downloads, empty/404 responses, SHA-256, unsafe names, stale manifests, retries, published-release refusal, and collisions have local failure-path tests. A real nonempty draft upload and generated PR have **not** yet been demonstrated; do not report them as production verified. Test mocks validate behavior, not GitHub permissions or draft privacy. There is currently no archived asset to anonymously probe.
 
@@ -49,3 +49,9 @@ The audit found validator gaps rather than corrupt canonical rows: vendor/bid/en
 Main provenance tests now exercise an actual temporary Git repository's push range, including an intermediate direct commit before a legitimate tip, a multi-commit rebase, forced pushes and branch creation. API associations remain mocked; production main runs provide the separate GitHub integration evidence.
 
 Preservation now checks main provenance before download/upload, retaining defense in depth alongside actual branch protection. Existing metadata and evidence were not reclassified, and no original binaries were added to Git or Pages. All 59 external-only Sources still lack durable snapshots; the zero-candidate run does not prove the nonempty upload/PR path. Prioritize an eligible public Source's real draft archive/PR demonstration before claiming full preservation coverage. Do not silently promote unavailable Sources or relax draft privacy.
+
+## Live preservation attempt
+
+The Oumi original specification and subsequent official Q&A are selected for a bounded production preservation test because together they support amendment-aware claims. The recorded accessible HTTPS Sources move to snapshot_pending without changing retrieved_at, Claim verification, or procurement facts. The local runner returned HTTP 403, so accessibility is not freshly established here; GitHub Actions must attempt the official download. Failure must leave states pending, preserve existing evidence, and be investigated rather than be silently reclassified.
+
+Draft creation readback uses GitHub REST release IDs, avoiding unsupported gh release view databaseId fields. No source binaries are committed. Nonempty upload, hash readback, privacy and metadata PR are not declared successful until observed.

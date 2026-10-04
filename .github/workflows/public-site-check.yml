@@ -5,6 +5,7 @@ on:
     paths:
       - "index.html"
       - "insights.html"
+      - "case-study.html"
       - "checklist.html"
       - "methodology.html"
       - "robots.txt"

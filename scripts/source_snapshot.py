@@ -74,6 +74,9 @@ def prepare(out_dir: Path, manifest_path: Path) -> int:
         if not payload:
             raise RuntimeError(f"empty snapshot payload: {source_id}")
 
+        if Path(asset_name).suffix.lower() == ".pdf" and not payload.startswith(b"%PDF-"):
+            raise RuntimeError(f"snapshot is not a PDF payload: {source_id}")
+
         digest = hashlib.sha256(payload).hexdigest()
         # Immutable content-addressed assets preserve earlier versions on retries.
         asset_name = f"{Path(asset_name).stem}-{digest}{Path(asset_name).suffix}"
@@ -162,8 +165,11 @@ def archive(manifest_path: Path, out_dir: Path) -> int:
         subprocess.run(["gh", "release", "create", tag, "--draft", "--title",
                         "Source snapshots (draft; do not publish)", "--notes",
                         "Preservation only. Publishing requires a separate rights review."], check=True)
-        release = gh_json("release", "view", tag, "--json", "isDraft,databaseId")
-        release_id = release["databaseId"]
+        created = gh_json("api", f"repos/{repo}/releases?per_page=100")
+        created = [r for r in created if r["tag_name"] == tag]
+        if len(created) != 1 or not created[0]["draft"]:
+            raise RuntimeError("created draft archive could not be verified")
+        release_id = created[0]["id"]
     else:
         release_id = matches[0]["id"]
     for item in manifest:

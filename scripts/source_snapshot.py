@@ -71,8 +71,25 @@ def prepare(out_dir: Path, manifest_path: Path) -> int:
             headers={"User-Agent": "public-sector-ai-procurement-japan snapshot-preservation/1.0"},
         )
         print(f"SNAPSHOT_DOWNLOAD source_id={source_id}", flush=True)
-        with urllib.request.urlopen(request, timeout=60) as response:
-            payload = response.read()
+        try:
+            with urllib.request.urlopen(request, timeout=60) as response:
+                payload = response.read()
+        except urllib.error.HTTPError as error:
+            # A missing or temporarily failing source must not block other eligible
+            # Sources, and must never be promoted to a permanent registry state.
+            print(
+                f"::warning title=Source snapshot deferred::{source_id}: "
+                f"HTTP {error.code}; remains snapshot_pending",
+                flush=True,
+            )
+            continue
+        except (urllib.error.URLError, TimeoutError):
+            print(
+                f"::warning title=Source snapshot deferred::{source_id}: "
+                "network error; remains snapshot_pending",
+                flush=True,
+            )
+            continue
         if not payload:
             raise RuntimeError(f"empty snapshot payload: {source_id}")
 

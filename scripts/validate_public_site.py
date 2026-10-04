@@ -16,6 +16,7 @@ BASE_URL = "https://josh-temple.github.io/public-sector-ai-procurement-japan/"
 PUBLIC_PAGES = {
     "index.html": BASE_URL,
     "insights.html": BASE_URL + "insights.html",
+    "case-study.html": BASE_URL + "case-study.html",
     "checklist.html": BASE_URL + "checklist.html",
     "methodology.html": BASE_URL + "methodology.html",
 }

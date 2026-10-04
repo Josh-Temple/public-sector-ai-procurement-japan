@@ -203,7 +203,7 @@ AI機能とは別に、買い方そのものを比較する。共同調達や一
 URLが同じでも内容変更・削除があり得るため、再取得が重要な一次資料はsnapshot候補として扱う。
 
 - `external_url_only`: 現時点では外部公式URLのみを保持
-- `snapshot_pending`: 再取得性リスクがあり、durable snapshotを作る候補
+- `snapshot_pending`: accessibleかつHTTPSの公式URLを持ち、durable snapshotの保存待ち。取得失敗だけで自動的に恒久状態へ変更しない
 - `snapshotted`: snapshotを保存し、locatorとhashで同一性を追跡できる
 - `snapshot_unavailable`: 権利・技術・取得制約等によりsnapshotを保存できない
 - `not_public`: 資料の存在は確認できるが本文が一般公開されておらず、公開取得物のsnapshotを作れない
@@ -422,3 +422,7 @@ projection固有の状態:
 case-level の `public_reconstructability` は契約最終状態までの再構成可能性を示す。6つの標準roleが確認済み (`reviewed`) または根拠ある非該当 (`not_applicable`) で、`contract_final` が `reviewed`、かつ `effective_requirements.csv` に公開最終要求を示すレビュー済み `contracting_rule` 行がある場合のみ `publicly_reconstructable` とする。公開された公募stage要件のみでは十分でない。
 
 既知の欠落・アクセス制約・公開されていない資料・未解決矛盾がある場合は `publicly_bounded` とする。契約最終roleが `not_assessed` の場合は `not_assessed` のままとし、資料がないと解釈しない。role別状態の詳しい意味は `docs/EVIDENCE_COVERAGE.md` と `AGENTS.md` を参照。
+
+## Structural integrity checks
+
+`python3 scripts/validate_repository.py` rejects duplicate keys (including case/vendor, case/bidder and case/entity), malformed CSV rows/headers, missing case IDs outside the Source registry, unknown or cross-case Source references, reviewed amendments without change locators, and snapshot locators inconsistent with the Source ID/hash. Projection regeneration and publication checks are separate CI steps; structural PASS does not establish semantic correctness or currentness.

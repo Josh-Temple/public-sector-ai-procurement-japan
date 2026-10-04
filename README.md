@@ -2,6 +2,8 @@
 
 ## はじめて見る方へ
 
+[ケーススタディ：仕様書と質疑をつなぎ、有効要件を整理する](https://josh-temple.github.io/public-sector-ai-procurement-japan/case-study.html) — 問題設定・一次資料・設計・検証・限界を具体例で紹介。
+
 まず[5つの設計論点](https://josh-temple.github.io/public-sector-ai-procurement-japan/insights.html)を読み、[比較サイト](https://josh-temple.github.io/public-sector-ai-procurement-japan/)で案件を選び、公式資料へ戻る順で確認できます。
 
 自治体のAI調達を、仕様書だけでなく質疑・訂正・評価・公開結果と接続して構造化する個人研究です。一次情報調査、要件比較、出典設計、CIによる整合性確認のEvidenceとして、`docs/DATA_MODEL.md`、`data/source_documents.csv`、`data/effective_requirements.csv`、`scripts/validate_repository.py`を確認できます。

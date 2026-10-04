@@ -121,7 +121,7 @@ GitHub protects `main` with required pull requests and the `Repository-wide inte
 
 For Source preservation, `.github/workflows/source-preservation.yml` archives only Sources explicitly marked `snapshot_pending`, `accessible`, and carrying an HTTPS URL. Eligible binary assets are stored only after verifying draft state in the access-restricted draft release `source-snapshots-private`; the repository records only SHA-256 and a non-secret locator through a follow-up PR. Sources whose bodies cannot currently be acquired are `snapshot_unavailable`, not falsely marked as preserved.
 
-Operational limits and settings: `docs/RELIABILITY.md`. A draft release is hidden from general visitors but is accessible to repository writers; it is not a separate private repository. Three Oumi Sources have verified draft snapshots. Automatic follow-up PR creation and branch integrity dispatch have been verified in production; see the operational note for execution-approval behavior.
+Operational limits and settings: `docs/RELIABILITY.md`. A draft release is hidden from general visitors but is accessible to repository writers; it is not a separate private repository. Eight Sources from Oumi, Kobe voicebot and Obu have verified draft snapshots; all are restored from their locators and SHA-256 checked on each preservation run, including zero-candidate runs. Automatic follow-up PR creation and branch integrity dispatch have been verified in production; see the operational note for execution-approval behavior.
 
 Local check:
 

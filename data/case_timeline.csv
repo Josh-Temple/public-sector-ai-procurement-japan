@@ -14,3 +14,12 @@ kobe-2026-spec-authoring-ai,2026-02-20,2025,,2027-03-31,2026,2026,planned_contra
 saitama-2026-ai-digital-support,2026-04-03,2026,,,,,announcement_only,SRC-saitama-2026-ai-support-page,公式ページの公募スケジュールは2026-04-03質問受付開始。契約期間は契約締結日から2027-03-31だが、実契約日・実サービス開始を確認していないためサービス期間へ転記しない,2026-10-03
 hokkaido-2025-genai-rag-pilot,2025-03-28,2024,2025-07-01,2026-03-31,2025,2025,service_period_confirmed_spec,SRC-hokkaido-2025-notice,公告日は公式公告文。サービス提供期間はSRC-hokkaido-2025-specで2025-07-01〜2026-03-31を確認。case_idの2025は安定IDで、公募年度はFY2024。サービス期間は実稼働確認とは別扱い,2026-10-05
 kobe-2025-dify-platform,2025-10-24,2025,,2026-03-31,2025,2025,planned_contract_start_only,SRC-kobe-2025-dify-page,公募開始2025-10-24。契約締結・事業開始は2025年12月下旬予定で正確な開始日・実稼働日は未確認。終了日は公開募集情報の契約期間終期2026-03-31,2026-10-05
+sendai-2026-genai-service,2026-03-25,2025,,2027-03-31,2026,2026,announcement_exact_service_phase_months,SRC-sendai-2026-page,公告はFY2025。仕様のサービス開始は2026年9月に3業務、11月に2業務の月精度で、実稼働確認とは別,2026-10-05
+wakayama-2026-genai-support,2026-02-26,2025,,2027-03-31,2026,2026,announcement_exact_service_end,SRC-wakayama-2026-page,公募開始はFY2025。契約・実稼働開始日は未確認,2026-10-05
+nishiwaki-2025-genai-service,2025-06-11,2025,2025-09-01,2026-03-31,2025,2025,service_period_confirmed_spec,SRC-nishiwaki-2025-spec,2025-09-01はサービス利用期間の開始。契約締結日や実稼働確認日とは扱わない,2026-10-05
+toyooka-2025-genai-service,2025-08-18,2025,,2026-03-31,2025,2025,planned_operation_month,SRC-toyooka-2025-guide,仕様は11月上旬〜12月上旬の利用開始予定を示すが具体日・実稼働は未確認,2026-10-05
+harima-2025-genai-service,2025-09-01,2025,2025-11-04,2026-03-31,2025,2025,planned_start,SRC-harima-2025-page,2025-11-04は公式ページ上も予定表記。契約・実稼働確認に使わない,2026-10-05
+hamada-2025-municipal-genai,2025-08-27,2025,,2026-03-31,2025,2025,announcement_exact_service_end,SRC-hamada-2025-page,履行期間は契約日から2026-03-31。契約日と実稼働開始は未確認,2026-10-05
+yamagata-gifu-2026-genai-service,2026-05-08,2026,,2027-03-31,2026,2026,operation_month_separate,SRC-yamagata-gifu-2026-page,公募開始2026-05-08。実運用は別sourceで2026年7月開始を月精度で確認,2026-10-05
+gosen-2026-genai-service,2026-07-06,2026,2026-10-01,2027-03-31,2026,2026,planned_start,SRC-gosen-2026-page,2026-10-01は公募日程上の利用開始予定。実稼働確認ではない,2026-10-05
+koge-2026-genai-procurement,2026-07-01,2026,,2027-03-31,2026,2026,announcement_exact_service_end,SRC-koge-2026-page,契約締結は8月上旬予定。契約日・実稼働開始は未確認,2026-10-05

@@ -21,7 +21,7 @@ For source tracing, use the paired `*_source_id` columns in the CSV and resolve 
 | toyooka-2025-genai-service | 豊岡市 | · | · | · | · | · | · | not_assessed | not_assessed | not_assessed | not_assessed |  |
 | harima-2025-genai-service | 播磨町 | · | · | · | · | · | · | not_assessed | not_assessed | not_assessed | not_assessed |  |
 | oumi-2026-joint-genai | おうみ自治体クラウド協議会 | R | R | · | R | R | F | not_assessed | not_assessed | not_assessed | publicly_bounded | contract_final:not_found_in_reviewed_sources |
-| kobe-2025-dify-platform | 神戸市 | · | · | · | · | · | · | not_assessed | not_assessed | not_assessed | not_assessed |  |
+| kobe-2025-dify-platform | 神戸市 | P | P | · | R | R | P | selected_candidate_confirmed | not_verified | not_verified | publicly_bounded | specification:not_public;qa_amendment:not_public;contract_final:not_public |
 | kobe-2026-tax-voicebot | 神戸市 | R | P | · | R | R | P | not_assessed | not_assessed | not_assessed | publicly_bounded | qa_amendment:not_public;contract_final:not_public |
 | koshigaya-2024-genai-service-training | 越谷市 | R | R | — | R | R | · | not_assessed | not_assessed | not_assessed | not_assessed |  |
 | kitakyushu-2025-genai-service | 北九州市 | R | P | U | R | R | · | not_assessed | not_assessed | not_assessed | publicly_bounded | qa_amendment:not_public;requirement_matrix:source_unavailable |

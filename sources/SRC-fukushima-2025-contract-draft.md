@@ -4,7 +4,7 @@ title: 生成AIサービス導入支援業務 契約書（案）
 url: https://www.pref.fukushima.lg.jp/uploaded/attachment/678535.pdf
 publisher: 福島県
 source_type: official-contract-draft
-accessed_at: "2026-10-06"
+accessed_at: "2026-10-05"
 scope: "福島県2025生成AIサービス導入支援業務の公募時契約書案"
 ---
 

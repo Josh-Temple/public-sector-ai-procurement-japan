@@ -77,3 +77,9 @@ saitama-2026-ai-digital-support,requirement_matrix,SRC-saitama-2026-ai-support-s
 saitama-2026-ai-digital-support,evaluation,SRC-saitama-2026-ai-support-evaluation,reviewed,,2026-10-03,17項目・410点満点。根拠表示40点、根拠なし回答制御50点等を確認
 saitama-2026-ai-digital-support,result,SRC-saitama-2026-ai-support-page,reviewed,,2026-10-03,公式ページでAllganize Japan株式会社を委託先候補者、参加者7者と確認。結果表も確認
 saitama-2026-ai-digital-support,contract_final,SRC-saitama-2026-ai-support-contract-draft,not_found_in_reviewed_sources,not_found_in_reviewed_sources,2026-10-03,公募時契約書案は未確定欄を含み、仕様書冒頭は候補者提案を踏まえて調達仕様を作成し提案書とともに契約仕様とすると定める。レビューした公開範囲で候補者提案書・署名済み最終契約・最終調達仕様は確認できず、不存在の断定ではない
+hokkaido-2025-genai-rag-pilot,specification,SRC-hokkaido-2025-spec,reviewed,,2026-10-05,仕様本文を再確認。RAG実証のサービス期間・利用規模・RAG・セキュリティ・運用・研修・効果分析要件を確認
+hokkaido-2025-genai-rag-pilot,qa_amendment,SRC-hokkaido-2025-page,reviewed,,2026-10-05,公式ページ上の公開Q&Aを確認。100GB最低ライン、30RAGの定義、LGWAN非利用、問い合わせ対象等を明確化
+hokkaido-2025-genai-rag-pilot,requirement_matrix,SRC-hokkaido-2025-spec,not_applicable,not_applicable,2026-10-05,公開資料一覧に独立要求機能表はなく、主要要件は仕様書本文に内包されるため本案件では独立roleを非該当とした
+hokkaido-2025-genai-rag-pilot,evaluation,SRC-hokkaido-2025-guide,reviewed,,2026-10-05,170点の審査基準、順位点による最良提案者選定、80点以上評価者が半数超かつ全委員合意の要件を確認
+hokkaido-2025-genai-rag-pilot,result,SRC-hokkaido-2025-selection-result,conflicting_sources,conflicting_sources,2026-10-05,選定事業者は東日本電信電話株式会社で一致するが、審査結果一覧は選定日2025-05-13、随意契約結果は審査委員会開催日2025-05-23とし、選定時点の公式日付が不整合
+hokkaido-2025-genai-rag-pilot,contract_final,SRC-hokkaido-2025-guide,not_found_in_reviewed_sources,not_found_in_reviewed_sources,2026-10-05,随意契約結果で契約日・相手方・金額は確認したが、実施説明書は採択提案を契約締結時に修正可能とし、契約書・業務処理要領は別途提示するとする。レビューした公開資料に契約最終要求本文は見つからない

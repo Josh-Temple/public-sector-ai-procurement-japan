@@ -89,3 +89,8 @@ fukushima-2025-genai-pilot,requirement_matrix,SRC-fukushima-2025-spec,not_applic
 fukushima-2025-genai-pilot,evaluation,SRC-fukushima-2025-evaluation,reviewed,,2026-10-05,100点の評価基準を再確認。提案内容60点、費用10点。質問回答2で費用は金額連動ではなく総合判断と確認
 fukushima-2025-genai-pilot,result,SRC-fukushima-2025-result,reviewed,,2026-10-05,東日本電信電話株式会社 宮城事業部 福島支店を契約候補者として選定、317/400点、履行期間2025-06-12〜2026-03-31を確認
 fukushima-2025-genai-pilot,contract_final,SRC-fukushima-2025-guide,not_found_in_reviewed_sources,not_found_in_reviewed_sources,2026-10-05,募集要領は候補者特定後に提案内容を反映した仕様等を決定し、協議・見積精査後に契約するとする。公開契約書は案で、署名済み契約・契約最終仕様はレビュー資料に見つからない
+kobe-2025-dify-platform,specification,SRC-kobe-2025-dify-spec-private,not_public,not_public,2026-10-05,仕様書の一部に情報資産のセキュリティ事項等を含むため、秘密保持誓約書提出者へ関係資料を配布。公開本文では詳細仕様を再監査できない
+kobe-2025-dify-platform,qa_amendment,SRC-kobe-2025-dify-qa-private,not_public,not_public,2026-10-05,質問回答は全参加者へ電子メール配布。公開資料だけでは質疑による変更・解釈を再構成できない
+kobe-2025-dify-platform,evaluation,SRC-kobe-2025-dify-guide,reviewed,,2026-10-05,100点満点。内容点80（企画・体制70、地元性10）＋価格20。RAGアプリ実現性、Dify/Azure実績、運用保守等を評価
+kobe-2025-dify-platform,result,SRC-kobe-2025-dify-page,reviewed,,2026-10-05,"リコージャパン株式会社兵庫支社66点、2位56点、3位47点、契約金額6,979,500円を公式結果ページで確認"
+kobe-2025-dify-platform,contract_final,SRC-kobe-2025-dify-guide,not_public,not_public,2026-10-05,実施要領は契約内容を仕様書・企画提案書に基づき協議決定するとする。仕様書詳細・質問回答・採択提案が公開されておらず契約最終要件を公開資料だけで再構成できない

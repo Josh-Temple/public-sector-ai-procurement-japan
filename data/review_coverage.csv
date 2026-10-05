@@ -94,3 +94,9 @@ kobe-2025-dify-platform,qa_amendment,SRC-kobe-2025-dify-qa-private,not_public,no
 kobe-2025-dify-platform,evaluation,SRC-kobe-2025-dify-guide,reviewed,,2026-10-05,100点満点。内容点80（企画・体制70、地元性10）＋価格20。RAGアプリ実現性、Dify/Azure実績、運用保守等を評価
 kobe-2025-dify-platform,result,SRC-kobe-2025-dify-page,reviewed,,2026-10-05,"リコージャパン株式会社兵庫支社66点、2位56点、3位47点、契約金額6,979,500円を公式結果ページで確認"
 kobe-2025-dify-platform,contract_final,SRC-kobe-2025-dify-guide,not_public,not_public,2026-10-05,実施要領は契約内容を仕様書・企画提案書に基づき協議決定するとする。仕様書詳細・質問回答・採択提案が公開されておらず契約最終要件を公開資料だけで再構成できない
+sendai-2026-genai-service,specification,SRC-sendai-2026-spec,reviewed,,2026-10-05,5内部事務、RAG、段階利用開始、対象ユーザー規模、利用量、セキュリティ・管理・サポート要件を再確認
+sendai-2026-genai-service,qa_amendment,SRC-sendai-2026-qa,reviewed,,2026-10-05,公開Q&Aを確認。LLM代替、外部クラウド条件、ログイン不要、RAG文書整形、上限制御、国内リージョン、運用分担等を具体化
+sendai-2026-genai-service,requirement_matrix,SRC-sendai-2026-spec,not_applicable,not_applicable,2026-10-05,独立要求機能一覧は公開資料構成になく、主要機能要件は仕様書・クラウド利用基準・特記仕様書に内包される
+sendai-2026-genai-service,evaluation,SRC-sendai-2026-evaluation,reviewed,,2026-10-05,13項目110点。RAGデモによる正確性・根拠確認、サポート、実績等を評価
+sendai-2026-genai-service,result,SRC-sendai-2026-page,reviewed,,2026-10-05,応募8者、審査委員会2026-06-03、株式会社ビースポークを受託候補者として特定
+sendai-2026-genai-service,contract_final,SRC-sendai-2026-guide,not_found_in_reviewed_sources,not_found_in_reviewed_sources,2026-10-05,募集要領は候補者との協議により委託内容・契約金額を変更し得る。公開契約書は案で、公式ページの契約締結は2026年6月中旬予定表記のまま。署名済み契約・契約最終仕様はレビュー資料に見つからない

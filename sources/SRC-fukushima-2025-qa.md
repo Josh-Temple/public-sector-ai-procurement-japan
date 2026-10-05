@@ -5,7 +5,7 @@ url: https://www.pref.fukushima.lg.jp/uploaded/life/835718_2423156_misc.pdf
 publisher: 福島県
 source_type: official-qa-amendment
 published_at: "2025-04-03"
-accessed_at: "2026-10-06"
+accessed_at: "2026-10-05"
 scope: "福島県2025生成AIサービス導入支援業務の公募仕様・運用条件の公式解釈"
 ---
 

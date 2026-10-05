@@ -1,4 +1,4 @@
-# Evidence coverage — 2026-10-05
+# Evidence coverage — 2026-10-06
 
 This is an evidence-review projection, not a procurement, vendor, or government quality score.
 
@@ -30,7 +30,7 @@ Legend: R reviewed; N explicitly not reviewed; U source unavailable; P source kn
 | yamagata-gifu-2026-genai-service | 山県市 | · | · | · | · | · | · | not_assessed |
 | koge-2026-genai-procurement | 上毛町 | · | · | · | · | · | · | not_assessed |
 | gosen-2026-genai-service | 五泉市 | · | · | · | · | · | · | not_assessed |
-| fukushima-2025-genai-pilot | 福島県 | · | · | · | · | · | · | not_assessed |
+| fukushima-2025-genai-pilot | 福島県 | R | R | — | R | R | F | publicly_bounded |
 | fukushima-2026-genai-pilot-expansion | 福島県 | R | N | · | R | R | · | not_assessed |
 | kagoshima-2026-genai-service | 鹿児島県 | · | · | · | · | · | · | not_assessed |
 | gunma-2026-joint-genai | 群馬県情報化推進協議会 | U | F | U | U | F | F | publicly_bounded |
@@ -40,7 +40,7 @@ Legend: R reviewed; N explicitly not reviewed; U source unavailable; P source kn
 ## Current reading
 
 - Cases in repository: 26
-- Cases with at least one role assessed: 14
+- Cases with at least one role assessed: 15
 - Cases with contract_final reviewed: 0
 - Cases publicly reconstructable through contract final: 0
 - assessed_roles and reviewed_roles count review states only; they are not quality scores.

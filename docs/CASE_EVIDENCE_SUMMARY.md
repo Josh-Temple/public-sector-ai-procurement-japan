@@ -1,4 +1,4 @@
-# Case evidence summary — 2026-10-05
+# Case evidence summary — 2026-10-06
 
 This is a generated comparison projection for what has actually been reviewed for each case. It is not a procurement, vendor, or government quality score.
 
@@ -30,7 +30,7 @@ For source tracing, use the paired `*_source_id` columns in the CSV and resolve 
 | yamagata-gifu-2026-genai-service | 山県市 | · | · | · | · | · | · | not_assessed | not_assessed | not_assessed | not_assessed |  |
 | koge-2026-genai-procurement | 上毛町 | · | · | · | · | · | · | not_assessed | not_assessed | not_assessed | not_assessed |  |
 | gosen-2026-genai-service | 五泉市 | · | · | · | · | · | · | not_assessed | not_assessed | not_assessed | not_assessed |  |
-| fukushima-2025-genai-pilot | 福島県 | · | · | · | · | · | · | not_assessed | not_assessed | not_assessed | not_assessed |  |
+| fukushima-2025-genai-pilot | 福島県 | R | R | — | R | R | F | selected_candidate_confirmed | not_verified | not_verified | publicly_bounded | contract_final:not_found_in_reviewed_sources |
 | fukushima-2026-genai-pilot-expansion | 福島県 | R | N | · | R | R | · | not_assessed | not_assessed | not_assessed | not_assessed |  |
 | kagoshima-2026-genai-service | 鹿児島県 | · | · | · | · | · | · | not_assessed | not_assessed | not_assessed | not_assessed |  |
 | gunma-2026-joint-genai | 群馬県情報化推進協議会 | U | F | U | U | F | F | not_assessed | not_assessed | not_assessed | publicly_bounded | specification:source_unavailable;qa_amendment:not_found_in_reviewed_sources;requirement_matrix:source_unavailable;evaluation:source_unavailable;result:not_found_in_reviewed_sources;contract_final:not_found_in_reviewed_sources |

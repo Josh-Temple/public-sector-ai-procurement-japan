@@ -5,7 +5,7 @@ url: https://www.pref.fukushima.lg.jp/uploaded/attachment/678530.pdf
 publisher: 福島県
 source_type: official-procurement-notice
 published_at: "2025-03-17"
-accessed_at: "2026-10-06"
+accessed_at: "2026-10-05"
 scope: "福島県2025生成AIサービス導入支援業務の公募開始"
 ---
 

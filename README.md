@@ -167,7 +167,7 @@ Web-onlyの壁時計時間は計測できなかったため、速度優位は主
 - Case timeline records: 14
 - Reasoning regression questions: 24
 - Cases with hardening roles assessed: 14 / 26
-- Case-level public reconstructability: publicly_bounded 11 / not_assessed 15 / publicly_reconstructable 0
+- Case-level public reconstructability: publicly_bounded 12 / not_assessed 14 / publicly_reconstructable 0
 
 代表再監査済み: 仙台市2025、大府市2026、焼津市2025、おうみ共同調達、神戸市2026税務ボイスボット、越谷市2024、北九州市2025、福島県2026、北海道2025、北海道2026、京都市2026汎用生成AI、神戸市2026仕様書作成支援AI、群馬共同調達、埼玉県2026申請・相談デジタルサポート。案件総数26件すべてが同じ深度で再監査済みという意味ではない。
 

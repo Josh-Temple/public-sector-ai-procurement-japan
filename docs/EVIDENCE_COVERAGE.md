@@ -1,4 +1,4 @@
-# Evidence coverage — 2026-10-03
+# Evidence coverage — 2026-10-05
 
 This is an evidence-review projection, not a procurement, vendor, or government quality score.
 
@@ -34,13 +34,13 @@ Legend: R reviewed; N explicitly not reviewed; U source unavailable; P source kn
 | fukushima-2026-genai-pilot-expansion | 福島県 | R | N | · | R | R | · | not_assessed |
 | kagoshima-2026-genai-service | 鹿児島県 | · | · | · | · | · | · | not_assessed |
 | gunma-2026-joint-genai | 群馬県情報化推進協議会 | U | F | U | U | F | F | publicly_bounded |
-| hokkaido-2025-genai-rag-pilot | 北海道 | · | · | · | · | · | · | not_assessed |
+| hokkaido-2025-genai-rag-pilot | 北海道 | R | R | — | R | C | F | publicly_bounded |
 | hokkaido-2026-genai-rag-service | 北海道 | U | · | · | — | R | F | publicly_bounded |
 
 ## Current reading
 
 - Cases in repository: 26
-- Cases with at least one role assessed: 13
+- Cases with at least one role assessed: 14
 - Cases with contract_final reviewed: 0
 - Cases publicly reconstructable through contract final: 0
 - assessed_roles and reviewed_roles count review states only; they are not quality scores.

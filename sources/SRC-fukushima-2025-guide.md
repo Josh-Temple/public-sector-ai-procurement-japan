@@ -4,7 +4,7 @@ title: 生成AIサービス導入支援業務公募型プロポーザル募集�
 url: https://www.pref.fukushima.lg.jp/uploaded/attachment/678531.pdf
 publisher: 福島県
 source_type: official-procurement-guide
-accessed_at: "2026-10-06"
+accessed_at: "2026-10-05"
 scope: "福島県2025生成AIサービス導入支援業務の公募条件・選定・契約手続"
 ---
 

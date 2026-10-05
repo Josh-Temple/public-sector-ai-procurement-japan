@@ -164,7 +164,7 @@ Web-onlyの壁時計時間は計測できなかったため、速度優位は主
 - Source documents: 86
 - Effective requirements: 86
 - Review coverage records: 95
-- Case timeline records: 16
+- Case timeline records: 15
 - Reasoning regression questions: 24
 - Cases with hardening roles assessed: 16 / 26
 - Case-level public reconstructability: publicly_bounded 14 / not_assessed 12 / publicly_reconstructable 0

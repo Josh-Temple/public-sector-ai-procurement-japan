@@ -20,7 +20,6 @@ jobs:
         with:
           fetch-depth: 0
       - name: Verify main update came through merged pull requests
-        if: github.ref == 'refs/heads/main'
         uses: actions/github-script@v9
         with:
           script: |

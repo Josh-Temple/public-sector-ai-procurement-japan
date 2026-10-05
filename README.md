@@ -61,7 +61,7 @@
 
 ## Current status
 
-2026-09-30 に初期コーパスを作成し、以降は既存案件の証拠品質・比較可能性を優先して監査しています。案件台帳は26案件のままです。仕様書水準の要件比較は18案件、評価基準は143項目、汎用調達の細粒度要件は22件、業務特化型AIの要件は96件、公開得点は26行を保持しています。調達方式は13件、一般競争入札結果は3行、共同調達団体レコードは8行（現参加6・将来予定2）です。source documentsは86行、有効要件は86行、review coverageは95行、timelineは15行で、標準roleを1つ以上評価した案件は16件です.
+2026-09-30 に初期コーパスを作成し、以降は既存案件の証拠品質・比較可能性を優先して監査しています。案件台帳は26案件のままです。仕様書水準の要件比較は18案件、評価基準は143項目、汎用調達の細粒度要件は22件、業務特化型AIの要件は96件、公開得点は26行を保持しています。調達方式は13件、一般競争入札結果は3行、共同調達団体レコードは8行（現参加6・将来予定2）です。source documentsは133行、有効要件は99行、review coverageは155行、timelineは24行で、標準roleを1つ以上評価した案件は26件です.
 
 公開された仕様や選定結果があっても契約最終状態を確認できるとは限りません。case-level の公開再構成可能性は契約最終要件の根拠も確認できた場合に限り publicly_reconstructable とし、not_assessed は資料がないことを意味しません。
 
@@ -121,7 +121,7 @@ GitHub protects `main` with required pull requests and the `Repository-wide inte
 
 For Source preservation, `.github/workflows/source-preservation.yml` archives only Sources explicitly marked `snapshot_pending`, `accessible`, and carrying an HTTPS URL. Eligible binary assets are stored only after verifying draft state in the access-restricted draft release `source-snapshots-private`; the repository records only SHA-256 and a non-secret locator through a follow-up PR. HTTP and network failures now defer only the affected Source; valid candidates in the same run continue, and deferred rows remain `snapshot_pending`. Empty or invalid PDF payloads still fail closed. Sources whose bodies cannot currently be acquired are `snapshot_unavailable`, not falsely marked as preserved.
 
-Operational limits and settings: `docs/RELIABILITY.md`. A draft release is hidden from general visitors but is accessible to repository writers; it is not a separate private repository. Sixty-eight Sources have verified draft snapshots (52 PDFs and 16 raw HTML page responses); all are restored from their locators and SHA-256 checked on every preservation run, including zero-candidate runs. HTML snapshots contain only raw response bodies, not linked files or rendering assets. Automatic follow-up PR creation and branch integrity dispatch have been verified in production; bot-created PR checks may require maintainer workflow approval under the current GitHub Actions policy, which remains unchanged.
+Operational limits and settings: `docs/RELIABILITY.md`. A draft release is hidden from general visitors but is accessible to repository writers; it is not a separate private repository. 68 Sources have verified draft snapshots. 38 newly registered accessible Sources are pending preservation in this hardening wave; 22 are snapshot_unavailable and 5 are not_public. Existing snapshots are restored from their locators and SHA-256 checked on every preservation run, including zero-candidate runs. HTML snapshots contain only raw response bodies, not linked files or rendering assets. Automatic follow-up PR creation and branch integrity dispatch have been verified in production; bot-created PR checks may require maintainer workflow approval under the current GitHub Actions policy, which remains unchanged.
 
 Local check:
 
@@ -161,15 +161,15 @@ Web-onlyの壁時計時間は計測できなかったため、速度優位は主
 
 ### Hardening status
 
-- Source documents: 86
-- Effective requirements: 86
-- Review coverage records: 95
-- Case timeline records: 15
+- Source documents: 133
+- Effective requirements: 99
+- Review coverage records: 155
+- Case timeline records: 24
 - Reasoning regression questions: 24
-- Cases with hardening roles assessed: 16 / 26
-- Case-level public reconstructability: publicly_bounded 14 / not_assessed 12 / publicly_reconstructable 0
+- Cases with hardening roles assessed: 26 / 26
+- Case-level public reconstructability: publicly_bounded 24 / not_assessed 2 / publicly_reconstructable 0
 
-代表再監査済み: 仙台市2025、大府市2026、焼津市2025、おうみ共同調達、神戸市2025 Dify基盤、神戸市2026税務ボイスボット、越谷市2024、北九州市2025、福島県2025、福島県2026、北海道2025、北海道2026、京都市2026汎用生成AI、神戸市2026仕様書作成支援AI、群馬共同調達、埼玉県2026申請・相談デジタルサポート。案件総数26件すべてが同じ深度で再監査済みという意味ではない。
+代表再監査済み: 仙台市2025、仙台市2026、大府市2026、焼津市2025、おうみ共同調達、神戸市2025 Dify基盤、神戸市2026税務ボイスボット、越谷市2024、北九州市2025、福島県2025、福島県2026、北海道2025、北海道2026、京都市2026汎用生成AI、神戸市2026仕様書作成支援AI、群馬共同調達、埼玉県2026申請・相談デジタルサポート、和歌山県2026、西脇市2025、豊岡市2025、播磨町2025、浜田市2025、山県市2026、五泉市2026、上毛町2026、鹿児島県2026。案件総数26件の標準roleをすべて評価済みだが、各roleの公開可用性・契約最終再構成可能性は案件ごとに異なる。
 
 
 ### Public reconstructability

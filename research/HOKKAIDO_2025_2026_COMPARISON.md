@@ -5,11 +5,15 @@
 北海道の2025年度「生成AI活用推進業務」と、2026年度「生成AIサービス（RAG）提供業務」を公式一次資料で比較する。
 
 Sources:
-- 2025 procurement page: https://www.pref.hokkaido.lg.jp/sm/jsk/216351.html
-- 2025 specification: official PDF linked from the procurement page
-- 2025 selection / contract result: official PDFs linked from the procurement page
-- 2026 procurement page: https://www.pref.hokkaido.lg.jp/sm/jsk/254586.html
-- 2026 bid result index: https://www.pref.hokkaido.lg.jp/sm/jsk/186926.html
+- 2025 procurement page: `SRC-hokkaido-2025-page`
+- 2025 announcement: `SRC-hokkaido-2025-notice`
+- 2025 specification: `SRC-hokkaido-2025-spec`
+- 2025 evaluation guide: `SRC-hokkaido-2025-guide`
+- 2025 selection result: `SRC-hokkaido-2025-selection-result`
+- 2025 contract result: `SRC-hokkaido-2025-contract-result`
+- 2026 procurement page: `SRC-hokkaido-2026-page`
+- 2026 bid notice: `SRC-hokkaido-2026-notice`
+- 2026 bid result: `SRC-hokkaido-2026-result`
 
 ## 2025: proposal-based RAG pilot
 
@@ -41,7 +45,9 @@ Outcome:
 - contract date: 2025-06-11
 - contract amount: 21,780,000 JPY
 - contract end: 2026-03-31
-- 11 proposal labels/participants are shown in the official evaluation result.
+- 11 proposal labels/participants are shown in the official selection result.
+
+Evidence caution: the official selection-result PDF states a selection date of 2025-05-13, while the official contract-result PDF says the proposal review committee was held on 2025-05-23. The selected contractor is consistent across both sources, but the selection timing is not normalized until the discrepancy is resolved.
 
 ## 2026: restricted general competitive bidding
 
@@ -71,7 +77,9 @@ What is directly supported:
 - the selection mechanism changed from qualitative proposal evaluation to lowest valid bid among qualified bidders.
 
 What is not yet supported:
-- a precise feature-by-feature reduction or expansion from 2025 to 2026.
+- a precise feature-by-feature reduction or expansion from 2025 to 2026;
+- a single normalized 2025 selection date, because two official result documents contain inconsistent dates;
+- confirmation that the 2025 service actually began operating on the contractual service-start date.
 
 The 2026 detailed processing specification is packaged in an official ZIP that was not retrievable through the current runtime. It is therefore marked ACCESS_UNAVAILABLE rather than reconstructed from third-party copies.
 

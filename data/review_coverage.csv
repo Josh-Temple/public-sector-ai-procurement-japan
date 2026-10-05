@@ -83,3 +83,9 @@ hokkaido-2025-genai-rag-pilot,requirement_matrix,SRC-hokkaido-2025-spec,not_appl
 hokkaido-2025-genai-rag-pilot,evaluation,SRC-hokkaido-2025-guide,reviewed,,2026-10-05,170点の審査基準、順位点による最良提案者選定、80点以上評価者が半数超かつ全委員合意の要件を確認
 hokkaido-2025-genai-rag-pilot,result,SRC-hokkaido-2025-selection-result,conflicting_sources,conflicting_sources,2026-10-05,選定事業者は東日本電信電話株式会社で一致するが、審査結果一覧は選定日2025-05-13、随意契約結果は審査委員会開催日2025-05-23とし、選定時点の公式日付が不整合
 hokkaido-2025-genai-rag-pilot,contract_final,SRC-hokkaido-2025-guide,not_found_in_reviewed_sources,not_found_in_reviewed_sources,2026-10-05,随意契約結果で契約日・相手方・金額は確認したが、実施説明書は採択提案を契約締結時に修正可能とし、契約書・業務処理要領は別途提示するとする。レビューした公開資料に契約最終要求本文は見つからない
+fukushima-2025-genai-pilot,specification,SRC-fukushima-2025-spec,reviewed,,2026-10-05,仕様書本文を再確認。実証目的、生成AI/Copilot、利用量、ログ、国内サーバ又は国内準拠法、研修・サポート等の公募時要件を確認
+fukushima-2025-genai-pilot,qa_amendment,SRC-fukushima-2025-qa,reviewed,,2026-10-05,公開質問回答2件を確認。言語モデル要件、最低ユーザー数、サーバ所在地範囲、ネットワーク、研修実施、費用評価等を補足・具体化
+fukushima-2025-genai-pilot,requirement_matrix,SRC-fukushima-2025-spec,not_applicable,not_applicable,2026-10-05,公式募集ページの資料構成に独立要求機能表はなく、主要機能要件は仕様書本文に内包されるため独立roleは非該当
+fukushima-2025-genai-pilot,evaluation,SRC-fukushima-2025-evaluation,reviewed,,2026-10-05,100点の評価基準を再確認。提案内容60点、費用10点。質問回答2で費用は金額連動ではなく総合判断と確認
+fukushima-2025-genai-pilot,result,SRC-fukushima-2025-result,reviewed,,2026-10-05,東日本電信電話株式会社 宮城事業部 福島支店を契約候補者として選定、317/400点、履行期間2025-06-12〜2026-03-31を確認
+fukushima-2025-genai-pilot,contract_final,SRC-fukushima-2025-guide,not_found_in_reviewed_sources,not_found_in_reviewed_sources,2026-10-05,募集要領は候補者特定後に提案内容を反映した仕様等を決定し、協議・見積精査後に契約するとする。公開契約書は案で、署名済み契約・契約最終仕様はレビュー資料に見つからない

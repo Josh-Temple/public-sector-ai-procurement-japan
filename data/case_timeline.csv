@@ -1,6 +1,6 @@
 case_id,announcement_date,announcement_fiscal_year,service_start,service_end,service_fiscal_year_start,service_fiscal_year_end,date_precision,source_id,notes,last_verified
 oumi-2026-joint-genai,2026-03-02,2025,,,2026,,planned_start,SRC-oumi-2026-result,Q&Aでは利用開始は2026年4月予定（草津市・甲賀市は7月予定）。実利用開始日の確定情報ではなく、終了日は資料から確定できない。実施要領は契約期間と実利用期間を区別。案件台帳の2026-04-01〜2027-03-31は契約期間。,2026-10-01
-fukushima-2025-genai-pilot,,2025,,2026-03-31,2025,2025,partial,SRC-fukushima-2025-spec,公募・契約開始日は別途正本確認が必要,2026-10-01
+fukushima-2025-genai-pilot,2025-03-17,2024,2025-06-12,2026-03-31,2025,2025,performance_period_confirmed_result,SRC-fukushima-2025-result,公式審査結果が公示日2025-03-17と履行期間2025-06-12〜2026-03-31を明記。case_idの2025は安定IDで、公募年度はFY2024。履行期間は実稼働開始確認とは別扱い,2026-10-05
 fukushima-2026-genai-pilot-expansion,,2026,,2027-03-31,2026,2026,partial,SRC-fukushima-2026-spec,2026年度も実証。次段階の本格導入準備,2026-10-01
 kyoto-2026-general-genai,,2026,,2027-03-31,2026,2026,partial,SRC-kyoto-2026-general-genai-spec,公告日の正規化は別途確認,2026-10-01
 obu-2026-genai-service,2026-01-28,2025,2026-07-01,2027-03-31,2026,2026,service_start_confirmed_spec,SRC-obu-2026-page,case_idの2026は安定ID。公告はFY2025、仕様上の運用開始は2026-07-01。契約日は2026年4月中旬予定で実績日は未確認,2026-10-01

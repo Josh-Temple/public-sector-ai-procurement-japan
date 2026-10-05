@@ -47,6 +47,24 @@ def validate_url(url: str) -> None:
         raise ValueError(f"local snapshot URL is not allowed: {url}")
 
 
+
+def validate_html_snapshot(source_id: str, source_url: str, final_url: str,
+                          content_type: str, payload: bytes) -> None:
+    """Accept only a real HTML response retained from the official host."""
+    validate_url(final_url)
+    source_host = urllib.parse.urlparse(source_url).hostname.lower()
+    final_host = urllib.parse.urlparse(final_url).hostname.lower()
+    if not (final_host == source_host or final_host.endswith("." + source_host)
+            or source_host.endswith("." + final_host)):
+        raise RuntimeError(f"HTML snapshot redirected outside source host: {source_id}")
+    media_type = content_type.split(";", 1)[0].strip().lower()
+    if media_type not in {"text/html", "application/xhtml+xml"}:
+        raise RuntimeError(f"HTML snapshot has unexpected content type: {source_id}")
+    prefix = payload[:8192].decode("utf-8-sig", "ignore").lstrip(" \t\r\n").lower()
+    if not re.search(r"<!doctype\s+html\b|<html(?:\s|>)", prefix):
+        raise RuntimeError(f"snapshot is not an HTML document: {source_id}")
+
+
 def prepare(out_dir: Path, manifest_path: Path) -> int:
     _, rows = read_rows()
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -71,9 +89,17 @@ def prepare(out_dir: Path, manifest_path: Path) -> int:
             headers={"User-Agent": "public-sector-ai-procurement-japan snapshot-preservation/1.0"},
         )
         print(f"SNAPSHOT_DOWNLOAD source_id={source_id}", flush=True)
+        content_type = ""
+        final_url = url
         try:
             with urllib.request.urlopen(request, timeout=60) as response:
                 payload = response.read()
+                headers = getattr(response, "headers", None)
+                if headers is not None and hasattr(headers, "get_content_type"):
+                    content_type = headers.get_content_type()
+                geturl = getattr(response, "geturl", None)
+                if callable(geturl):
+                    final_url = geturl()
         except urllib.error.HTTPError as error:
             # A missing or temporarily failing source must not block other eligible
             # Sources, and must never be promoted to a permanent registry state.
@@ -93,8 +119,11 @@ def prepare(out_dir: Path, manifest_path: Path) -> int:
         if not payload:
             raise RuntimeError(f"empty snapshot payload: {source_id}")
 
-        if Path(asset_name).suffix.lower() == ".pdf" and not payload.startswith(b"%PDF-"):
+        suffix = Path(asset_name).suffix.lower()
+        if suffix == ".pdf" and not payload.startswith(b"%PDF-"):
             raise RuntimeError(f"snapshot is not a PDF payload: {source_id}")
+        if suffix in {".html", ".htm"}:
+            validate_html_snapshot(source_id, url, final_url, content_type, payload)
 
         digest = hashlib.sha256(payload).hexdigest()
         # Immutable content-addressed assets preserve earlier versions on retries.

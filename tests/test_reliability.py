@@ -135,6 +135,51 @@ class SnapshotTests(unittest.TestCase):
         self.assertEqual(self.s.SOURCE_CSV.read_bytes(), before)
         self.assertEqual(list((self.root / 'assets').iterdir()), [])
 
+    def test_valid_html_page_is_preserved_as_raw_html(self):
+        page = dict(self.row, url='https://example.go.jp/index.html', original_filename='')
+        self.write([page])
+        payload = b'<!doctype html><html><head><title>Official</title></head><body>Public page</body></html>'
+        headers = type('Headers', (), {'get_content_type': lambda self: 'text/html'})()
+        response = type('Response', (), {
+            '__enter__': lambda self: self,
+            '__exit__': lambda self, *args: None,
+            'read': lambda self: payload,
+            'geturl': lambda self: page['url'],
+            'headers': headers,
+        })()
+        with patch.object(self.s.urllib.request, 'urlopen', return_value=response):
+            self.assertEqual(self.prepare(), 0)
+        item = json.loads((self.root / 'manifest.json').read_text())[0]
+        self.assertTrue(item['asset_name'].endswith('.html'))
+        self.assertEqual(item['sha256'], hashlib.sha256(payload).hexdigest())
+        self.assertEqual(next((self.root / 'assets').iterdir()).read_bytes(), payload)
+
+    def test_html_rejects_wrong_content_type_and_external_redirect(self):
+        page = dict(self.row, url='https://example.go.jp/index.html', original_filename='')
+        payload = b'<!doctype html><html><body>Public page</body></html>'
+        cases = [
+            ('application/pdf', page['url'], payload),
+            ('text/html', 'https://example-attacker.test/index.html', payload),
+            ('text/html', page['url'], b'Access denied'),
+        ]
+        for content_type, final_url, body in cases:
+            with self.subTest(content_type=content_type, final_url=final_url):
+                self.write([page])
+                before = self.s.SOURCE_CSV.read_bytes()
+                headers = type('Headers', (), {'get_content_type': lambda self: content_type})()
+                response = type('Response', (), {
+                    '__enter__': lambda self: self,
+                    '__exit__': lambda self, *args: None,
+                    'read': lambda self: body,
+                    'geturl': lambda self: final_url,
+                    'headers': headers,
+                })()
+                with patch.object(self.s.urllib.request, 'urlopen', return_value=response):
+                    with self.assertRaisesRegex(RuntimeError, 'HTML snapshot|outside source host|not an HTML document'):
+                        self.prepare()
+                self.assertEqual(self.s.SOURCE_CSV.read_bytes(), before)
+                self.assertEqual(list((self.root / 'assets').iterdir()) if (self.root / 'assets').exists() else [], [])
+
     def test_hash_apply_retry_and_stale_source(self):
         with patch.object(self.s.urllib.request,'urlopen') as fetch:
             fetch.return_value.__enter__.return_value.read.return_value=b'%PDF-1.7 fixture PDF'

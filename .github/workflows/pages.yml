@@ -20,7 +20,7 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Require main branch
         run: test "$GITHUB_REF" = "refs/heads/main"
@@ -30,7 +30,7 @@ jobs:
           fetch-depth: 0
       - name: Verify main update came through merged pull requests
         if: github.ref == 'refs/heads/main'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const verify = require('./scripts/verify_main_update.cjs');

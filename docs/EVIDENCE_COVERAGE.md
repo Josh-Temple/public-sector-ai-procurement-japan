@@ -21,7 +21,7 @@ Legend: R reviewed; N explicitly not reviewed; U source unavailable; P source kn
 | toyooka-2025-genai-service | 豊岡市 | · | · | · | · | · | · | not_assessed |
 | harima-2025-genai-service | 播磨町 | · | · | · | · | · | · | not_assessed |
 | oumi-2026-joint-genai | おうみ自治体クラウド協議会 | R | R | · | R | R | F | publicly_bounded |
-| kobe-2025-dify-platform | 神戸市 | · | · | · | · | · | · | not_assessed |
+| kobe-2025-dify-platform | 神戸市 | P | P | · | R | R | P | publicly_bounded |
 | kobe-2026-tax-voicebot | 神戸市 | R | P | · | R | R | P | publicly_bounded |
 | koshigaya-2024-genai-service-training | 越谷市 | R | R | — | R | R | · | not_assessed |
 | kitakyushu-2025-genai-service | 北九州市 | R | P | U | R | R | · | publicly_bounded |
@@ -40,7 +40,7 @@ Legend: R reviewed; N explicitly not reviewed; U source unavailable; P source kn
 ## Current reading
 
 - Cases in repository: 26
-- Cases with at least one role assessed: 15
+- Cases with at least one role assessed: 16
 - Cases with contract_final reviewed: 0
 - Cases publicly reconstructable through contract final: 0
 - assessed_roles and reviewed_roles count review states only; they are not quality scores.

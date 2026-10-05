@@ -4,7 +4,7 @@ title: 福島県は2025案件から2026案件へ範囲を拡張したが両案�
 kind: fact
 status: reviewed
 scope: "福島県の2025・2026生成AIサービス導入支援業務の事業段階と調達範囲の比較"
-last_verified: "2026-10-06"
+last_verified: "2026-10-05"
 evidence:
   - source: SRC-fukushima-2025-spec
     locator: "3 事業の目的 / 6 生成AIサービスの仕様"

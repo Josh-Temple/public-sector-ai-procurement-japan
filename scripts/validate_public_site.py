@@ -235,7 +235,7 @@ def main() -> int:
         if not data_refs:
             errors.append("assets/drafting.js: no data CSV references found")
         for ref in data_refs:
-            normalized = ref.replace("\\\\", "")
+            normalized = ref.replace("\\", "")
             target = ROOT / normalized.removeprefix("./")
             if not target.is_file():
                 errors.append(f"assets/drafting.js: missing declared data file: {normalized}")

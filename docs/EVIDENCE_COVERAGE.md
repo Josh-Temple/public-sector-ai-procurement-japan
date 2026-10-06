@@ -1,4 +1,4 @@
-# Evidence coverage — 2026-10-07
+# Evidence coverage — 2026-10-06
 
 This is an evidence-review projection, not a procurement, vendor, or government quality score.
 

@@ -51,9 +51,13 @@ jobs:
       - name: Validate public site
         run: python3 scripts/validate_public_site.py
       - name: Check public JavaScript syntax
-        run: node --check assets/app.js
-      - name: Test requirement explorer
-        run: node tests/test_requirement_explorer.cjs
+        run: |
+          node --check assets/app.js
+          node --check assets/drafting.js
+      - name: Test public decision support
+        run: |
+          node tests/test_requirement_explorer.cjs
+          node tests/test_drafting_support.cjs
       - name: Prepare static site
         run: |
           mkdir -p _site
@@ -61,6 +65,7 @@ jobs:
           cp insights.html _site/insights.html
           cp case-study.html _site/case-study.html
           cp checklist.html _site/checklist.html
+          cp drafting.html _site/drafting.html
           cp methodology.html _site/methodology.html
           cp robots.txt _site/robots.txt
           cp sitemap.xml _site/sitemap.xml

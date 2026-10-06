@@ -18,19 +18,24 @@ PUBLIC_PAGES = {
     "insights.html": BASE_URL + "insights.html",
     "case-study.html": BASE_URL + "case-study.html",
     "checklist.html": BASE_URL + "checklist.html",
+    "drafting.html": BASE_URL + "drafting.html",
     "methodology.html": BASE_URL + "methodology.html",
 }
 REQUIRED_FILES = {
     "index.html",
     "insights.html",
     "checklist.html",
+    "drafting.html",
     "methodology.html",
     "robots.txt",
     "sitemap.xml",
     "assets/app.js",
+    "assets/drafting.js",
     "assets/site.css",
     "data/cases.csv",
     "data/effective_requirements.csv",
+    "data/evaluation_criteria.csv",
+    "data/specialized_requirements.csv",
     "data/source_documents.csv",
     "data/case_evidence_summary.csv",
 }
@@ -195,6 +200,49 @@ def main() -> int:
         for forbidden in ("evidence.blocking_roles", "source.access_state"):
             if forbidden in app_text:
                 errors.append(f"assets/app.js: raw internal evidence state exposed in public UI: {forbidden}")
+
+    drafting_path = ROOT / "drafting.html"
+    drafting_js_path = ROOT / "assets/drafting.js"
+    if drafting_path.is_file():
+        drafting_text = drafting_path.read_text(encoding="utf-8")
+        for marker in (
+            'id="drafting-topic-links"',
+            'id="drafting-sections"',
+            'id="citizen-examples"',
+            'id="role-examples"',
+            "仕様へ落とす",
+        ):
+            if marker not in drafting_text:
+                errors.append(f"drafting.html: required marker missing: {marker}")
+
+    if drafting_js_path.is_file():
+        drafting_js = drafting_js_path.read_text(encoding="utf-8")
+        for marker in (
+            "const DRAFTING_DECISIONS",
+            "const CITIZEN_SPECIALIZED",
+            "const ROLE_EXAMPLES",
+            "data/effective_requirements.csv",
+            "data/evaluation_criteria.csv",
+            "data/specialized_requirements.csv",
+            "caseBoundaryText",
+            "effectiveSourceId",
+            "自団体で埋める変数",
+        ):
+            if marker not in drafting_js:
+                errors.append(f"assets/drafting.js: drafting support behavior missing: {marker}")
+
+        data_refs = sorted(set(re.findall(r'["\'](\\?\./data/[^"\']+\.csv)["\']', drafting_js)))
+        if not data_refs:
+            errors.append("assets/drafting.js: no data CSV references found")
+        for ref in data_refs:
+            normalized = ref.replace("\\", "")
+            target = ROOT / normalized.removeprefix("./")
+            if not target.is_file():
+                errors.append(f"assets/drafting.js: missing declared data file: {normalized}")
+
+        for forbidden in ("snapshot_locator", "blocking_roles", "source.access_state"):
+            if forbidden in drafting_js:
+                errors.append(f"assets/drafting.js: internal-only evidence state exposed in drafting UI: {forbidden}")
 
     robots_path = ROOT / "robots.txt"
     if robots_path.is_file():

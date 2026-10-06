@@ -7,6 +7,7 @@ on:
       - "insights.html"
       - "case-study.html"
       - "checklist.html"
+      - "drafting.html"
       - "methodology.html"
       - "robots.txt"
       - "sitemap.xml"
@@ -14,6 +15,7 @@ on:
       - "data/**"
       - "scripts/validate_public_site.py"
       - "tests/test_requirement_explorer.cjs"
+      - "tests/test_drafting_support.cjs"
       - ".github/workflows/pages.yml"
       - ".github/workflows/public-site-check.yml"
   workflow_dispatch:
@@ -30,6 +32,10 @@ jobs:
       - name: Validate public site
         run: python3 scripts/validate_public_site.py
       - name: Check public JavaScript syntax
-        run: node --check assets/app.js
-      - name: Test requirement explorer
-        run: node tests/test_requirement_explorer.cjs
+        run: |
+          node --check assets/app.js
+          node --check assets/drafting.js
+      - name: Test public decision support
+        run: |
+          node tests/test_requirement_explorer.cjs
+          node tests/test_drafting_support.cjs

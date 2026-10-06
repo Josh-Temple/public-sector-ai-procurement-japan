@@ -1,4 +1,4 @@
-# Case evidence summary — 2026-10-07
+# Case evidence summary — 2026-10-06
 
 This is a generated comparison projection for what has actually been reviewed for each case. It is not a procurement, vendor, or government quality score.
 

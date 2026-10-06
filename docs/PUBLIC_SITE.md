@@ -31,6 +31,8 @@ This keeps the public interface downstream of the repository data model.
 - Evidence-chain source links resolve through `data/source_documents.csv`; missing URLs remain visibly bounded rather than being substituted with secondary sources.
 - Comparison is capped at three cases to keep the mobile layout usable.
 - The requirement-first explorer reads reviewed effective requirements directly, shows original and effective wording together, and links to the registered official base/change Sources.
+- Requirement comparison can be narrowed by presentation-only topic, keyword, change type, and whether the changed-by Source is an official Q&A/amendment or another official document. These filters derive from canonical rows and do not create a second fact table.
+- Requirement Source links show the public document role and date alongside the registered official link, while requirement-level procurement-effective reconstructability remains visibly separate from case-level contract-final reconstructability.
 - Requirement-level reconstructability and case-level reconstructability are shown separately; a reconstructable procurement-effective requirement does not imply that the contract-final case state is reconstructable.
 - Raw internal fields such as blocker enums, Source IDs, and access-state codes are not presented as primary public copy; user-facing text explains the evidence boundary in ordinary language.
 
@@ -114,8 +116,10 @@ This keeps the initial dialog scannable on mobile while allowing the existing de
 - every explicit `?case=<case_id>` deep link in public HTML resolves to a case in `data/cases.csv`;
 - every CSV path declared in `assets/app.js` exists in the repository;
 - effective-requirement case/source references used by the requirement explorer resolve to canonical rows;
-- the requirement explorer's required DOM/JavaScript behavior is present;
+- the requirement explorer's required DOM/JavaScript behavior is present, including keyword/change/Q&A filter state;
 - raw internal evidence blocker/access-state fields are not exposed by the public JavaScript.
+
+`tests/test_requirement_explorer.cjs` additionally exercises topic-classification regressions, Q&A-vs-other changed-source filtering, keyword matching, public change labels, and Source-role labels against the current canonical CSVs.
 
 The Pages workflow runs this validation before building the deployment artifact. `.github/workflows/public-site-check.yml` runs the same validator on pull requests that touch the public UI, its data inputs, or the validator itself.
 
@@ -156,6 +160,9 @@ Supported public state includes:
 - `?evidence=assessed|publicly_bounded|not_assessed`
 - `?theme=rag|learning|lgwan|joint|evaluated|bounded`
 - `?topic=rag|data-handling|network|security|model|accounts-usage|files-capacity|support-training|authentication|pricing-overage`
+- `?rq=<requirement keyword>`
+- `?amended=qa|other`
+- `?change=<change_type>`
 - `?case=<case_id>`
 
 Theme links write their state into the URL. Manual search/filter changes also update the URL. Case-detail links preserve the current filter state, so a shared case URL can retain the context in which the case was discovered.

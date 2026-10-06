@@ -13,6 +13,7 @@ on:
       - "assets/**"
       - "data/**"
       - "scripts/validate_public_site.py"
+      - "tests/test_requirement_explorer.cjs"
       - ".github/workflows/pages.yml"
       - ".github/workflows/public-site-check.yml"
   workflow_dispatch:

@@ -245,6 +245,43 @@ class SnapshotTests(unittest.TestCase):
         with patch.object(self.s,'gh_json') as gh:
             self.assertEqual(self.s.verify(),0); gh.assert_not_called()
 
+    def test_gh_list_paginates_without_truncation(self):
+        page1=[{'id':i} for i in range(100)]
+        page2=[{'id':100}]
+        with patch.object(self.s, 'gh_json', side_effect=[page1, page2]) as gh:
+            items=self.s.gh_list('repos/owner/repo/releases/1/assets')
+        self.assertEqual(len(items), 101)
+        self.assertEqual(items[-1]['id'], 100)
+        self.assertEqual(
+            [call.args for call in gh.call_args_list],
+            [
+                ('api', 'repos/owner/repo/releases/1/assets?per_page=100&page=1'),
+                ('api', 'repos/owner/repo/releases/1/assets?per_page=100&page=2'),
+            ],
+        )
+        with patch.object(self.s, 'gh_json', return_value=page1):
+            with self.assertRaisesRegex(RuntimeError, 'pagination exceeded safety limit'):
+                self.s.gh_list('repos/owner/repo/releases/1/assets', max_pages=1)
+
+    def test_archive_finds_existing_asset_after_first_page(self):
+        payload=b'fixture'; digest=hashlib.sha256(payload).hexdigest(); name=f'SRC-test-{digest}.pdf'
+        assets=self.root / 'assets'; assets.mkdir(); (assets/name).write_bytes(payload)
+        manifest=self.root/'manifest.json'; manifest.write_text(json.dumps([{'asset_name':name,'sha256':digest}]))
+        page1=[{'name':f'other-{i}','id':1000+i} for i in range(100)]
+        answers=[
+            {'nameWithOwner':'owner/repo'},
+            [{'tag_name':'source-snapshots-private','id':1,'draft':True}],
+            {'draft':True},
+            page1,
+            [{'name':name,'id':2}],
+            {'draft':True},
+        ]
+        with patch.object(self.s,'gh_json',side_effect=answers), \
+             patch.object(self.s.subprocess,'check_output',return_value=payload), \
+             patch.object(self.s.subprocess,'run') as upload:
+            self.assertEqual(self.s.archive(manifest,assets),0)
+            upload.assert_not_called()
+
     def test_unsafe_names(self):
         with self.assertRaises(ValueError): self.s.safe_asset_name('../escape','x.pdf',self.row['url'])
     def test_published_archive_and_collision_refused(self):

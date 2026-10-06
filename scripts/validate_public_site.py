@@ -86,7 +86,7 @@ def main() -> int:
         with sources_path.open(encoding="utf-8-sig", newline="") as fh:
             reader = csv.DictReader(fh)
             source_fields = set(reader.fieldnames or [])
-            for required in {"source_id", "title", "url", "published_at", "retrieved_at"}:
+            for required in {"source_id", "document_type", "title", "url", "published_at", "retrieved_at"}:
                 if required not in source_fields:
                     errors.append(f"data/source_documents.csv missing public-site field: {required}")
             for row in reader:
@@ -161,7 +161,10 @@ def main() -> int:
         index_text = index_path.read_text(encoding="utf-8")
         for marker in (
             'id="requirement-explorer"',
+            'id="requirement-query"',
             'id="requirement-topic"',
+            'id="requirement-amended"',
+            'id="requirement-change"',
             'id="requirement-rows"',
             'id="requirement-result-count"',
             "横断要件プロファイル",
@@ -176,6 +179,13 @@ def main() -> int:
             "function renderRequirementExplorer",
             "function requirementTopicMatches",
             'params.set("topic", topic)',
+            'params.set("rq", requirementQuery)',
+            'params.set("amended", amended)',
+            'params.set("change", changeType)',
+            "requirementKeywordMatches",
+            "requirementChangeSourceKind",
+            "requirementMatchesExplorerFilters",
+            "sourceDocumentRoleLabel",
             "requirementBoundaryText",
             "caseBoundaryText",
             "appendRequirementSourceLink",

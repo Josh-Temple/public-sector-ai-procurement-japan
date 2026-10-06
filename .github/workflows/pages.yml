@@ -52,6 +52,8 @@ jobs:
         run: python3 scripts/validate_public_site.py
       - name: Check public JavaScript syntax
         run: node --check assets/app.js
+      - name: Test requirement explorer
+        run: node tests/test_requirement_explorer.cjs
       - name: Prepare static site
         run: |
           mkdir -p _site

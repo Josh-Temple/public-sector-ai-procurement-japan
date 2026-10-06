@@ -47,7 +47,7 @@
 
 - Entry point: `INDEX.md`
 - Public comparison UI: `index.html` / `docs/PUBLIC_SITE.md`
-- Shareable search state: `?topic=rag`, `?theme=rag`, `?evidence=publicly_bounded`, `?q=...`, `?case=<case_id>`
+- Shareable search state: `?topic=rag`, `?rq=SSO`, `?amended=qa`, `?change=relaxed`, `?theme=rag`, `?evidence=publicly_bounded`, `?q=...`, `?case=<case_id>`
 - 回答品質の独立比較: [Benchmark V1](evals/benchmark/BENCHMARK_V1_METHOD.md) / `research/BENCHMARK_V1_RESULT_2026-10-02.md`
 - AI / agent guidance: `AGENTS.md`
 - Structured data model: `docs/DATA_MODEL.md`
@@ -121,7 +121,7 @@ GitHub protects `main` with required pull requests and the `Repository-wide inte
 
 For Source preservation, `.github/workflows/source-preservation.yml` archives only Sources explicitly marked `snapshot_pending`, `accessible`, and carrying an HTTPS URL. Eligible binary assets are stored only after verifying draft state in the access-restricted draft release `source-snapshots-private`; the repository records only SHA-256 and a non-secret locator through a follow-up PR. HTTP and network failures now defer only the affected Source; valid candidates in the same run continue, and deferred rows remain `snapshot_pending`. Empty or invalid PDF payloads still fail closed. Sources whose bodies cannot currently be acquired are `snapshot_unavailable`, not falsely marked as preserved.
 
-Operational limits and settings: `docs/RELIABILITY.md`. A draft release is hidden from general visitors but is accessible to repository writers; it is not a separate private repository. 98 Sources have verified draft snapshots. The evidence-boundary closure integration has 21 accessible Sources queued as snapshot_pending, including recovered Office attachments and newly registered official evidence; 13 are snapshot_unavailable and 5 are not_public. Existing snapshots are restored from their locators and SHA-256 checked on every preservation run, including zero-candidate runs. HTML snapshots contain only raw response bodies, not linked files or rendering assets. Automatic follow-up PR creation and branch integrity dispatch have been verified in production; bot-created PR checks may require maintainer workflow approval under the current GitHub Actions policy, which remains unchanged.
+Operational limits and settings: `docs/RELIABILITY.md`. A draft release is hidden from general visitors but is accessible to repository writers; it is not a separate private repository. 111 Sources have verified draft snapshots. The current registry has 8 accessible Sources queued as snapshot_pending, including recovered Office attachments and newly registered official evidence; 13 are snapshot_unavailable and 5 are not_public. Existing snapshots are restored from their locators and SHA-256 checked on every preservation run, including zero-candidate runs. HTML snapshots contain only raw response bodies, not linked files or rendering assets. Automatic follow-up PR creation and branch integrity dispatch have been verified in production; bot-created PR checks may require maintainer workflow approval under the current GitHub Actions policy, which remains unchanged.
 
 Local check:
 
@@ -132,6 +132,7 @@ python3 scripts/build_case_evidence_summary.py
 git diff --exit-code -- data/evidence_coverage.csv docs/EVIDENCE_COVERAGE.md data/case_evidence_summary.csv docs/CASE_EVIDENCE_SUMMARY.md
 python3 scripts/validate_public_site.py
 node --check assets/app.js
+node tests/test_requirement_explorer.cjs
 python3 -m compileall -q scripts
 python3 -m unittest discover -s tests -v
 node tests/test_main_guard.cjs

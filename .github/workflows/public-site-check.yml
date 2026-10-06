@@ -13,6 +13,7 @@ on:
       - "assets/**"
       - "data/**"
       - "scripts/validate_public_site.py"
+      - "tests/test_requirement_explorer.cjs"
       - ".github/workflows/pages.yml"
       - ".github/workflows/public-site-check.yml"
   workflow_dispatch:
@@ -28,3 +29,7 @@ jobs:
         uses: actions/checkout@v6
       - name: Validate public site
         run: python3 scripts/validate_public_site.py
+      - name: Check public JavaScript syntax
+        run: node --check assets/app.js
+      - name: Test requirement explorer
+        run: node tests/test_requirement_explorer.cjs

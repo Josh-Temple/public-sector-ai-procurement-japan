@@ -41,7 +41,13 @@ jobs:
       - name: Validate public site
         run: python3 scripts/validate_public_site.py
       - name: Check public JavaScript syntax
-        run: node --check assets/app.js
+        run: |
+          node --check assets/app.js
+          node --check assets/drafting.js
+      - name: Test public decision support
+        run: |
+          node tests/test_requirement_explorer.cjs
+          node tests/test_drafting_support.cjs
       - name: Check Python helper syntax
         run: python3 -m compileall -q scripts
       - name: Test preservation and integrity failure paths

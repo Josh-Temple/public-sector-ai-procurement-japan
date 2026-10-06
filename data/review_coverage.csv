@@ -157,21 +157,21 @@ kagoshima-2026-genai-service,contract_final,SRC-kagoshima-2026-guide,not_found_i
 fukushima-2026-genai-pilot-expansion,requirement_matrix,SRC-fukushima-2026-spec,not_applicable,not_applicable,2026-10-06,公式公開資料セットに独立要求機能表はなく、詳細要件は仕様書6章以降に内包され、Q&Aが後続解釈を与える
 fukushima-2026-genai-pilot-expansion,contract_final,SRC-fukushima-2026-contract-draft,not_found_in_reviewed_sources,not_found_in_reviewed_sources,2026-10-06,契約事業者・契約日2026-05-22は公式結果で確認。公開契約書は案で、署名済み契約・契約後最終仕様はレビュー範囲内で確認できない
 obu-2026-genai-service,contract_final,SRC-obu-2026-guide,not_found_in_reviewed_sources,not_found_in_reviewed_sources,2026-10-06,実施要領は優先交渉権者との合意内容を市指定仕様書へ記載し最終発注仕様書を定める手続を明記。案件ページ・実施要領・公募時仕様・公開Q&A・要件表・評価表・選定結果および公式サイト内の契約関連公開面を確認したが、署名済み契約・契約後最終仕様・最終要求文書はレビュー範囲内で確認できず。不在を断定するものではない
-itoshima-2026-citizen-genai-chatbot,specification,SRC-itoshima-2026-chatbot-spec,reviewed,,2026-10-07,基本仕様書をEで再確認
-itoshima-2026-citizen-genai-chatbot,qa_amendment,SRC-itoshima-2026-chatbot-qa-0512,reviewed,,2026-10-07,4/28・5/12の公式Q&Aを確認。公式Q&Aページは回答を実施要領・仕様書への追記として扱う
-itoshima-2026-citizen-genai-chatbot,requirement_matrix,SRC-itoshima-2026-chatbot-requirements,not_reviewed,retrieval_limit,2026-10-07,公式XLSXリンクは確認したがE実行環境では本文を直接取得できず、XLSX本文のみの要件は収録していない
-itoshima-2026-citizen-genai-chatbot,evaluation,SRC-itoshima-2026-chatbot-evaluation,reviewed,,2026-10-07,公式評価基準を確認
-itoshima-2026-citizen-genai-chatbot,result,SRC-itoshima-2026-chatbot-result,reviewed,,2026-10-07,優先交渉権者と得点を確認
-itoshima-2026-citizen-genai-chatbot,contract_final,SRC-itoshima-2026-chatbot-guide,not_found_in_reviewed_sources,not_found_in_reviewed_sources,2026-10-07,実施要領は契約時に提案・協議を踏まえ仕様調整すると明記。署名済み契約・契約後最終仕様はレビュー範囲内で確認できない
-matsue-2026-genai-support,specification,SRC-matsue-2026-spec,reviewed,,2026-10-07,公式仕様書をEで再確認
-matsue-2026-genai-support,qa_amendment,SRC-matsue-2026-qa,not_reviewed,possible_later_answer,2026-10-07,現行公式ページのQ&Aは5月19日現在。実施要領の最終回答予定5月21日に対する後続回答の有無を確認できず、Q&A chain全体をcompleteとしない
-matsue-2026-genai-support,requirement_matrix,SRC-matsue-2026-function-check,not_reviewed,retrieval_limit,2026-10-07,公式XLSXリンクは確認したがE実行環境では本文を直接取得できず、XLSX本文のみの要件は収録していない
-matsue-2026-genai-support,evaluation,SRC-matsue-2026-evaluation,reviewed,,2026-10-07,公式評価基準を確認
-matsue-2026-genai-support,result,SRC-matsue-2026-result,reviewed,,2026-10-07,6者参加と第一優先交渉権者を確認
-matsue-2026-genai-support,contract_final,SRC-matsue-2026-guide,not_found_in_reviewed_sources,not_found_in_reviewed_sources,2026-10-07,実施要領は採択提案を踏まえ契約前に仕様調整し得る。署名済み契約・契約後最終仕様はレビュー範囲内で確認できない
-minoh-2026-genai-license,specification,SRC-minoh-2026-genai-spec,reviewed,,2026-10-07,公式仕様書をEで再確認
-minoh-2026-genai-license,qa_amendment,SRC-minoh-2026-genai-qa,reviewed,,2026-10-07,公式質問回答書を確認
-minoh-2026-genai-license,requirement_matrix,SRC-minoh-2026-genai-requirement-matrix,reviewed,,2026-10-07,公式機能要件一覧PDFを確認
-minoh-2026-genai-license,evaluation,SRC-minoh-2026-genai-proposal-evaluation,reviewed,,2026-10-07,価格評価・提案評価資料を確認
-minoh-2026-genai-license,result,SRC-minoh-2026-genai-result-page,reviewed,,2026-10-07,落札者と1者入札を公式結果ページで確認。結果PDFの案件名不整合はSource noteに保持
-minoh-2026-genai-license,contract_final,SRC-minoh-2026-genai-contract-draft,not_found_in_reviewed_sources,not_found_in_reviewed_sources,2026-10-07,公開契約書は日付・受注者・金額未記入の案。署名済み契約・契約後最終仕様はレビュー範囲内で確認できない
+itoshima-2026-citizen-genai-chatbot,specification,SRC-itoshima-2026-chatbot-spec,reviewed,,2026-10-06,基本仕様書をEで再確認
+itoshima-2026-citizen-genai-chatbot,qa_amendment,SRC-itoshima-2026-chatbot-qa-0512,reviewed,,2026-10-06,4/28・5/12の公式Q&Aを確認。公式Q&Aページは回答を実施要領・仕様書への追記として扱う
+itoshima-2026-citizen-genai-chatbot,requirement_matrix,SRC-itoshima-2026-chatbot-requirements,not_reviewed,retrieval_limit,2026-10-06,公式XLSXリンクは確認したがE実行環境では本文を直接取得できず、XLSX本文のみの要件は収録していない
+itoshima-2026-citizen-genai-chatbot,evaluation,SRC-itoshima-2026-chatbot-evaluation,reviewed,,2026-10-06,公式評価基準を確認
+itoshima-2026-citizen-genai-chatbot,result,SRC-itoshima-2026-chatbot-result,reviewed,,2026-10-06,優先交渉権者と得点を確認
+itoshima-2026-citizen-genai-chatbot,contract_final,SRC-itoshima-2026-chatbot-guide,not_found_in_reviewed_sources,not_found_in_reviewed_sources,2026-10-06,実施要領は契約時に提案・協議を踏まえ仕様調整すると明記。署名済み契約・契約後最終仕様はレビュー範囲内で確認できない
+matsue-2026-genai-support,specification,SRC-matsue-2026-spec,reviewed,,2026-10-06,公式仕様書をEで再確認
+matsue-2026-genai-support,qa_amendment,SRC-matsue-2026-qa,not_reviewed,possible_later_answer,2026-10-06,現行公式ページのQ&Aは5月19日現在。実施要領の最終回答予定5月21日に対する後続回答の有無を確認できず、Q&A chain全体をcompleteとしない
+matsue-2026-genai-support,requirement_matrix,SRC-matsue-2026-function-check,not_reviewed,retrieval_limit,2026-10-06,公式XLSXリンクは確認したがE実行環境では本文を直接取得できず、XLSX本文のみの要件は収録していない
+matsue-2026-genai-support,evaluation,SRC-matsue-2026-evaluation,reviewed,,2026-10-06,公式評価基準を確認
+matsue-2026-genai-support,result,SRC-matsue-2026-result,reviewed,,2026-10-06,6者参加と第一優先交渉権者を確認
+matsue-2026-genai-support,contract_final,SRC-matsue-2026-guide,not_found_in_reviewed_sources,not_found_in_reviewed_sources,2026-10-06,実施要領は採択提案を踏まえ契約前に仕様調整し得る。署名済み契約・契約後最終仕様はレビュー範囲内で確認できない
+minoh-2026-genai-license,specification,SRC-minoh-2026-genai-spec,reviewed,,2026-10-06,公式仕様書をEで再確認
+minoh-2026-genai-license,qa_amendment,SRC-minoh-2026-genai-qa,reviewed,,2026-10-06,公式質問回答書を確認
+minoh-2026-genai-license,requirement_matrix,SRC-minoh-2026-genai-requirement-matrix,reviewed,,2026-10-06,公式機能要件一覧PDFを確認
+minoh-2026-genai-license,evaluation,SRC-minoh-2026-genai-proposal-evaluation,reviewed,,2026-10-06,価格評価・提案評価資料を確認
+minoh-2026-genai-license,result,SRC-minoh-2026-genai-result-page,reviewed,,2026-10-06,落札者と1者入札を公式結果ページで確認。結果PDFの案件名不整合はSource noteに保持
+minoh-2026-genai-license,contract_final,SRC-minoh-2026-genai-contract-draft,not_found_in_reviewed_sources,not_found_in_reviewed_sources,2026-10-06,公開契約書は日付・受注者・金額未記入の案。署名済み契約・契約後最終仕様はレビュー範囲内で確認できない

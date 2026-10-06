@@ -43,6 +43,7 @@ This keeps the public interface downstream of the repository data model.
 - `index.html`
 - `insights.html`
 - `checklist.html`
+- `drafting.html`
 - `methodology.html`
 - `robots.txt`
 - `sitemap.xml`
@@ -150,6 +151,7 @@ The five stable public entry points use the same compact navigation:
 - 調べる → `index.html`
 - 理解する → `insights.html`
 - 仕様を考える → `checklist.html`
+- 仕様へ落とす → `drafting.html`
 - データの見方 → `methodology.html`
 
 The database serializes discovery state into query parameters without creating a second data source.

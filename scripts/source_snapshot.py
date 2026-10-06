@@ -197,6 +197,20 @@ def gh_json(*args: str) -> object:
     return json.loads(subprocess.check_output(["gh", *args], text=True))
 
 
+def gh_list(endpoint: str, max_pages: int = 100) -> list[dict]:
+    """Read every REST list page without silently truncating at 100 items."""
+    items: list[dict] = []
+    separator = "&" if "?" in endpoint else "?"
+    for page in range(1, max_pages + 1):
+        batch = gh_json("api", f"{endpoint}{separator}per_page=100&page={page}")
+        if not isinstance(batch, list):
+            raise RuntimeError("GitHub list endpoint returned non-list JSON")
+        items.extend(batch)
+        if len(batch) < 100:
+            return items
+    raise RuntimeError("GitHub list pagination exceeded safety limit")
+
+
 def archive(manifest_path: Path, out_dir: Path) -> int:
     """Upload only to a verified draft; never overwrite an existing asset."""
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
@@ -206,18 +220,16 @@ def archive(manifest_path: Path, out_dir: Path) -> int:
     tag = "source-snapshots-private"
     # List first: a read/network error must not be mistaken for release absence.
     repo = gh_json("repo", "view", "--json", "nameWithOwner")["nameWithOwner"]
-    releases = gh_json("api", f"repos/{repo}/releases?per_page=100")
+    releases = gh_list(f"repos/{repo}/releases")
     matches = [r for r in releases if r["tag_name"] == tag]
     if not matches:
-        if len(releases) == 100:
-            raise RuntimeError("release pagination required before creating archive")
         subprocess.run(["gh", "release", "create", tag, "--draft", "--title",
                         "Source snapshots (draft; do not publish)", "--notes",
                         "Preservation only. Publishing requires a separate rights review."], check=True)
         # GitHub may briefly omit a newly created draft from list readback.
         # Retry reads only; never create another release after an ambiguous write.
         for attempt in range(5):
-            created = gh_json("api", f"repos/{repo}/releases?per_page=100")
+            created = gh_list(f"repos/{repo}/releases")
             created = [r for r in created if r["tag_name"] == tag]
             if created:
                 break
@@ -238,9 +250,7 @@ def archive(manifest_path: Path, out_dir: Path) -> int:
         payload = (out_dir / name).read_bytes()
         if not payload or hashlib.sha256(payload).hexdigest() != item["sha256"]:
             raise RuntimeError("local snapshot hash mismatch")
-        assets = gh_json("api", f"repos/{repo}/releases/{release_id}/assets?per_page=100")
-        if len(assets) == 100:
-            raise RuntimeError("asset pagination required")
+        assets = gh_list(f"repos/{repo}/releases/{release_id}/assets")
         existing = [a for a in assets if a["name"] == name]
         if existing:
             # Verify bytes rather than trusting the asset filename or size alone.
@@ -250,7 +260,7 @@ def archive(manifest_path: Path, out_dir: Path) -> int:
                 raise RuntimeError("existing archive asset collision")
         else:
             subprocess.run(["gh", "release", "upload", tag, str(out_dir / name)], check=True)
-            assets = gh_json("api", f"repos/{repo}/releases/{release_id}/assets?per_page=100")
+            assets = gh_list(f"repos/{repo}/releases/{release_id}/assets")
             uploaded = [a for a in assets if a["name"] == name]
             if len(uploaded) != 1:
                 raise RuntimeError("uploaded archive asset not found")
@@ -284,14 +294,12 @@ def verify() -> int:
                                     + r"\.[A-Za-z0-9]{1,10}", name)):
             raise ValueError("invalid registered snapshot locator")
     repo = gh_json("repo", "view", "--json", "nameWithOwner")["nameWithOwner"]
-    releases = gh_json("api", f"repos/{repo}/releases?per_page=100")
+    releases = gh_list(f"repos/{repo}/releases")
     matches = [r for r in releases if r["tag_name"] == "source-snapshots-private"]
     if len(matches) != 1 or not matches[0]["draft"]:
         raise RuntimeError("registered snapshot archive is missing, ambiguous or published")
     release_id = matches[0]["id"]
-    assets = gh_json("api", f"repos/{repo}/releases/{release_id}/assets?per_page=100")
-    if len(assets) == 100:
-        raise RuntimeError("asset pagination required")
+    assets = gh_list(f"repos/{repo}/releases/{release_id}/assets")
     for row in rows:
         if not gh_json("api", f"repos/{repo}/releases/{release_id}")["draft"]:
             raise RuntimeError("archive draft state changed during restoration")

@@ -992,7 +992,8 @@ function requirementTopicMatches(row, topic) {
   if (topic === "support-training") return ["adoption", "support"].includes(area);
   if (topic === "authentication") {
     if (/auth|sso|login/.test(key)) return true;
-    return area === "identity" && !/count|capacity|minimum|accounting|volume/.test(key);
+    const quantityOnly = /(^|_)(count|capacity|minimum|accounting|volume)($|_)/.test(key);
+    return area === "identity" && !quantityOnly;
   }
   if (topic === "pricing-overage") return ["commercial", "cost"].includes(area) || /overage|price|fee|payment/.test(key);
   return true;

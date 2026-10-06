@@ -154,6 +154,54 @@ assert.equal(requirementKeywordMatches(
   { government_name: "テスト市", procurement_title: "生成AI" }
 ), false);
 
+
+const matsueLgwan = byId.get("EFF-matsue-lgwan-asp");
+assert.ok(matsueLgwan);
+assert.equal(requirementTopicMatches(matsueLgwan, "network"), true);
+
+const matsueRagDocs = byId.get("EFF-matsue-rag-documents-per-group");
+assert.ok(matsueRagDocs);
+assert.equal(requirementTopicMatches(matsueRagDocs, "rag"), true);
+assert.equal(requirementTopicMatches(matsueRagDocs, "files-capacity"), true);
+
+const minohAccounts = byId.get("EFF-minoh-minimum-accounts");
+assert.ok(minohAccounts);
+assert.equal(requirementTopicMatches(minohAccounts, "accounts-usage"), true);
+assert.equal(requirementTopicMatches(minohAccounts, "authentication"), false);
+
+const minohAuth = byId.get("EFF-minoh-employee-auth");
+assert.ok(minohAuth);
+assert.equal(requirementTopicMatches(minohAuth, "authentication"), true);
+
+const minohOverage = byId.get("EFF-minoh-overage-no-additional-fee");
+assert.ok(minohOverage);
+assert.equal(requirementTopicMatches(minohOverage, "pricing-overage"), true);
+
+const minohRagFile = byId.get("EFF-minoh-rag-file-size");
+assert.ok(minohRagFile);
+assert.equal(requirementTopicMatches(minohRagFile, "rag"), true);
+assert.equal(requirementTopicMatches(minohRagFile, "files-capacity"), true);
+
+const matsueNoTraining = byId.get("EFF-matsue-input-output-training");
+assert.ok(matsueNoTraining);
+assert.equal(requirementTopicMatches(matsueNoTraining, "data-handling"), true);
+assert.equal(requirementTopicMatches(matsueNoTraining, "model"), false);
+
+const itoshimaQa = byId.get("EFF-itoshima-support-audience");
+assert.ok(itoshimaQa);
+assert.equal(requirementMatchesExplorerFilters(
+  itoshimaQa,
+  { amended: "qa" },
+  {},
+  sourceById.get(itoshimaQa.changed_by_source_id)
+), true);
+
+assert.equal(requirementKeywordMatches(
+  byId.get("EFF-itoshima-citizen-scope"),
+  "市民",
+  { government_name: "糸島市", procurement_title: "糸島市市民向け生成AIチャットボットサービス構築業務" }
+), true);
+
 for (const value of new Set(effective.map(row => row.change_type).filter(Boolean))) {
   assert.notEqual(changeTypeLabel(value), "確認済み", `change type needs a public label: ${value}`);
 }

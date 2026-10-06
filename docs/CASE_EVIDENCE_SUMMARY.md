@@ -36,6 +36,9 @@ For source tracing, use the paired `*_source_id` columns in the CSV and resolve 
 | gunma-2026-joint-genai | 群馬県情報化推進協議会 | U | F | U | U | F | F | not_assessed | not_assessed | not_assessed | publicly_bounded | specification:source_unavailable;qa_amendment:not_found_in_reviewed_sources;requirement_matrix:source_unavailable;evaluation:source_unavailable;result:not_found_in_reviewed_sources;contract_final:not_found_in_reviewed_sources |
 | hokkaido-2025-genai-rag-pilot | 北海道 | R | R | — | R | C | F | selected_candidate_confirmed | contracted_confirmed | not_verified | publicly_bounded | result:conflicting_sources;contract_final:not_found_in_reviewed_sources |
 | hokkaido-2026-genai-rag-service | 北海道 | U | · | · | — | R | F | not_assessed | not_assessed | not_assessed | publicly_bounded | specification:source_unavailable;contract_final:not_found_in_reviewed_sources |
+| itoshima-2026-citizen-genai-chatbot | 糸島市 | R | R | N | R | R | F | selected_candidate_confirmed | not_verified | operating_confirmed | publicly_bounded | contract_final:not_found_in_reviewed_sources |
+| matsue-2026-genai-support | 松江市 | R | N | N | R | R | F | selected_candidate_confirmed | not_verified | not_verified | publicly_bounded | contract_final:not_found_in_reviewed_sources |
+| minoh-2026-genai-license | 箕面市 | R | R | R | R | R | F | selected_candidate_confirmed | not_verified | not_verified | publicly_bounded | contract_final:not_found_in_reviewed_sources |
 
 ## Reading rules
 

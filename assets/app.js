@@ -202,6 +202,31 @@ function sourceDateText(source) {
   return "";
 }
 
+function sourceDocumentRoleLabel(value) {
+  const labels = {
+    official_specification: "仕様書",
+    official_specification_draft: "仕様書案",
+    official_requirement_matrix: "要求機能一覧",
+    official_security_matrix: "セキュリティ要件",
+    official_qa: "質問回答",
+    official_qa_amendment: "Q&A・訂正",
+    official_evaluation: "評価基準",
+    official_evaluation_attachment: "評価資料",
+    official_result: "選定結果",
+    official_bid_result: "入札結果",
+    official_contract_result: "契約結果",
+    official_contract_draft: "契約書案",
+    official_operation_page: "運用情報",
+    official_procurement_page: "案件ページ",
+    official_procurement_notice: "公告",
+    official_procurement_guide: "実施要領",
+    official_bid_notice: "入札公告",
+    official_procurement_document: "調達資料",
+    official_attachment: "添付資料",
+  };
+  return labels[value] || "公式資料";
+}
+
 function appendEvidenceSource(container, sourceId) {
   if (!sourceId) {
     container.textContent = "対応する公開資料は登録されていません。";
@@ -622,6 +647,9 @@ function currentFilterParams() {
   const rag = document.getElementById("rag").value;
   const evidence = document.getElementById("evidence").value;
   const topic = document.getElementById("requirement-topic")?.value || "";
+  const requirementQuery = document.getElementById("requirement-query")?.value.trim() || "";
+  const amended = document.getElementById("requirement-amended")?.value || "";
+  const changeType = document.getElementById("requirement-change")?.value || "";
 
   if (theme && SHAREABLE_THEMES.has(theme)) params.set("theme", theme);
   if (q && theme !== "joint") params.set("q", q);
@@ -630,6 +658,9 @@ function currentFilterParams() {
   if (rag && theme !== "rag") params.set("rag", rag);
   if (evidence && theme !== "bounded") params.set("evidence", evidence);
   if (topic && REQUIREMENT_TOPICS.has(topic)) params.set("topic", topic);
+  if (requirementQuery) params.set("rq", requirementQuery);
+  if (["qa", "other"].includes(amended)) params.set("amended", amended);
+  if (changeType) params.set("change", changeType);
   return params;
 }
 
@@ -669,6 +700,10 @@ function hydrateFiltersFromUrl() {
   setSelectFromParam("rag", params.get("rag"));
   setSelectFromParam("evidence", params.get("evidence"));
   setSelectFromParam("requirement-topic", params.get("topic"));
+  const requirementQuery = params.get("rq");
+  if (requirementQuery) document.getElementById("requirement-query").value = requirementQuery;
+  setSelectFromParam("requirement-amended", params.get("amended"));
+  setSelectFromParam("requirement-change", params.get("change"));
 }
 
 async function copyCurrentFilterUrl() {
@@ -863,13 +898,13 @@ function appendRequirementSourceLink(container, sourceId, label) {
   link.href = source.url;
   link.target = "_blank";
   link.rel = "noreferrer";
-  link.textContent = `${label} ↗`;
+  link.textContent = `${label}｜${sourceDocumentRoleLabel(source.document_type)} ↗`;
   container.append(link);
-  const dateText = sourceDateText(source);
-  if (dateText) {
+  const metaText = [source.title, sourceDateText(source)].filter(Boolean).join(" / ");
+  if (metaText) {
     const meta = document.createElement("small");
     meta.className = "source-date";
-    meta.textContent = dateText;
+    meta.textContent = metaText;
     container.append(meta);
   }
 }
@@ -937,29 +972,94 @@ function requirementTopicMatches(row, topic) {
   const key = (row.requirement_key || "").toLowerCase();
   if (topic === "rag") return ["rag", "knowledge", "grounding"].includes(area);
   if (topic === "data-handling") {
-    return ["data_governance", "data_location"].includes(area)
-      || /training|storage|retention|learning/.test(key);
+    if (["data_governance", "data_location"].includes(area)) return true;
+    const dataContext = /(input|output|data|llm|prompt|conversation|chat|record)/.test(key);
+    const dataAction = /(training|learning|storage|retention|persist|save)/.test(key);
+    return dataContext && dataAction;
   }
   if (topic === "network") return area === "network" || /lgwan|network|internet|ip_/.test(key);
   if (topic === "security") return ["security", "logging", "data_location"].includes(area);
-  if (topic === "model") return ["model", "model_control"].includes(area) || /model|llm/.test(key);
+  if (topic === "model") {
+    if (["model", "model_control"].includes(area)) return true;
+    return /model|llm/.test(key) && !/storage|retention|training|learning|log/.test(key);
+  }
   if (topic === "accounts-usage") return ["identity", "scale", "usage", "administration"].includes(area);
   if (topic === "files-capacity") {
-    return ["rag", "knowledge"].includes(area) && /file|document|volume|capacity|count|storage/.test(key);
+    if (!["rag", "knowledge"].includes(area)) return false;
+    if (/source_file_link|source_link|citation|reference_link/.test(key)) return false;
+    return /file|document|volume|capacity|count|storage|size|format|corpus/.test(key);
   }
-  if (topic === "support-training") return ["adoption", "support"].includes(area) || /training|support/.test(key);
-  if (topic === "authentication") return area === "identity" || /auth|sso|login|account/.test(key);
+  if (topic === "support-training") return ["adoption", "support"].includes(area);
+  if (topic === "authentication") {
+    if (/auth|sso|login/.test(key)) return true;
+    return area === "identity" && !/count|capacity|minimum|accounting|volume/.test(key);
+  }
   if (topic === "pricing-overage") return ["commercial", "cost"].includes(area) || /overage|price|fee|payment/.test(key);
   return true;
 }
 
+function normalizedRequirementQuery(value) {
+  return (value || "").normalize("NFKC").toLocaleLowerCase("ja-JP").trim();
+}
+
+function requirementKeywordMatches(row, query, caseRow = {}) {
+  const needle = normalizedRequirementQuery(query);
+  if (!needle) return true;
+  const haystack = [
+    caseRow.government_name,
+    caseRow.procurement_title,
+    row.requirement_key,
+    row.requirement_area,
+    row.original_value,
+    row.effective_value,
+    row.scope,
+    row.condition,
+  ].map(normalizedRequirementQuery).join("\n");
+  return haystack.includes(needle);
+}
+
+function requirementChangeSourceKind(row, changedSource) {
+  if (!row.changed_by_source_id || !changedSource) return "";
+  return changedSource.document_type === "official_qa_amendment" ? "qa" : "other";
+}
+
+function requirementMatchesExplorerFilters(row, filters, caseRow = {}, changedSource = null) {
+  if (!requirementTopicMatches(row, filters.topic || "")) return false;
+  if (!requirementKeywordMatches(row, filters.query || "", caseRow)) return false;
+  if (filters.changeType && row.change_type !== filters.changeType) return false;
+  if (filters.amended && requirementChangeSourceKind(row, changedSource) !== filters.amended) return false;
+  return true;
+}
+
+function populateRequirementChangeTypes(rows) {
+  const select = document.getElementById("requirement-change");
+  if (!select) return;
+  [...new Set(rows.map(row => row.change_type).filter(Boolean))]
+    .sort((a, b) => changeTypeLabel(a).localeCompare(changeTypeLabel(b), "ja"))
+    .forEach(value => {
+      const option = document.createElement("option");
+      option.value = value;
+      option.textContent = changeTypeLabel(value);
+      select.append(option);
+    });
+}
+
 function renderRequirementExplorer() {
   const tbody = document.getElementById("requirement-rows");
-  const select = document.getElementById("requirement-topic");
-  if (!tbody || !select) return;
-  const topic = select.value;
+  const topicSelect = document.getElementById("requirement-topic");
+  if (!tbody || !topicSelect) return;
+  const filters = {
+    topic: topicSelect.value,
+    query: document.getElementById("requirement-query")?.value || "",
+    amended: document.getElementById("requirement-amended")?.value || "",
+    changeType: document.getElementById("requirement-change")?.value || "",
+  };
   const rows = state.effectiveRows
-    .filter(row => requirementTopicMatches(row, topic))
+    .filter(row => {
+      const caseRow = state.caseById.get(row.case_id) || {};
+      const changedSource = row.changed_by_source_id ? state.sourceById.get(row.changed_by_source_id) : null;
+      return requirementMatchesExplorerFilters(row, filters, caseRow, changedSource);
+    })
     .slice()
     .sort((a, b) => {
       const ca = state.caseById.get(a.case_id);
@@ -1015,10 +1115,10 @@ function renderRequirementExplorer() {
 
     const boundaryTd = document.createElement("td");
     const requirementBoundary = document.createElement("p");
-    requirementBoundary.textContent = requirementBoundaryText(row);
+    requirementBoundary.textContent = `応募時の有効要件: ${requirementBoundaryText(row)}`;
     const caseBoundary = document.createElement("small");
     caseBoundary.className = "cell-detail";
-    caseBoundary.textContent = `案件全体: ${caseBoundaryText(state.evidenceByCase.get(row.case_id))}`;
+    caseBoundary.textContent = `契約最終状態: ${caseBoundaryText(state.evidenceByCase.get(row.case_id))}`;
     boundaryTd.append(requirementBoundary, caseBoundary);
 
     tr.append(caseTd, keyTd, originalTd, effectiveTd, changeTd, evidenceTd, boundaryTd);
@@ -1527,12 +1627,19 @@ async function init() {
 
     fillSelect("prefecture", cases.map(row => row.prefecture));
     fillSelect("method", cases.map(row => row.procurement_method));
+    populateRequirementChangeTypes(effective);
     hydrateFiltersFromUrl();
     renderRequirementExplorer();
 
-    document.getElementById("requirement-topic").addEventListener("change", () => {
+    document.getElementById("requirement-query").addEventListener("input", () => {
       renderRequirementExplorer();
       syncFilterUrl();
+    });
+    ["requirement-topic", "requirement-amended", "requirement-change"].forEach(id => {
+      document.getElementById(id).addEventListener("change", () => {
+        renderRequirementExplorer();
+        syncFilterUrl();
+      });
     });
 
     document.getElementById("search").addEventListener("input", () => {
@@ -1599,4 +1706,17 @@ async function init() {
   }
 }
 
-document.addEventListener("DOMContentLoaded", init);
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = {
+    changeTypeLabel,
+    requirementTopicMatches,
+    requirementKeywordMatches,
+    requirementChangeSourceKind,
+    requirementMatchesExplorerFilters,
+    sourceDocumentRoleLabel,
+  };
+}
+
+if (typeof document !== "undefined") {
+  document.addEventListener("DOMContentLoaded", init);
+}

@@ -18,7 +18,9 @@
 
 **5つの設計論点:** https://josh-temple.github.io/public-sector-ai-procurement-japan/insights.html
 
-**仕様検討チェックリスト:** https://josh-temple.github.io/public-sector-ai-procurement-japan/checklist.html\n\n**仕様作成支援:** https://josh-temple.github.io/public-sector-ai-procurement-japan/drafting.html
+**仕様検討チェックリスト:** https://josh-temple.github.io/public-sector-ai-procurement-japan/checklist.html
+
+**仕様作成支援:** https://josh-temple.github.io/public-sector-ai-procurement-japan/drafting.html
 
 **データの見方・方法:** https://josh-temple.github.io/public-sector-ai-procurement-japan/methodology.html
 

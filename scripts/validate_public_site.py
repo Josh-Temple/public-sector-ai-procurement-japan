@@ -231,7 +231,7 @@ def main() -> int:
             if marker not in drafting_js:
                 errors.append(f"assets/drafting.js: drafting support behavior missing: {marker}")
 
-        data_refs = sorted(set(re.findall(r'["\\'](\\?\\./data/[^"\\']+\\.csv)["\\']', drafting_js)))
+        data_refs = sorted(set(re.findall(r'["\'](\\?\./data/[^"\']+\.csv)["\']', drafting_js)))
         if not data_refs:
             errors.append("assets/drafting.js: no data CSV references found")
         for ref in data_refs:

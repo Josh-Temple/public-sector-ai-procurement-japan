@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import csv
 import hashlib
+import http.client
 import json
 import re
 import subprocess
@@ -109,7 +110,7 @@ def prepare(out_dir: Path, manifest_path: Path) -> int:
                 flush=True,
             )
             continue
-        except (urllib.error.URLError, TimeoutError):
+        except (urllib.error.URLError, TimeoutError, http.client.RemoteDisconnected):
             print(
                 f"::warning title=Source snapshot deferred::{source_id}: "
                 "network error; remains snapshot_pending",

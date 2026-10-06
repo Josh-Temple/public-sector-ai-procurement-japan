@@ -25,8 +25,24 @@ const state = {
   vendorScoresByCase: new Map(),
   bidsByCase: new Map(),
   timelineByCase: new Map(),
+  caseById: new Map(),
+  evidenceByCase: new Map(),
+  effectiveRows: [],
   activeCase: null,
 };
+
+const REQUIREMENT_TOPICS = new Set([
+  "rag",
+  "data-handling",
+  "network",
+  "security",
+  "model",
+  "accounts-usage",
+  "files-capacity",
+  "support-training",
+  "authentication",
+  "pricing-overage",
+]);
 
 function parseCSV(text) {
   const out = [];
@@ -149,23 +165,51 @@ function reviewStateLabel(value) {
   return labels[value] || safeText(value);
 }
 
+function caseBoundaryText(evidence) {
+  if (!evidence || evidence.public_reconstructability === "not_assessed") {
+    return "契約最終状態までの公開資料の確認範囲は、まだ評価していません。";
+  }
+  if (evidence.public_reconstructability === "publicly_bounded") {
+    return "公開資料で公募・選定等を確認できますが、契約後の最終仕様まで公開資料だけでは確認できません。";
+  }
+  if (evidence.public_reconstructability === "publicly_reconstructable") {
+    return "公開資料から契約最終要件まで再構成できます。";
+  }
+  return "公開資料の確認範囲を表示しています。";
+}
+
+function requirementBoundaryText(row) {
+  if (row.public_reconstructability === "publicly_reconstructable") {
+    return "この要件の公募時の有効状態は、公開資料から再構成できます。";
+  }
+  if (row.public_reconstructability === "publicly_bounded") {
+    return "この要件は公開資料で確認できますが、後続資料まで含む最終状態は断定できません。";
+  }
+  return "この要件の公開資料の確認範囲は限定されています。";
+}
+
 function evidenceSummaryText(row) {
   const evidence = row.evidence;
   if (!evidence) return "Evidence監査情報はありません。";
-  const parts = [`判定: ${evidenceLabel(evidence)}`];
+  const parts = [caseBoundaryText(evidence)];
   if (evidence.last_verified) parts.push(`最終確認: ${evidence.last_verified}`);
-  if (evidence.blocking_roles) parts.push(`公開再構成の阻害要素: ${evidence.blocking_roles}`);
-  return parts.join(" / ");
+  return parts.join(" ");
+}
+
+function sourceDateText(source) {
+  if (source?.published_at) return `公開: ${source.published_at}`;
+  if (source?.retrieved_at) return `取得確認: ${source.retrieved_at}`;
+  return "";
 }
 
 function appendEvidenceSource(container, sourceId) {
   if (!sourceId) {
-    container.textContent = "対応するSource IDなし";
+    container.textContent = "対応する公開資料は登録されていません。";
     return;
   }
   const source = state.sourceById.get(sourceId);
   if (!source) {
-    container.textContent = sourceId;
+    container.textContent = "登録された根拠資料を表示できません。";
     return;
   }
   if (source.url) {
@@ -173,16 +217,19 @@ function appendEvidenceSource(container, sourceId) {
     link.href = source.url;
     link.target = "_blank";
     link.rel = "noreferrer";
-    link.textContent = source.title || sourceId;
+    link.textContent = source.title || "公式資料";
     container.append(link);
   } else {
     const title = document.createElement("span");
-    title.textContent = source.title || sourceId;
+    title.textContent = source.title || "公式資料";
     container.append(title);
   }
-  const meta = document.createElement("small");
-  meta.textContent = [sourceId, source.access_state].filter(Boolean).join(" / ");
-  container.append(meta);
+  const dateText = sourceDateText(source);
+  if (dateText) {
+    const meta = document.createElement("small");
+    meta.textContent = dateText;
+    container.append(meta);
+  }
 }
 
 function openEvidenceDialog(row) {
@@ -574,6 +621,7 @@ function currentFilterParams() {
   const method = document.getElementById("method").value;
   const rag = document.getElementById("rag").value;
   const evidence = document.getElementById("evidence").value;
+  const topic = document.getElementById("requirement-topic")?.value || "";
 
   if (theme && SHAREABLE_THEMES.has(theme)) params.set("theme", theme);
   if (q && theme !== "joint") params.set("q", q);
@@ -581,6 +629,7 @@ function currentFilterParams() {
   if (method) params.set("method", method);
   if (rag && theme !== "rag") params.set("rag", rag);
   if (evidence && theme !== "bounded") params.set("evidence", evidence);
+  if (topic && REQUIREMENT_TOPICS.has(topic)) params.set("topic", topic);
   return params;
 }
 
@@ -619,6 +668,7 @@ function hydrateFiltersFromUrl() {
   setSelectFromParam("method", params.get("method"));
   setSelectFromParam("rag", params.get("rag"));
   setSelectFromParam("evidence", params.get("evidence"));
+  setSelectFromParam("requirement-topic", params.get("topic"));
 }
 
 async function copyCurrentFilterUrl() {
@@ -690,17 +740,28 @@ function changeTypeLabel(value) {
     allowed_interpretation: "解釈明確化",
     allowed_alternative: "代替許容",
     threshold_defined: "数値具体化",
+    quantified: "数値具体化",
+    clarified_quantification: "数値明確化",
     clarified_strict: "厳格化",
     clarified_feasibility: "実現可能範囲",
     clarified_definition: "定義明確化",
+    clarified_evaluation_boundary: "評価範囲明確化",
     broadened_alternative: "選択肢拡大",
+    broadened_interpretation: "解釈範囲拡大",
     threshold_relaxed: "閾値緩和",
     threshold_removed: "閾値削除",
+    conditional_exception: "条件付き例外",
+    contract_priority_rule: "契約上の優先関係",
+    evidence_boundary: "確認範囲明確化",
+    none_public_baseline: "公開当初値なし",
+    obligation_clarified: "義務内容明確化",
+    qualification_requirement: "資格要件",
+    scope_boundary: "対象範囲明確化",
     removed: "削除",
     context: "前提情報",
     evaluation_context: "評価上の補足",
   };
-  return labels[value] || value || "確認済み";
+  return labels[value] || "確認済み";
 }
 
 function specializedValue(row) {
@@ -794,6 +855,25 @@ function renderExpandableRows(container, rows, renderRow, noun = "件", initialL
   return true;
 }
 
+function appendRequirementSourceLink(container, sourceId, label) {
+  const source = sourceId ? state.sourceById.get(sourceId) : null;
+  if (!source?.url) return;
+  const link = document.createElement("a");
+  link.className = "inline-source";
+  link.href = source.url;
+  link.target = "_blank";
+  link.rel = "noreferrer";
+  link.textContent = `${label} ↗`;
+  container.append(link);
+  const dateText = sourceDateText(source);
+  if (dateText) {
+    const meta = document.createElement("small");
+    meta.className = "source-date";
+    meta.textContent = dateText;
+    container.append(meta);
+  }
+}
+
 function renderEffectiveRequirements(caseId) {
   const container = document.getElementById("case-dialog-effective");
   const rows = state.effectiveByCase.get(caseId) || [];
@@ -808,26 +888,145 @@ function renderEffectiveRequirements(caseId) {
 
   renderExpandableRows(container, rows, row => {
     const item = document.createElement("div");
-    item.className = "detail-row";
+    item.className = "detail-row requirement-detail-row";
     const key = document.createElement("strong");
     key.textContent = row.requirement_key || row.requirement_area || "要件";
 
-    const value = document.createElement("p");
-    value.textContent = row.effective_value || row.original_value || "—";
-    appendInlineSource(
-      value,
-      row.changed_by_source_id || row.base_source_id,
-      "",
-      row.changed_by_source_id ? "変更根拠" : "根拠"
-    );
+    const values = document.createElement("div");
+    values.className = "effective-values";
+    const original = row.original_value || "—";
+    const effective = row.effective_value || row.original_value || "—";
+    if (original !== effective) {
+      const before = document.createElement("p");
+      before.innerHTML = "<b>当初</b> ";
+      before.append(document.createTextNode(original));
+      const after = document.createElement("p");
+      after.innerHTML = "<b>有効</b> ";
+      after.append(document.createTextNode(effective));
+      values.append(before, after);
+    } else {
+      const current = document.createElement("p");
+      current.innerHTML = "<b>有効</b> ";
+      current.append(document.createTextNode(effective));
+      values.append(current);
+    }
+    const qualifiers = [row.scope && `範囲: ${row.scope}`, row.condition && `条件: ${row.condition}`].filter(Boolean);
+    if (qualifiers.length) {
+      const detail = document.createElement("small");
+      detail.textContent = qualifiers.join(" / ");
+      values.append(detail);
+    }
+    const links = document.createElement("div");
+    links.className = "requirement-source-links";
+    appendRequirementSourceLink(links, row.base_source_id, "当初根拠");
+    if (row.changed_by_source_id) appendRequirementSourceLink(links, row.changed_by_source_id, "変更根拠");
+    values.append(links);
 
     const stateText = document.createElement("span");
     stateText.className = "points";
     stateText.textContent = changeTypeLabel(row.change_type);
 
-    item.append(key, value, stateText);
+    item.append(key, values, stateText);
     return item;
   });
+}
+
+function requirementTopicMatches(row, topic) {
+  if (!topic) return true;
+  const area = row.requirement_area || "";
+  const key = (row.requirement_key || "").toLowerCase();
+  if (topic === "rag") return ["rag", "knowledge", "grounding"].includes(area);
+  if (topic === "data-handling") {
+    return ["data_governance", "data_location"].includes(area)
+      || /training|storage|retention|learning/.test(key);
+  }
+  if (topic === "network") return area === "network" || /lgwan|network|internet|ip_/.test(key);
+  if (topic === "security") return ["security", "logging", "data_location"].includes(area);
+  if (topic === "model") return ["model", "model_control"].includes(area) || /model|llm/.test(key);
+  if (topic === "accounts-usage") return ["identity", "scale", "usage", "administration"].includes(area);
+  if (topic === "files-capacity") {
+    return ["rag", "knowledge"].includes(area) && /file|document|volume|capacity|count|storage/.test(key);
+  }
+  if (topic === "support-training") return ["adoption", "support"].includes(area) || /training|support/.test(key);
+  if (topic === "authentication") return area === "identity" || /auth|sso|login|account/.test(key);
+  if (topic === "pricing-overage") return ["commercial", "cost"].includes(area) || /overage|price|fee|payment/.test(key);
+  return true;
+}
+
+function renderRequirementExplorer() {
+  const tbody = document.getElementById("requirement-rows");
+  const select = document.getElementById("requirement-topic");
+  if (!tbody || !select) return;
+  const topic = select.value;
+  const rows = state.effectiveRows
+    .filter(row => requirementTopicMatches(row, topic))
+    .slice()
+    .sort((a, b) => {
+      const ca = state.caseById.get(a.case_id);
+      const cb = state.caseById.get(b.case_id);
+      return (ca?.government_name || "").localeCompare(cb?.government_name || "", "ja")
+        || (a.requirement_area || "").localeCompare(b.requirement_area || "")
+        || (a.requirement_key || "").localeCompare(b.requirement_key || "");
+    });
+
+  tbody.replaceChildren();
+  const fragment = document.createDocumentFragment();
+  rows.forEach(row => {
+    const caseRow = state.caseById.get(row.case_id);
+    if (!caseRow) return;
+    const tr = document.createElement("tr");
+
+    const caseTd = document.createElement("td");
+    const caseLink = document.createElement("a");
+    caseLink.className = "case-title-button";
+    caseLink.href = buildCaseHref(row.case_id);
+    caseLink.textContent = caseRow.government_name;
+    const caseSub = document.createElement("span");
+    caseSub.className = "case-sub";
+    caseSub.textContent = caseRow.procurement_title;
+    caseTd.append(caseLink, caseSub);
+
+    const keyTd = document.createElement("td");
+    const area = document.createElement("span");
+    area.className = "case-sub";
+    area.textContent = row.requirement_area || "要件";
+    const key = document.createElement("strong");
+    key.textContent = row.requirement_key || "—";
+    keyTd.append(key, area);
+
+    const originalTd = document.createElement("td");
+    originalTd.textContent = row.original_value || "—";
+    const effectiveTd = document.createElement("td");
+    effectiveTd.textContent = row.effective_value || row.original_value || "—";
+    if (row.scope || row.condition) {
+      const detail = document.createElement("small");
+      detail.className = "cell-detail";
+      detail.textContent = [row.scope && `範囲: ${row.scope}`, row.condition && `条件: ${row.condition}`].filter(Boolean).join(" / ");
+      effectiveTd.append(detail);
+    }
+
+    const changeTd = document.createElement("td");
+    changeTd.textContent = changeTypeLabel(row.change_type);
+
+    const evidenceTd = document.createElement("td");
+    evidenceTd.className = "requirement-source-links";
+    appendRequirementSourceLink(evidenceTd, row.base_source_id, "当初根拠");
+    if (row.changed_by_source_id) appendRequirementSourceLink(evidenceTd, row.changed_by_source_id, "変更根拠");
+
+    const boundaryTd = document.createElement("td");
+    const requirementBoundary = document.createElement("p");
+    requirementBoundary.textContent = requirementBoundaryText(row);
+    const caseBoundary = document.createElement("small");
+    caseBoundary.className = "cell-detail";
+    caseBoundary.textContent = `案件全体: ${caseBoundaryText(state.evidenceByCase.get(row.case_id))}`;
+    boundaryTd.append(requirementBoundary, caseBoundary);
+
+    tr.append(caseTd, keyTd, originalTd, effectiveTd, changeTd, evidenceTd, boundaryTd);
+    fragment.append(tr);
+  });
+  tbody.append(fragment);
+  document.getElementById("requirement-result-count").textContent =
+    `${rows.length}件を表示 / 構造化済み有効要件 全${state.effectiveRows.length}件`;
 }
 
 function renderSpecialized(caseId) {
@@ -1305,6 +1504,9 @@ async function init() {
       Object.values(DATA_FILES).map(loadCSV)
     );
     state.sourceById = new Map(sources.map(source => [source.source_id, source]));
+    state.caseById = new Map(cases.map(row => [row.case_id, row]));
+    state.evidenceByCase = new Map(evidence.map(row => [row.case_id, row]));
+    state.effectiveRows = effective;
     state.evaluationsByCase = groupByCase(evaluations);
     state.effectiveByCase = groupByCase(effective);
     state.specializedByCase = groupByCase(specialized);
@@ -1326,6 +1528,12 @@ async function init() {
     fillSelect("prefecture", cases.map(row => row.prefecture));
     fillSelect("method", cases.map(row => row.procurement_method));
     hydrateFiltersFromUrl();
+    renderRequirementExplorer();
+
+    document.getElementById("requirement-topic").addEventListener("change", () => {
+      renderRequirementExplorer();
+      syncFilterUrl();
+    });
 
     document.getElementById("search").addEventListener("input", () => {
       const search = document.getElementById("search");

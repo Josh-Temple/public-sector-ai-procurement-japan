@@ -211,7 +211,6 @@ def main() -> int:
             'id="citizen-examples"',
             'id="role-examples"',
             "仕様へ落とす",
-            "自団体で埋める変数",
         ):
             if marker not in drafting_text:
                 errors.append(f"drafting.html: required marker missing: {marker}")
@@ -227,6 +226,7 @@ def main() -> int:
             "data/specialized_requirements.csv",
             "caseBoundaryText",
             "effectiveSourceId",
+            "自団体で埋める変数",
         ):
             if marker not in drafting_js:
                 errors.append(f"assets/drafting.js: drafting support behavior missing: {marker}")

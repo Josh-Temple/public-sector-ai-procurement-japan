@@ -128,6 +128,10 @@
       </div>
       <div class="requirement-toolbar">
         <label>
+          <span>要件キーワード</span>
+          <input id="requirement-query" type="search" placeholder="例: SSO / 100GB / 研修">
+        </label>
+        <label>
           <span>仕様テーマ</span>
           <select id="requirement-topic">
             <option value="">すべて</option>
@@ -143,6 +147,21 @@
             <option value="pricing-overage">料金・超過条件</option>
           </select>
         </label>
+        <label>
+          <span>変更根拠</span>
+          <select id="requirement-amended">
+            <option value="">すべて</option>
+            <option value="qa">Q&A・訂正による変更</option>
+            <option value="other">その他の公式資料による変更</option>
+          </select>
+        </label>
+        <label>
+          <span>変更種別</span>
+          <select id="requirement-change">
+            <option value="">すべて</option>
+          </select>
+        </label>
+        <a class="text-button requirement-qa-link" href="?amended=qa#requirement-explorer">Q&A・訂正で変わった要件を見る</a>
       </div>
       <p class="scope-note">表示がないことは、その要件が存在しないことを意味しません。ここでは構造化・レビュー済みの有効要件だけを表示します。</p>
       <p id="requirement-result-count" class="result-count" aria-live="polite"></p>

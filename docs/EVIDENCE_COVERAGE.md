@@ -1,4 +1,4 @@
-# Evidence coverage — 2026-10-06
+# Evidence coverage — 2026-10-07
 
 This is an evidence-review projection, not a procurement, vendor, or government quality score.
 
@@ -36,11 +36,14 @@ Legend: R reviewed; N explicitly not reviewed; U source unavailable; P source kn
 | gunma-2026-joint-genai | 群馬県情報化推進協議会 | U | F | U | U | F | F | publicly_bounded |
 | hokkaido-2025-genai-rag-pilot | 北海道 | R | R | — | R | C | F | publicly_bounded |
 | hokkaido-2026-genai-rag-service | 北海道 | U | · | · | — | R | F | publicly_bounded |
+| itoshima-2026-citizen-genai-chatbot | 糸島市 | R | R | N | R | R | F | publicly_bounded |
+| matsue-2026-genai-support | 松江市 | R | N | N | R | R | F | publicly_bounded |
+| minoh-2026-genai-license | 箕面市 | R | R | R | R | R | F | publicly_bounded |
 
 ## Current reading
 
-- Cases in repository: 26
-- Cases with at least one role assessed: 26
+- Cases in repository: 29
+- Cases with at least one role assessed: 29
 - Cases with contract_final reviewed: 0
 - Cases publicly reconstructable through contract final: 0
 - assessed_roles and reviewed_roles count review states only; they are not quality scores.

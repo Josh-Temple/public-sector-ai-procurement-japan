@@ -23,6 +23,6 @@ hamada-2025-municipal-genai,2025-08-27,2025,,2026-03-31,2025,2025,announcement_e
 yamagata-gifu-2026-genai-service,2026-05-08,2026,,2027-03-31,2026,2026,operation_month_separate,SRC-yamagata-gifu-2026-page,公募開始2026-05-08。実運用は別sourceで2026年7月開始を月精度で確認,2026-10-05
 gosen-2026-genai-service,2026-07-06,2026,2026-10-01,2027-03-31,2026,2026,planned_start,SRC-gosen-2026-page,2026-10-01は公募日程上の利用開始予定。実稼働確認ではない,2026-10-05
 koge-2026-genai-procurement,2026-07-01,2026,,2027-03-31,2026,2026,announcement_exact_service_end,SRC-koge-2026-page,契約締結は8月上旬予定。契約日・実稼働開始は未確認,2026-10-05
-itoshima-2026-citizen-genai-chatbot,2026-04-13,2026,2026-09-01,2027-03-31,2026,2026,operation_start_confirmed,SRC-itoshima-2026-chatbot-operation,2026-09-01の実運用開始は公式ページで確認。2027-03-31は公募時の業務期間終期で、executed contractの終期確認ではない,2026-10-07
-matsue-2026-genai-support,2026-05-01,2026,2026-08-03,2027-03-31,2026,2026,planned_start,SRC-matsue-2026-guide,2026-08-03は公募日程上のシステム利用開始予定。実稼働確認ではない,2026-10-07
-minoh-2026-genai-license,2026-05-15,2026,2026-08-01,2027-03-31,2026,2026,planned_start,SRC-minoh-2026-genai-spec,2026-08-01は公募仕様上のサービス利用開始。実稼働確認ではない,2026-10-07
+itoshima-2026-citizen-genai-chatbot,2026-04-13,2026,2026-09-01,2027-03-31,2026,2026,operation_start_confirmed,SRC-itoshima-2026-chatbot-operation,2026-09-01の実運用開始は公式ページで確認。2027-03-31は公募時の業務期間終期で、executed contractの終期確認ではない,2026-10-06
+matsue-2026-genai-support,2026-05-01,2026,2026-08-03,2027-03-31,2026,2026,planned_start,SRC-matsue-2026-guide,2026-08-03は公募日程上のシステム利用開始予定。実稼働確認ではない,2026-10-06
+minoh-2026-genai-license,2026-05-15,2026,2026-08-01,2027-03-31,2026,2026,planned_start,SRC-minoh-2026-genai-spec,2026-08-01は公募仕様上のサービス利用開始。実稼働確認ではない,2026-10-06

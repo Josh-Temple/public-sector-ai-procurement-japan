@@ -78,6 +78,9 @@ assert.equal(requirementTopicMatches({ requirement_area: "security", requirement
 
 assert.equal(requirementTopicMatches({ requirement_area: "usage", requirement_key: "usage_volume_accounting" }, "authentication"), false);
 assert.equal(requirementTopicMatches({ requirement_area: "identity", requirement_key: "minimum_accounts" }, "authentication"), false);
+assert.equal(requirementTopicMatches({ requirement_area: "identity", requirement_key: "account_count" }, "authentication"), false);
+assert.equal(requirementTopicMatches({ requirement_area: "identity", requirement_key: "department_account_pattern" }, "authentication"), true);
+assert.equal(requirementTopicMatches({ requirement_area: "identity", requirement_key: "end_user_account" }, "authentication"), true);
 assert.equal(requirementTopicMatches({ requirement_area: "identity", requirement_key: "user_authentication" }, "authentication"), true);
 
 for (const id of [
@@ -106,6 +109,9 @@ for (const id of ["EFF-fukushima-2026-minimum-accounts", "EFF-fukushima-2026-usa
 
 assert.equal(requirementTopicMatches(byId.get("EFF-sendai-source-link"), "files-capacity"), false);
 assert.equal(requirementTopicMatches(byId.get("EFF-saitama-llm_storage"), "model"), false);
+assert.equal(requirementTopicMatches(byId.get("EFF-sendai-account-model"), "authentication"), true);
+assert.equal(requirementTopicMatches(byId.get("EFF-sendai-2026-user-auth"), "authentication"), true);
+assert.equal(requirementTopicMatches(byId.get("EFF-gosen-2026-account-count"), "authentication"), false);
 
 const qaRows = effective.filter(row => requirementMatchesExplorerFilters(
   row,

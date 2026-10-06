@@ -6,21 +6,21 @@ oumi-2026-joint-genai,result,SRC-oumi-2026-result,reviewed,,2026-10-01,公告日
 fukushima-2026-genai-pilot-expansion,specification,SRC-fukushima-2026-spec,reviewed,,2026-10-01,事業段階を実証として再確認
 fukushima-2026-genai-pilot-expansion,evaluation,SRC-fukushima-2026-evaluation,reviewed,,2026-10-01,安全な実証、本格導入に向けた整理を評価文言でも確認
 fukushima-2026-genai-pilot-expansion,result,SRC-fukushima-2026-result,reviewed,,2026-10-01,公式HTMLでも実証目的を確認
-fukushima-2026-genai-pilot-expansion,qa_amendment,,not_reviewed,not_reviewed,2026-10-01,今回の代表案件再監査では質疑の変更有無まで未確認
+fukushima-2026-genai-pilot-expansion,qa_amendment,SRC-fukushima-2026-qa,reviewed,,2026-10-06,公式Q&A 72件をレビュー。ネットワーク、モデル、利用量、RAG、認証、データ所在・セキュリティ、契約取扱い等を具体化
 obu-2026-genai-service,specification,SRC-obu-2026-spec,reviewed,,2026-10-01,仕様本文を再確認
 obu-2026-genai-service,qa_amendment,SRC-obu-2026-qa,reviewed,,2026-10-01,No.22-45を中心に業務要件の解釈・許容条件を再監査
-obu-2026-genai-service,requirement_matrix,SRC-obu-2026-requirement-matrix,source_unavailable,source_unavailable,2026-10-01,公式Excelは存在・数式修正版を確認したがworkbook本文は取得不能
-obu-2026-genai-service,evaluation,SRC-obu-2026-evaluation-matrix,source_unavailable,source_unavailable,2026-10-01,2次審査表Excel本文は現在の取得経路では取得不能
+obu-2026-genai-service,requirement_matrix,SRC-obu-2026-requirement-matrix,reviewed,,2026-10-06,公式XLSX本文を再取得し、公募時業務要件一覧を確認。後続Q&Aによる解釈・緩和はeffective requirementsで維持
+obu-2026-genai-service,evaluation,SRC-obu-2026-evaluation-matrix,reviewed,,2026-10-06,公式XLSX本文を再取得し、2次審査表の評価軸・配点を確認
 obu-2026-genai-service,result,SRC-obu-2026-page,reviewed,,2026-10-01,公告日、質疑公開、参加者・得点・優先交渉権者を確認
 yaizu-2025-genai-service,specification,SRC-yaizu-2025-spec,reviewed,,2026-10-01,仕様本文を再確認。詳細必須/望ましい機能は別紙1に委任
 yaizu-2025-genai-service,qa_amendment,SRC-yaizu-2025-qa,reviewed,,2026-10-01,No.1-10を再監査
-yaizu-2025-genai-service,requirement_matrix,SRC-yaizu-2025-requirement-matrix,source_unavailable,source_unavailable,2026-10-01,公式Excelの存在を確認したがworkbook本文は取得不能
+yaizu-2025-genai-service,requirement_matrix,SRC-yaizu-2025-requirement-matrix,reviewed,,2026-10-06,公式XLSX本文を再取得し、公募時要求機能一覧を確認。後続Q&Aを有効要件として維持
 yaizu-2025-genai-service,evaluation,SRC-yaizu-2025-evaluation,reviewed,,2026-10-01,100点満点、要求機能25点、必須項目対応不可で失格を確認
 yaizu-2025-genai-service,result,SRC-yaizu-2025-page,reviewed,,2026-10-01,公告日、上限、選定結果、HTMLスケジュール異常を確認
 kitakyushu-2025-genai-service,result,SRC-kitakyushu-2025-page,reviewed,,2026-10-01,公告・選定結果・添付資料一覧を確認
 kitakyushu-2025-genai-service,procurement_guide,SRC-kitakyushu-2025-guide,reviewed,,2026-10-01,質問回答は参加者へのメールであり公開本文なし
 kitakyushu-2025-genai-service,specification,SRC-kitakyushu-2025-spec,reviewed,,2026-10-01,既存RAG移行・利用規模・モデル等を確認
-kitakyushu-2025-genai-service,requirement_matrix,SRC-kitakyushu-2025-feature-matrix,source_unavailable,source_unavailable,2026-10-01,公式Excel本文を取得できず、必須機能全件の独立再監査は未完了
+kitakyushu-2025-genai-service,requirement_matrix,SRC-kitakyushu-2025-feature-matrix,reviewed,,2026-10-06,公式XLSX本文を再取得し、別紙2機能要件一覧を確認。参加者向けQ&Aはnot_publicのまま維持
 kitakyushu-2025-genai-service,evaluation,SRC-kitakyushu-2025-evaluation,reviewed,,2026-10-01,100点/審査員の配点と評価軸を再確認
 kitakyushu-2025-genai-service,qa_amendment,SRC-kitakyushu-2025-qa-private,not_public,not_public,2026-10-01,公式回答は参加者へEメール。公開資料だけでは質疑による変更・解釈を完全再構成できない
 kobe-2026-tax-voicebot,result,SRC-kobe-2026-voicebot-page,reviewed,,2026-10-01,3社の公開得点・契約候補者・契約額を確認
@@ -41,7 +41,7 @@ koshigaya-2024-genai-service-training,qa_amendment,SRC-koshigaya-2024-qa,reviewe
 koshigaya-2024-genai-service-training,requirement_matrix,SRC-koshigaya-2024-spec,not_applicable,not_applicable,2026-10-01,独立した要求機能表ではなく仕様書4章に必須要件・提案事項を内包
 koshigaya-2024-genai-service-training,evaluation,SRC-koshigaya-2024-guide,reviewed,,2026-10-01,機能30・非機能15・研修15・体制実績10・価格30=100点、60%未満は選定しない
 koshigaya-2024-genai-service-training,result,SRC-koshigaya-2024-result,reviewed,,2026-10-01,2社の総合評価点と候補者を確認
-koshigaya-2024-genai-service-training,contract_final,,not_assessed,not_assessed,2026-10-01,開催要領は選定後に提案内容に基づき契約交渉するとするが、契約最終文書は今回未監査
+koshigaya-2024-genai-service-training,contract_final,SRC-koshigaya-2024-guide,not_found_in_reviewed_sources,not_found_in_reviewed_sources,2026-10-06,開催要領は最優秀者と提案内容に基づき契約交渉する構造。案件ページ・仕様書・公開Q&A・審査結果・後続運用資料を確認したが、署名済み契約・契約後最終仕様はレビュー範囲内で確認できず。2024-09-19の実利用開始を契約最終要件の公開とは扱わない
 sendai-2025-genai-pilot,specification,SRC-sendai-2025-spec,reviewed,,2026-10-01,仕様書案を確認。公開Q&Aは募集要領により仕様書等の追加・修正として反映
 sendai-2025-genai-pilot,qa_amendment,SRC-sendai-2025-qa,reviewed,,2026-10-01,公式公開Q&Aを全体確認し、要件解釈・任意化・代替許容を有効要件として記録
 sendai-2025-genai-pilot,requirement_matrix,SRC-sendai-2025-spec,not_applicable,not_applicable,2026-10-01,公開資料一覧に独立した要求機能一覧はなく、要求事項は仕様書案・別紙に内包
@@ -108,13 +108,13 @@ wakayama-2026-genai-support,result,SRC-wakayama-2026-page,reviewed,,2026-10-05,�
 wakayama-2026-genai-support,contract_final,SRC-wakayama-2026-guide,not_found_in_reviewed_sources,not_found_in_reviewed_sources,2026-10-05,候補者との協議で仕様確定後契約。契約最終文書を確認できず
 nishiwaki-2025-genai-service,specification,SRC-nishiwaki-2025-spec,reviewed,,2026-10-05,仕様書本文を確認。詳細機能は様式第4号へ委任
 nishiwaki-2025-genai-service,qa_amendment,SRC-nishiwaki-2025-qa,reviewed,,2026-10-05,公開Q&A本文を確認
-nishiwaki-2025-genai-service,requirement_matrix,SRC-nishiwaki-2025-requirement-matrix,source_unavailable,source_unavailable,2026-10-05,公式XLSX本文をEでも読めず未監査
+nishiwaki-2025-genai-service,requirement_matrix,SRC-nishiwaki-2025-requirement-matrix,reviewed,,2026-10-06,公式XLSX本文を再取得し、全18項目の必須機能・定量条件を確認。公募時baselineとしてreviewed
 nishiwaki-2025-genai-service,evaluation,SRC-nishiwaki-2025-evaluation,reviewed,,2026-10-05,公開評価表を確認
 nishiwaki-2025-genai-service,result,SRC-nishiwaki-2025-page,reviewed,,2026-10-05,優先交渉権者と4提案の得点を確認
 nishiwaki-2025-genai-service,contract_final,SRC-nishiwaki-2025-guide,not_found_in_reviewed_sources,not_found_in_reviewed_sources,2026-10-05,選定後協議で仕様・契約金額を決める。最終契約を確認できず
 toyooka-2025-genai-service,specification,SRC-toyooka-2025-spec,reviewed,,2026-10-05,公開仕様書を確認
 toyooka-2025-genai-service,qa_amendment,SRC-toyooka-2025-qa,reviewed,,2026-10-05,公開Q&Aを確認
-toyooka-2025-genai-service,requirement_matrix,SRC-toyooka-2025-requirement-matrix,source_unavailable,source_unavailable,2026-10-05,公式XLSX本文をEでも読めず未監査
+toyooka-2025-genai-service,requirement_matrix,SRC-toyooka-2025-requirement-matrix,reviewed,,2026-10-06,公式XLSX本文を再取得し、必須/評価機能、利用規模、RAG等を確認。公募時baselineとしてreviewed
 toyooka-2025-genai-service,evaluation,SRC-toyooka-2025-guide,reviewed,,2026-10-05,実施要領の100点評価を確認
 toyooka-2025-genai-service,result,SRC-toyooka-2025-result,reviewed,,2026-10-05,契約候補者を確認
 toyooka-2025-genai-service,contract_final,SRC-toyooka-2025-guide,not_found_in_reviewed_sources,not_found_in_reviewed_sources,2026-10-05,選定後交渉で提案事項を加除修正し得る。署名済み契約・最終仕様を確認できず
@@ -124,7 +124,7 @@ harima-2025-genai-service,requirement_matrix,SRC-harima-2025-guide,not_applicabl
 harima-2025-genai-service,evaluation,SRC-harima-2025-guide,reviewed,,2026-10-05,500点評価を確認
 harima-2025-genai-service,result,SRC-harima-2025-page,reviewed,,2026-10-05,優先交渉権者と5提案の得点を確認
 harima-2025-genai-service,contract_final,SRC-harima-2025-guide,not_found_in_reviewed_sources,not_found_in_reviewed_sources,2026-10-05,公開資料で署名済み契約・契約最終仕様を確認できず
-hamada-2025-municipal-genai,specification,SRC-hamada-2025-spec,source_unavailable,source_unavailable,2026-10-05,公式Word添付の本文をEでも取得・監査できず
+hamada-2025-municipal-genai,specification,SRC-hamada-2025-spec,reviewed,,2026-10-06,公式DOCX本文を再取得し、モデル、LGWAN、利用量、RAG、データ取扱い、研修等の公募時仕様を確認
 hamada-2025-municipal-genai,qa_amendment,SRC-hamada-2025-qa,reviewed,,2026-10-05,2025-09-12時点の公開Q&A5件を確認。後続公開回答はレビュー範囲で未発見
 hamada-2025-municipal-genai,requirement_matrix,SRC-hamada-2025-page,not_applicable,,2026-10-05,公開添付構造に独立要件表なし
 hamada-2025-municipal-genai,evaluation,SRC-hamada-2025-guide,reviewed,,2026-10-05,要領に再掲された100点基準を確認
@@ -154,3 +154,5 @@ kagoshima-2026-genai-service,requirement_matrix,SRC-kagoshima-2026-spec,not_foun
 kagoshima-2026-genai-service,evaluation,SRC-kagoshima-2026-guide,not_found_in_reviewed_sources,not_found_in_reviewed_sources,2026-10-05,総合評価の記載はあるが公開配点表を確認できず
 kagoshima-2026-genai-service,result,SRC-kagoshima-2026-guide,not_public,not_public,2026-10-05,要領は選考結果を企画提案者全員へ電子メール通知すると明記。公開受託候補者を確認できず
 kagoshima-2026-genai-service,contract_final,SRC-kagoshima-2026-guide,not_found_in_reviewed_sources,not_found_in_reviewed_sources,2026-10-05,協議成立後契約し提案内容を変更し得るが実契約・契約最終仕様は未確認
+fukushima-2026-genai-pilot-expansion,requirement_matrix,SRC-fukushima-2026-spec,not_applicable,not_applicable,2026-10-06,公式公開資料セットに独立要求機能表はなく、詳細要件は仕様書6章以降に内包され、Q&Aが後続解釈を与える
+fukushima-2026-genai-pilot-expansion,contract_final,SRC-fukushima-2026-contract-draft,not_found_in_reviewed_sources,not_found_in_reviewed_sources,2026-10-06,契約事業者・契約日2026-05-22は公式結果で確認。公開契約書は案で、署名済み契約・契約後最終仕様はレビュー範囲内で確認できない

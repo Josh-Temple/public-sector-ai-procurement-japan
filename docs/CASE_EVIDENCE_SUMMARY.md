@@ -12,7 +12,7 @@ For source tracing, use the paired `*_source_id` columns in the CSV and resolve 
 |---|---|:---:|:---:|:---:|:---:|:---:|:---:|---|---|---|---|---|
 | sendai-2025-genai-pilot | 仙台市 | R | R | — | R | R | F | selected_candidate_confirmed | contracted_confirmed | not_verified | publicly_bounded | contract_final:not_found_in_reviewed_sources |
 | sendai-2026-genai-service | 仙台市 | R | R | — | R | R | F | selected_candidate_confirmed | not_verified | not_verified | publicly_bounded | contract_final:not_found_in_reviewed_sources |
-| obu-2026-genai-service | 大府市 | R | R | R | R | R | · | not_assessed | not_assessed | not_assessed | not_assessed |  |
+| obu-2026-genai-service | 大府市 | R | R | R | R | R | F | selected_candidate_confirmed | not_verified | not_verified | publicly_bounded | contract_final:not_found_in_reviewed_sources |
 | yaizu-2025-genai-service | 焼津市 | R | R | R | R | R | F | not_assessed | not_assessed | not_assessed | publicly_bounded | contract_final:not_found_in_reviewed_sources |
 | kyoto-2026-general-genai | 京都市 | R | F | — | R | R | F | selected_candidate_confirmed | not_verified | not_verified | publicly_bounded | qa_amendment:not_found_in_reviewed_sources;contract_final:not_found_in_reviewed_sources |
 | kobe-2026-spec-authoring-ai | 神戸市 | R | P | — | R | R | F | selected_candidate_confirmed | not_verified | not_verified | publicly_bounded | qa_amendment:not_public;contract_final:not_found_in_reviewed_sources |

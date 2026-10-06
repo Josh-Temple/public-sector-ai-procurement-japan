@@ -57,7 +57,8 @@ The workflow uses the current GitHub Pages Actions flow documented by GitHub. Gi
 The public page is intentionally more than a search table.
 
 - `insights.html` provides a stable, shareable narrative entry point for five reviewed design issues. It is presentation copy only; the linked reviewed Claims remain authoritative for scope and evidence.
-- `checklist.html` translates reviewed case differences into eight specification-design questions. It is a decision prompt, not a legal or technical standard, and every example routes back to cases, Claims, or official sources.\n- `drafting.html` is the second-stage specification drafting support page. It keeps only stable decision/navigation metadata in `assets/drafting.js`; observed requirements, scoring examples, Source links, and case evidence boundaries are read from the canonical CSVs at runtime. It does not set numeric defaults or infer mandatory/evaluation/qualification roles automatically.
+- `checklist.html` translates reviewed case differences into eight specification-design questions. It is a decision prompt, not a legal or technical standard, and every example routes back to cases, Claims, or official sources.
+- `drafting.html` is the second-stage specification drafting support page. It keeps only stable decision/navigation metadata in `assets/drafting.js`; observed requirements, scoring examples, Source links, and case evidence boundaries are read from the canonical CSVs at runtime. It does not set numeric defaults or infer mandatory/evaluation/qualification roles automatically.
 - `methodology.html` exposes the public data layers, evidence-state semantics, freshness rules, and direct CSV entry points without creating a second canonical data source.
 - The public HTML includes basic Open Graph and Twitter summary metadata for cleaner link previews without introducing a separate content source.
 - Canonical URLs and `og:url` point to the deployed GitHub Pages URLs, while `robots.txt` and `sitemap.xml` expose the stable public entry pages for discovery.
@@ -119,7 +120,9 @@ This keeps the initial dialog scannable on mobile while allowing the existing de
 - the requirement explorer's required DOM/JavaScript behavior is present, including keyword/change/Q&A filter state;
 - raw internal evidence blocker/access-state fields are not exposed by the public JavaScript.
 
-`tests/test_requirement_explorer.cjs` additionally exercises topic-classification regressions, Q&A-vs-other changed-source filtering, keyword matching, public change labels, and Source-role labels against the current canonical CSVs.\n\n`tests/test_drafting_support.cjs` resolves every drafting-support reference against the current canonical CSVs and guards the key boundaries: RAG required vs out-of-scope, account quantity vs authentication, pricing/overage placement, citizen-facing generation control, Q&A-effective values, Source resolution, and the distinction between `publicly_bounded` cases and contract-final reconstructability.
+`tests/test_requirement_explorer.cjs` additionally exercises topic-classification regressions, Q&A-vs-other changed-source filtering, keyword matching, public change labels, and Source-role labels against the current canonical CSVs.
+
+`tests/test_drafting_support.cjs` resolves every drafting-support reference against the current canonical CSVs and guards the key boundaries: RAG required vs out-of-scope, account quantity vs authentication, pricing/overage placement, citizen-facing generation control, Q&A-effective values, Source resolution, and the distinction between `publicly_bounded` cases and contract-final reconstructability.
 
 The Pages workflow runs this validation before building the deployment artifact. `.github/workflows/public-site-check.yml` runs the same validator on pull requests that touch the public UI, its data inputs, or the validator itself.
 

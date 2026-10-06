@@ -118,6 +118,26 @@ class SnapshotTests(unittest.TestCase):
         self.assertEqual(len(files), 1)
         self.assertEqual(files[0].read_bytes(), b'%PDF-1.7 good fixture')
 
+    def test_remote_disconnect_skips_only_failed_source(self):
+        second=dict(self.row, source_id='SRC-test-second')
+        self.write([self.row, second])
+        before=self.s.SOURCE_CSV.read_bytes()
+        good=type('Response', (), {'__enter__': lambda self: self,
+                                   '__exit__': lambda self, *args: None,
+                                   'read': lambda self: b'%PDF-1.7 good fixture'})()
+        output=io.StringIO()
+        with patch.object(self.s.urllib.request, 'urlopen',
+                          side_effect=[self.s.http.client.RemoteDisconnected('peer disconnected'), good]), \
+             contextlib.redirect_stdout(output):
+            self.assertEqual(self.prepare(), 0)
+        manifest=json.loads((self.root / 'manifest.json').read_text())
+        self.assertEqual([x['source_id'] for x in manifest], ['SRC-test-second'])
+        self.assertIn('SRC-test: network error; remains snapshot_pending', output.getvalue())
+        self.assertEqual(self.s.SOURCE_CSV.read_bytes(), before)
+        files=list((self.root / 'assets').iterdir())
+        self.assertEqual(len(files), 1)
+        self.assertEqual(files[0].read_bytes(), b'%PDF-1.7 good fixture')
+
     def test_empty_payload_fails_without_promoting(self):
         before=self.s.SOURCE_CSV.read_bytes()
         with patch.object(self.s.urllib.request, 'urlopen') as fetch:

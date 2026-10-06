@@ -12,7 +12,7 @@ Legend: R reviewed; N explicitly not reviewed; U source unavailable; P source kn
 |---|---|:---:|:---:|:---:|:---:|:---:|:---:|---|
 | sendai-2025-genai-pilot | 仙台市 | R | R | — | R | R | F | publicly_bounded |
 | sendai-2026-genai-service | 仙台市 | R | R | — | R | R | F | publicly_bounded |
-| obu-2026-genai-service | 大府市 | R | R | R | R | R | · | not_assessed |
+| obu-2026-genai-service | 大府市 | R | R | R | R | R | F | publicly_bounded |
 | yaizu-2025-genai-service | 焼津市 | R | R | R | R | R | F | publicly_bounded |
 | kyoto-2026-general-genai | 京都市 | R | F | — | R | R | F | publicly_bounded |
 | kobe-2026-spec-authoring-ai | 神戸市 | R | P | — | R | R | F | publicly_bounded |

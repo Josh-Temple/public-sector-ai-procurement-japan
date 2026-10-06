@@ -118,6 +118,52 @@
       </div>
     </section>
 
+    <section id="requirement-explorer" class="requirement-explorer shell" aria-labelledby="requirement-explorer-heading">
+      <div class="section-heading split-heading">
+        <div>
+          <p class="eyebrow">COMPARE REQUIREMENTS</p>
+          <h2 id="requirement-explorer-heading">要件から比較する</h2>
+        </div>
+        <p class="section-lead">Q&A・訂正等を反映した構造化済みの有効要件を、自治体名ではなく仕様テーマから横断します。</p>
+      </div>
+      <div class="requirement-toolbar">
+        <label>
+          <span>仕様テーマ</span>
+          <select id="requirement-topic">
+            <option value="">すべて</option>
+            <option value="rag">RAG・ナレッジ</option>
+            <option value="data-handling">データ学習・保持</option>
+            <option value="network">ネットワーク / LGWAN</option>
+            <option value="security">セキュリティ・ログ・保存先</option>
+            <option value="model">モデル条件</option>
+            <option value="accounts-usage">アカウント・利用量</option>
+            <option value="files-capacity">ファイル・容量</option>
+            <option value="support-training">支援・研修</option>
+            <option value="authentication">認証・利用者識別</option>
+            <option value="pricing-overage">料金・超過条件</option>
+          </select>
+        </label>
+      </div>
+      <p class="scope-note">表示がないことは、その要件が存在しないことを意味しません。ここでは構造化・レビュー済みの有効要件だけを表示します。</p>
+      <p id="requirement-result-count" class="result-count" aria-live="polite"></p>
+      <div class="table-wrap" tabindex="0" aria-label="有効要件の横断比較。横スクロールできます">
+        <table class="requirement-table">
+          <thead>
+            <tr>
+              <th scope="col">自治体 / 案件</th>
+              <th scope="col">要件</th>
+              <th scope="col">当初記載</th>
+              <th scope="col">有効要件</th>
+              <th scope="col">変更</th>
+              <th scope="col">公式根拠</th>
+              <th scope="col">公開資料の確認範囲</th>
+            </tr>
+          </thead>
+          <tbody id="requirement-rows"></tbody>
+        </table>
+      </div>
+    </section>
+
     <section class="controls shell" aria-labelledby="search-heading">
       <div class="section-heading">
         <p class="eyebrow">SEARCH / FILTER</p>
@@ -242,13 +288,14 @@
 
       <section class="detail-section" aria-labelledby="detail-requirements-heading">
         <p class="eyebrow">REQUIREMENTS</p>
-        <h3 id="detail-requirements-heading">主要要件</h3>
+        <h3 id="detail-requirements-heading">横断要件プロファイル</h3>
+        <p class="section-lead">仕様書のみ、または仕様書と質疑等を統合した比較用プロファイルです。当初記載からの変更は次の「当初記載と有効要件」で確認してください。</p>
         <div id="case-dialog-requirements" class="requirement-grid"></div>
       </section>
 
       <section class="detail-section" aria-labelledby="detail-effective-heading">
         <p class="eyebrow">EFFECTIVE REQUIREMENTS</p>
-        <h3 id="detail-effective-heading">Q&A・訂正を反映した要件</h3>
+        <h3 id="detail-effective-heading">当初記載と有効要件</h3>
         <div id="case-dialog-effective" class="detail-list"></div>
       </section>
 

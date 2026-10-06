@@ -11,6 +11,12 @@ The UI does not maintain a second copy of procurement facts. It reads the canoni
 - `data/procurement_structure.csv`
 - `data/case_evidence_summary.csv`
 - `data/source_documents.csv`
+- `data/effective_requirements.csv`
+- `data/evaluation_criteria.csv`
+- `data/specialized_requirements.csv`
+- `data/vendor_scores.csv`
+- `data/bid_results.csv`
+- `data/case_timeline.csv`
 
 This keeps the public interface downstream of the repository data model.
 
@@ -24,6 +30,9 @@ This keeps the public interface downstream of the repository data model.
 - Each row also exposes an Evidence-chain dialog for specification, Q&A/amendment, requirement matrix, evaluation, result, contract-final, selection, contract, and operation states.
 - Evidence-chain source links resolve through `data/source_documents.csv`; missing URLs remain visibly bounded rather than being substituted with secondary sources.
 - Comparison is capped at three cases to keep the mobile layout usable.
+- The requirement-first explorer reads reviewed effective requirements directly, shows original and effective wording together, and links to the registered official base/change Sources.
+- Requirement-level reconstructability and case-level reconstructability are shown separately; a reconstructable procurement-effective requirement does not imply that the contract-final case state is reconstructable.
+- Raw internal fields such as blocker enums, Source IDs, and access-state codes are not presented as primary public copy; user-facing text explains the evidence boundary in ordinary language.
 
 ## Deployment
 
@@ -53,6 +62,7 @@ The public page is intentionally more than a search table.
 - Each insight section links back into the canonical case-detail deep link before exposing Claim and primary-source links.
 - Summary indicators are calculated in the browser from the current requirement and evidence CSVs.
 - Theme links apply filters to the same canonical case list rather than using hand-maintained landing pages.
+- The home page also provides a requirement-first table over `data/effective_requirements.csv`, with fixed presentation-only topic groupings for RAG, data handling, network, security, model conditions, usage/accounts, file capacity, support/training, authentication, and pricing/overage.
 - Clicking a case opens a detail view with procurement facts, major requirements, effective requirements, evaluation criteria, and links into the evidence chain.
 - Individual cases have stable query-string entry points such as `?case=<case_id>`; these URLs open the corresponding detail view after canonical CSV data loads, so external writing can link directly to a case without maintaining separate case pages.
 - The detail view reads `data/evaluation_criteria.csv` and `data/effective_requirements.csv` directly, so new structured research appears without duplicating facts in HTML.
@@ -102,7 +112,10 @@ This keeps the initial dialog scannable on mobile while allowing the existing de
 - canonical and Open Graph URLs match the deployed GitHub Pages URLs;
 - `robots.txt` points to the public sitemap and the sitemap contains the stable entry pages;
 - every explicit `?case=<case_id>` deep link in public HTML resolves to a case in `data/cases.csv`;
-- every CSV path declared in `assets/app.js` exists in the repository.
+- every CSV path declared in `assets/app.js` exists in the repository;
+- effective-requirement case/source references used by the requirement explorer resolve to canonical rows;
+- the requirement explorer's required DOM/JavaScript behavior is present;
+- raw internal evidence blocker/access-state fields are not exposed by the public JavaScript.
 
 The Pages workflow runs this validation before building the deployment artifact. `.github/workflows/public-site-check.yml` runs the same validator on pull requests that touch the public UI, its data inputs, or the validator itself.
 
@@ -142,6 +155,7 @@ Supported public state includes:
 - `?rag=true|false|soft|unknown`
 - `?evidence=assessed|publicly_bounded|not_assessed`
 - `?theme=rag|learning|lgwan|joint|evaluated|bounded`
+- `?topic=rag|data-handling|network|security|model|accounts-usage|files-capacity|support-training|authentication|pricing-overage`
 - `?case=<case_id>`
 
 Theme links write their state into the URL. Manual search/filter changes also update the URL. Case-detail links preserve the current filter state, so a shared case URL can retain the context in which the case was discovered.

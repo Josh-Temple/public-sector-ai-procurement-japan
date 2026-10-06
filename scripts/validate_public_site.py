@@ -30,6 +30,9 @@ REQUIRED_FILES = {
     "assets/app.js",
     "assets/site.css",
     "data/cases.csv",
+    "data/effective_requirements.csv",
+    "data/source_documents.csv",
+    "data/case_evidence_summary.csv",
 }
 
 
@@ -77,6 +80,47 @@ def main() -> int:
                 else:
                     case_ids.add(case_id)
 
+    source_ids: set[str] = set()
+    sources_path = ROOT / "data/source_documents.csv"
+    if sources_path.is_file():
+        with sources_path.open(encoding="utf-8-sig", newline="") as fh:
+            reader = csv.DictReader(fh)
+            source_fields = set(reader.fieldnames or [])
+            for required in {"source_id", "title", "url", "published_at", "retrieved_at"}:
+                if required not in source_fields:
+                    errors.append(f"data/source_documents.csv missing public-site field: {required}")
+            for row in reader:
+                source_id = (row.get("source_id") or "").strip()
+                if source_id:
+                    source_ids.add(source_id)
+
+    effective_path = ROOT / "data/effective_requirements.csv"
+    if effective_path.is_file():
+        required_fields = {
+            "effective_requirement_id", "case_id", "requirement_area", "requirement_key",
+            "original_value", "effective_value", "change_type", "base_source_id",
+            "changed_by_source_id", "scope", "condition", "applicability_stage",
+            "public_reconstructability",
+        }
+        with effective_path.open(encoding="utf-8-sig", newline="") as fh:
+            reader = csv.DictReader(fh)
+            effective_fields = set(reader.fieldnames or [])
+            for required in sorted(required_fields - effective_fields):
+                errors.append(f"data/effective_requirements.csv missing public-site field: {required}")
+            for row in reader:
+                requirement_id = (row.get("effective_requirement_id") or "").strip() or "<unknown>"
+                case_id = (row.get("case_id") or "").strip()
+                if case_id not in case_ids:
+                    errors.append(f"{requirement_id}: unknown case_id for requirement explorer: {case_id}")
+                base_source_id = (row.get("base_source_id") or "").strip()
+                if not base_source_id:
+                    errors.append(f"{requirement_id}: requirement explorer requires base_source_id")
+                elif base_source_id not in source_ids:
+                    errors.append(f"{requirement_id}: unknown base_source_id: {base_source_id}")
+                changed_source_id = (row.get("changed_by_source_id") or "").strip()
+                if changed_source_id and changed_source_id not in source_ids:
+                    errors.append(f"{requirement_id}: unknown changed_by_source_id: {changed_source_id}")
+
     for rel, expected_url in PUBLIC_PAGES.items():
         page = ROOT / rel
         if not page.is_file():
@@ -111,6 +155,36 @@ def main() -> int:
             target = ROOT / normalized.removeprefix("./")
             if not target.is_file():
                 errors.append(f"assets/app.js: missing declared data file: {normalized}")
+
+    index_path = ROOT / "index.html"
+    if index_path.is_file():
+        index_text = index_path.read_text(encoding="utf-8")
+        for marker in (
+            'id="requirement-explorer"',
+            'id="requirement-topic"',
+            'id="requirement-rows"',
+            'id="requirement-result-count"',
+            "横断要件プロファイル",
+            "当初記載と有効要件",
+        ):
+            if marker not in index_text:
+                errors.append(f"index.html: requirement explorer marker missing: {marker}")
+
+    if app_path.is_file():
+        for marker in (
+            "const REQUIREMENT_TOPICS",
+            "function renderRequirementExplorer",
+            "function requirementTopicMatches",
+            'params.set("topic", topic)',
+            "requirementBoundaryText",
+            "caseBoundaryText",
+            "appendRequirementSourceLink",
+        ):
+            if marker not in app_text:
+                errors.append(f"assets/app.js: requirement explorer behavior missing: {marker}")
+        for forbidden in ("evidence.blocking_roles", "source.access_state"):
+            if forbidden in app_text:
+                errors.append(f"assets/app.js: raw internal evidence state exposed in public UI: {forbidden}")
 
     robots_path = ROOT / "robots.txt"
     if robots_path.is_file():

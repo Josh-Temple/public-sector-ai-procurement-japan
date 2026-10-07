@@ -3,11 +3,11 @@ id: CLM-crosscase-evaluation-multidimensional
 title: 現在の収集案件では生成AI調達の評価軸は機能以外にも広がっている
 kind: interpretation
 status: draft
-scope: "2026-10-01時点の data/evaluation_criteria.csv に収録された13案件・11発注主体・117評価項目"
-last_verified: null
+scope: "2026-10-07時点の data/evaluation_criteria.csv に収録された18案件・14発注主体・156評価項目"
+last_verified: 2026-10-07
 evidence:
   - source: data/evaluation_criteria.csv
-    locator: "全117行。13案件・11発注主体の評価項目と配点"
+    locator: "全156行。18案件・14発注主体の評価項目と配点"
 ---
 
 # Candidate claim
@@ -18,7 +18,7 @@ evidence:
 
 ## Why draft
 
-この解釈は `data/evaluation_criteria.csv` の横断集計から得られるが、現時点では横断claimとして代表的な一次評価基準を再照合する独立レビューを完了していない。
+この解釈は `data/evaluation_criteria.csv` の横断集計から得られるが、代表例として埼玉県・おうみ・神戸市（voicebot / Dify）・松江市・五泉市・北海道の公式一次資料を2026-10-07に再照合したが、18案件すべての分類を同じWaveで再監査したわけではないため、statusはdraftのままとする。
 
 reviewedへ昇格する前に、少なくとも複数の代表案件について、元の公式評価基準、CSVへの転記、評価軸の分類、配点の解釈を再確認する。
 

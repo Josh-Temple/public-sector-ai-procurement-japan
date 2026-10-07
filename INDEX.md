@@ -154,3 +154,9 @@ research memoの分析結果は有用だが、現在の事実を確認すると�
 - 越谷市2024では月100万文字以上が必須だが、「上限なし」は加点対象の提案事項。
   - Source: `sources/SRC-koshigaya-2024-qa.md`
   - Claim: `claims/CLM-koshigaya-2024-minimum-vs-evaluated-usage.md`
+
+
+### Evaluation evidence normalization
+
+- `data/qualification_gates.csv`
+- `data/evaluation_rules.csv`

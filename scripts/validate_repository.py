@@ -28,6 +28,8 @@ TABLES = [
     "requirements.csv",
     "requirement_facts.csv",
     "evaluation_criteria.csv",
+    "qualification_gates.csv",
+    "evaluation_rules.csv",
     "vendor_scores.csv",
     "procurement_structure.csv",
     "bid_results.csv",
@@ -50,6 +52,14 @@ REQUIRED_COLUMNS = {
     "requirements.csv": {"case_id"},
     "requirement_facts.csv": {"case_id", "requirement_no", "requirement_key"},
     "evaluation_criteria.csv": {"case_id", "criterion_id"},
+    "qualification_gates.csv": {
+        "gate_id", "case_id", "topic", "applies_to", "condition_summary",
+        "applies_at_stage", "base_source_id", "base_locator", "review_status",
+    },
+    "evaluation_rules.csv": {
+        "rule_id", "case_id", "rule_type", "source_id", "locator",
+        "verification_state", "collected_at",
+    },
     "vendor_scores.csv": {"case_id", "vendor_label"},
     "procurement_structure.csv": {"case_id"},
     "bid_results.csv": {"case_id", "bidder_label"},
@@ -72,6 +82,8 @@ UNIQUE_KEYS = {
     "requirements.csv": [("case_id",)],
     "requirement_facts.csv": [("case_id", "requirement_no", "requirement_key")],
     "evaluation_criteria.csv": [("case_id", "criterion_id")],
+    "qualification_gates.csv": [("gate_id",)],
+    "evaluation_rules.csv": [("rule_id",)],
     "vendor_scores.csv": [("case_id", "vendor_label")],
     "bid_results.csv": [("case_id", "bidder_label")],
     "joint_procurement_entities.csv": [("case_id", "entity_name")],
@@ -83,6 +95,8 @@ UNIQUE_KEYS = {
 SOURCE_REF_COLUMNS = {
     "case_timeline.csv": ["source_id"],
     "effective_requirements.csv": ["base_source_id", "changed_by_source_id"],
+    "qualification_gates.csv": ["base_source_id", "changed_by_source_id"],
+    "evaluation_rules.csv": ["source_id"],
     "review_coverage.csv": ["source_id"],
     "case_stage.csv": ["selection_source_id", "contract_source_id", "operation_source_id"],
     "case_evidence_summary.csv": [f"{role}_source_id" for role in
@@ -324,6 +338,54 @@ def main() -> int:
 
         if row.get("review_status") == "reviewed" and row.get("changed_by_source_id") and not row.get("change_locator"):
             errors.append("data/effective_requirements.csv: reviewed amendment lacks change_locator")
+
+    for row in tables["qualification_gates.csv"]:
+        if row.get("review_status") not in {"draft", "reviewed", "disputed", "superseded", "retracted"}:
+            errors.append("data/qualification_gates.csv: unsupported review_status")
+        if row.get("review_status") == "reviewed" and (not row.get("base_source_id") or not row.get("base_locator")):
+            errors.append("data/qualification_gates.csv: reviewed gate lacks base evidence")
+        if row.get("review_status") == "reviewed" and row.get("changed_by_source_id") and not row.get("change_locator"):
+            errors.append("data/qualification_gates.csv: reviewed amendment lacks change_locator")
+        if row.get("applies_at_stage") not in {"participation", "bid_validity"}:
+            errors.append("data/qualification_gates.csv: unsupported applies_at_stage")
+
+    evaluation_by_id = {
+        row.get("criterion_id"): row for row in tables["evaluation_criteria.csv"] if row.get("criterion_id")
+    }
+    rules_by_id = {
+        row.get("rule_id"): row for row in tables["evaluation_rules.csv"] if row.get("rule_id")
+    }
+    for row in tables["evaluation_rules.csv"]:
+        rule_id = row.get("rule_id") or "<unknown>"
+        if not row.get("locator"):
+            errors.append(f"data/evaluation_rules.csv: {rule_id} lacks locator")
+        if row.get("verification_state") not in {"fresh_verified", "previously_verified_source_unavailable"}:
+            errors.append(f"data/evaluation_rules.csv: {rule_id} has unsupported verification_state")
+        if not valid_date(row.get("collected_at") or ""):
+            errors.append(f"data/evaluation_rules.csv: {rule_id} has invalid collected_at")
+        criterion_id = (row.get("criterion_id") or "").strip()
+        if criterion_id:
+            criterion = evaluation_by_id.get(criterion_id)
+            if not criterion:
+                errors.append(f"data/evaluation_rules.csv: {rule_id} references unknown criterion_id {criterion_id!r}")
+            elif criterion.get("case_id") != row.get("case_id"):
+                errors.append(f"data/evaluation_rules.csv: {rule_id} criterion belongs to a different case")
+        related = (row.get("related_rule_id") or "").strip()
+        if related:
+            related_row = rules_by_id.get(related)
+            if not related_row:
+                errors.append(f"data/evaluation_rules.csv: {rule_id} references unknown related_rule_id {related!r}")
+            elif related_row.get("case_id") != row.get("case_id"):
+                errors.append(f"data/evaluation_rules.csv: {rule_id} related rule belongs to a different case")
+        if row.get("rule_type") in {"minimum_total_score", "minimum_stage_score", "minimum_criterion_score"}:
+            if not row.get("threshold_value") or row.get("threshold_unit") not in {"points", "percent_of_total"}:
+                errors.append(f"data/evaluation_rules.csv: {rule_id} threshold lacks value/unit")
+        if row.get("rule_type") in {"proposal_ceiling", "planned_price"}:
+            if not row.get("amount_jpy") or row.get("tax_basis") not in {"tax_included", "tax_excluded", "unknown"}:
+                errors.append(f"data/evaluation_rules.csv: {rule_id} monetary boundary lacks amount/tax basis")
+        source = sources_by_id.get(row.get("source_id"))
+        if source and source.get("access_state") != "accessible" and row.get("verification_state") == "fresh_verified":
+            errors.append(f"data/evaluation_rules.csv: {rule_id} marks unavailable source as fresh_verified")
 
     for name in ["effective_requirements.csv", "evidence_coverage.csv", "case_evidence_summary.csv", "specialized_requirements.csv"]:
         for row in tables[name]:

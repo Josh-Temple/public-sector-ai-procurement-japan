@@ -68,6 +68,40 @@
 | assessment_stage | 書類・面接・事務局審査など |
 | source_url | 公式評価表URL |
 
+## 3.1 Qualification gates
+
+`data/qualification_gates.csv`
+
+参加・入札資格として公式資料に明示された条件のcanonical row。1行は1つの materially distinct な資格条件とし、評価項目や仕様上の最低条件とは分離する。
+
+- `gate_id`: stable ID
+- `case_id`: 案件
+- `topic`: 粗い比較トピック
+- `applies_to`: bidder / proposer / offered_service / joint_proposal 等
+- `condition_summary`: Sourceに基づく要約
+- `satisfaction_rule`: 共同提案等の充足方法
+- `applies_at_stage`: participation / bid_validity
+- `unmet_effect`: Sourceが明示する場合のみ記録
+- `base_source_id` / `base_locator`: 元の資格条件
+- `changed_by_source_id` / `change_locator`: Q&A・訂正が資格条件自体を変更・明確化した場合
+- `review_status`: evidence review状態
+
+同じトピックが評価項目にも現れる場合でも重複排除しない。例として、おうみの導入実績は参加資格と評価項目の両方に別の役割で存在する。
+
+## 3.2 Evaluation rules
+
+`data/evaluation_rules.csv`
+
+評価項目の配点とは別に、選定下限・失格条件・価格上限・価格点算式・tie-break等の明示ルールを保持するlong-form table。
+
+- `rule_type` で役割を分離する。
+- `criterion_id` は価格点算式等が既存の評価項目に明示的に結び付く場合だけ使用する。
+- 配点・総点は `evaluation_criteria.csv` を正本とし、この表へ複製しない。
+- `source_id` と `locator` を必須とする。
+- `fresh_verified` は現在取得可能な公式Sourceを今回確認した行に限る。
+- Source unavailableの過去確認値を新たにfresh verifiedへ昇格しない。
+- `procurement_structure.pricing_basis` は移行中の人間向けsummaryであり、この表をregex等で生成する入力にはしない。
+
 ## 4. Requirement facts
 
 `data/requirement_facts.csv`

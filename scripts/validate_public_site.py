@@ -38,6 +38,8 @@ REQUIRED_FILES = {
     "data/cases.csv",
     "data/effective_requirements.csv",
     "data/evaluation_criteria.csv",
+    "data/qualification_gates.csv",
+    "data/evaluation_rules.csv",
     "data/procurement_structure.csv",
     "data/vendor_scores.csv",
     "data/specialized_requirements.csv",
@@ -261,6 +263,7 @@ def main() -> int:
             'id="evaluation-case-detail"',
             "評価へ分ける",
             "推奨配点や自治体平均としては扱いません",
+            'data-evaluation-subset="representative"',
         ):
             if marker not in evaluation_text:
                 errors.append(f"evaluation.html: required marker missing: {marker}")
@@ -272,10 +275,18 @@ def main() -> int:
             "const EVALUATION_CASE_IDS",
             "data/evaluation_criteria.csv",
             "data/effective_requirements.csv",
+            "data/qualification_gates.csv",
+            "data/evaluation_rules.csv",
             "data/procurement_structure.csv",
             "data/vendor_scores.csv",
             "caseBoundaryText",
             "roleForEffective",
+            "ruleSummary",
+            "gateIds",
+            "ruleIds",
+            'setAttribute("aria-current", "page")',
+            "参加資格ではない",
+            "evaluation-case-source-links",
             "当該案件内の配点",
             "総合点から評価項目別得点を逆算しません",
         ):

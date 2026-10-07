@@ -1,0 +1,12 @@
+rule_id,case_id,rule_type,scope_stage,criterion_id,threshold_value,threshold_unit,aggregation_scope,amount_jpy,tax_basis,formula_text,effect,rule_order,related_rule_id,source_id,locator,verification_state,notes,collected_at
+RULE-KVB-CEILING,kobe-2026-tax-voicebot,proposal_ceiling,,,,,,12760000,tax_included,,,,,SRC-kobe-2026-voicebot-guide,3(3),fresh_verified,提案限度額。price pointsとは別の価格境界,2026-10-07
+RULE-KVB-CEILING-DISQ,kobe-2026-tax-voicebot,disqualification_condition,,,,,,,,,disqualified,,RULE-KVB-CEILING,SRC-kobe-2026-voicebot-guide,7(4)※2; 8(5)イ,fresh_verified,価格提案書の金額が提案限度額を超過した場合,2026-10-07
+RULE-KVB-MIN-TOTAL,kobe-2026-tax-voicebot,minimum_total_score,,,50,percent_of_total,case_total,,,,not_selected,,,SRC-kobe-2026-voicebot-guide,8(4)イ,fresh_verified,得点合計が5割未満なら委託予定者として選定しない,2026-10-07
+RULE-KVB-PRICE-FORMULA,kobe-2026-tax-voicebot,price_evaluation_formula,価格評価,KVB-05,,,,,,{1-(提案価格/提案上限金額)}×15,score_calculation,,,SRC-kobe-2026-voicebot-guide,8(3) 評価項目「提案価格」,fresh_verified,配点15/100はevaluation_criteria.csvで保持,2026-10-07
+RULE-DIFY-CEILING,kobe-2025-dify-platform,proposal_ceiling,,,,,,8000000,tax_included,,,,,SRC-kobe-2025-dify-guide,2(3),fresh_verified,令和7年度環境構築費用の契約上限額,2026-10-07
+RULE-DIFY-CEILING-DISQ,kobe-2025-dify-platform,disqualification_condition,,,,,,,,,disqualified,,RULE-DIFY-CEILING,SRC-kobe-2025-dify-guide,7(2)エ,fresh_verified,見積金額が契約上限額を超過した場合は価格点を算出せず失格,2026-10-07
+RULE-DIFY-PRICE-FORMULA,kobe-2025-dify-platform,price_evaluation_formula,価格評価,KOBE-DIFY-09,,,,,,(1－提案された見積金額／契約上限額)×20,score_calculation,,,SRC-kobe-2025-dify-guide,7(2)エ,fresh_verified,配点20/100はevaluation_criteria.csvで保持,2026-10-07
+RULE-DIFY-TIE-1,kobe-2025-dify-platform,tie_break_rule,,,,,,,,,tie_break,1,,SRC-kobe-2025-dify-guide,7(2)カ,fresh_verified,合計最高得点者が複数なら内容点が最も高い者を契約候補者とする,2026-10-07
+RULE-DIFY-TIE-2,kobe-2025-dify-platform,tie_break_rule,,,,,,,,,tie_break,2,RULE-DIFY-TIE-1,SRC-kobe-2025-dify-guide,7(2)カ,fresh_verified,内容点も同点ならくじで決定する,2026-10-07
+RULE-MATSUE-MIN-TOTAL,matsue-2026-genai-support,minimum_total_score,,,60,percent_of_total,evaluator_total,,,,not_selected,,,SRC-matsue-2026-evaluation,3 選定方法,fresh_verified,各委員の合計得点が満点の6割に満たない場合は優先交渉者に選定しない,2026-10-07
+RULE-GOSEN-PRICE-FORMULA,gosen-2026-genai-service,price_evaluation_formula,一次+二次審査,GOS-05,,,,,,最低提案価格÷提案価格×配点,score_calculation,,,SRC-gosen-2026-evaluation,1 評価項目; 3 価格点の評価方法,fresh_verified,一次審査で算出した価格点を二次審査でも再計算せず同じ得点として用いる,2026-10-07

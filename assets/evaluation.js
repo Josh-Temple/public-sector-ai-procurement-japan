@@ -6,6 +6,8 @@ const EVALUATION_DATA_FILES = {
   evaluations: "./data/evaluation_criteria.csv",
   procurement: "./data/procurement_structure.csv",
   vendors: "./data/vendor_scores.csv",
+  gates: "./data/qualification_gates.csv",
+  rules: "./data/evaluation_rules.csv",
   sources: "./data/source_documents.csv",
   evidence: "./data/case_evidence_summary.csv"
 };
@@ -23,14 +25,10 @@ const EVALUATION_TOPICS = [
     id: "security-certification",
     label: "セキュリティ・認証",
     question: "認証を参加資格、最低条件、提案評価のどこに置くか。認証名だけで役割を決めない。",
-    caution: "同じ認証でも、応募可否を決めるgateと、提案を比較する評価項目では効果が異なります。",
+    caution: "同じ認証でも、応募可否を決める参加資格、仕様上の条件、提案を比較する評価項目では効果が異なります。",
     effectiveIds: ["EFF-oumi-certification", "EFF-oumi-ismap", "EFF-saitama-ismap_status"],
     criterionIds: ["SAI-P01", "KOG-03", "OUM-03"],
-    qualificationRefs: [{
-      caseId: "hokkaido-2026-genai-rag-service",
-      claimPath: "claims/CLM-hokkaido-2026-qualification-not-proposal-score.md",
-      sourceId: "SRC-hokkaido-2026-notice"
-    }]
+    gateIds: ["QG-HOK-04", "QG-OUM-07"]
   },
   {
     id: "model-policy",
@@ -67,10 +65,11 @@ const EVALUATION_TOPICS = [
   {
     id: "usage-pricing",
     label: "利用量・料金・価格評価",
-    question: "利用上限や追加課金の契約条件と、価格点・費用対効果の評価を分ける。",
-    caution: "proposal ceiling、price score、入札額、契約金額は別の数値です。案件固有の価格点を推奨比率へ変換しません。",
+    question: "利用上限や追加課金の契約条件と、価格上限・失格条件・選定下限・価格点算式を分けて読む。",
+    caution: "価格上限、価格点、失格条件、入札額、契約金額は別の数値・ルールです。案件固有の配点を推奨比率へ変換しません。",
     effectiveIds: ["EFF-minoh-overage-no-additional-fee", "EFF-yaizu-price-fixed", "EFF-yaizu-token-topup"],
-    criterionIds: ["SAI-P12", "SAI-P13", "OUM-14", "GOS-05", "KVB-05", "KOBE-DIFY-09", "MINOH-GENAI-PRICE"]
+    criterionIds: ["SAI-P12", "SAI-P13", "OUM-14", "GOS-05", "KVB-05", "KOBE-DIFY-09", "MINOH-GENAI-PRICE"],
+    ruleIds: ["RULE-KVB-CEILING", "RULE-KVB-CEILING-DISQ", "RULE-KVB-MIN-TOTAL", "RULE-KVB-PRICE-FORMULA", "RULE-DIFY-CEILING", "RULE-DIFY-PRICE-FORMULA", "RULE-MATSUE-MIN-TOTAL", "RULE-GOSEN-PRICE-FORMULA"]
   },
   {
     id: "support-adoption",
@@ -86,7 +85,24 @@ const EVALUATION_TOPICS = [
     question: "実現可能性、体制、類似実績を、参加資格と提案比較のどちらで確認するか。",
     caution: "類似実績は案件によって参加資格にも評価項目にもなります。評価点だけから応募条件を推測しません。",
     effectiveIds: [],
-    criterionIds: ["KOB-03", "SAI-P15", "SAI-P17", "SEN-11", "OUM-04", "KVB-02"]
+    criterionIds: ["KOB-03", "SAI-P15", "SAI-P17", "SEN-11", "OUM-04", "KVB-02"],
+    gateIds: ["QG-OUM-08"]
+  },
+  {
+    id: "ui-usability",
+    label: "UI・操作性",
+    question: "利用者・管理者が迷わず操作できることを、最低条件ではなく提案比較としてどこまで評価するか。",
+    caution: "表示する点数は各案件内の配点です。複合評価項目の全点をUIだけの配点とは解釈せず、推奨配点にも変換しません。",
+    effectiveIds: [],
+    criterionIds: ["SEN-04", "SEN-07", "GOS-02", "MATSUE-FINAL-02"]
+  },
+  {
+    id: "operations-maintenance",
+    label: "可用性・運用・保守",
+    question: "稼働条件、障害対応、保守・更新、問い合わせ対応を、最低条件と提案比較のどこに置くか。",
+    caution: "SLA・稼働率・サポート時間は案件固有です。研修・定着支援や目的の異なる監査ログをこの論点へ一括しません。",
+    effectiveIds: ["EFF-itoshima-availability", "EFF-koshigaya-support-hours"],
+    criterionIds: ["GOS-03", "OUM-10"]
   },
   {
     id: "citizen-safety",
@@ -153,11 +169,22 @@ function byKey(rows, key) {
 
 function roleForEffective(row) {
   const status = row.effective_status || row.original_status || "";
-  if (status === "desirable") return "望ましい条件";
-  if (status === "optional") return "任意条件";
-  if (status === "not_applicable") return "対象外";
   if (status.startsWith("required")) return "最低条件";
-  return "要件";
+  const labels = {
+    desirable: "望ましい条件",
+    optional: "任意条件",
+    optional_disclosure: "任意開示",
+    allowed_alternative: "代替可",
+    prohibited: "禁止条件",
+    prohibited_persistent_only: "禁止条件",
+    removed: "削除済み",
+    not_applicable: "対象外",
+    not_qualification: "参加資格ではない",
+    context: "前提・文脈",
+    defined: "定義済み条件",
+    evaluation_context: "評価上の文脈"
+  };
+  return labels[status] || "状態を確認";
 }
 
 function effectiveValue(row) {
@@ -228,11 +255,17 @@ function appendLink(parent, href, label, external) {
   return a;
 }
 
-function renderLinks(card, caseId, source, claimPath) {
+function renderLinks(card, caseId, sourceOrSources, claimPath) {
   const links = document.createElement("div");
   links.className = "evaluation-evidence-links";
   appendLink(links, caseLink(caseId), "案件詳細", false);
-  if (source && source.url) appendLink(links, source.url, sourceLabel(source) + " ↗", true);
+  const sources = Array.isArray(sourceOrSources) ? sourceOrSources : [sourceOrSources];
+  const seen = new Set();
+  sources.filter(Boolean).forEach(function (source) {
+    if (!source.url || seen.has(source.url)) return;
+    seen.add(source.url);
+    appendLink(links, source.url, sourceLabel(source) + " ↗", true);
+  });
   if (claimPath) appendLink(links, claimLink(claimPath), "reviewed Claim ↗", true);
   card.appendChild(links);
 }
@@ -258,19 +291,69 @@ function effectiveCard(row, data) {
   appendText(card, "p", row.changed_by_source_id ? "Q&A・訂正反映後の有効要件" : "公募時要件", "evaluation-score");
   if (row.changed_by_source_id) appendText(card, "p", "元仕様ではなく、後続資料を反映した値を表示しています。", "evaluation-change");
   appendText(card, "p", caseBoundaryText(data.evidenceByCase.get(row.case_id)), "evaluation-boundary");
-  renderLinks(card, row.case_id, data.sourceById.get(effectiveSourceId(row)));
+  const evidenceSources = [
+    data.sourceById.get(row.base_source_id),
+    data.sourceById.get(row.changed_by_source_id)
+  ];
+  renderLinks(card, row.case_id, evidenceSources);
   return card;
 }
 
-function qualificationCard(ref, data) {
+function qualificationCard(row, data) {
   const card = document.createElement("article");
   card.className = "evaluation-evidence";
   appendText(card, "p", "参加資格", "evaluation-role");
-  appendText(card, "h3", "応募前に満たすgateとして確認した例");
-  appendText(card, "p", data.caseById.get(ref.caseId)?.government_name || ref.caseId, "evaluation-case");
-  appendText(card, "p", "評価点とは分けて読みます。具体的条件はreviewed Claimと公式資料で確認してください。", "evaluation-score");
-  appendText(card, "p", caseBoundaryText(data.evidenceByCase.get(ref.caseId)), "evaluation-boundary");
-  renderLinks(card, ref.caseId, data.sourceById.get(ref.sourceId), ref.claimPath);
+  appendText(card, "h3", row.condition_summary);
+  appendText(card, "p", data.caseById.get(row.case_id)?.government_name || row.case_id, "evaluation-case");
+  appendText(card, "p", row.satisfaction_rule || "応募・入札前に満たす条件として公式資料で確認", "evaluation-score");
+  if (row.changed_by_source_id) appendText(card, "p", "Q&A・訂正を反映した参加資格です。", "evaluation-change");
+  appendText(card, "p", "評価項目や仕様上の最低条件とは別の役割です。", "evaluation-boundary");
+  renderLinks(card, row.case_id, [
+    data.sourceById.get(row.base_source_id),
+    data.sourceById.get(row.changed_by_source_id)
+  ]);
+  return card;
+}
+
+function ruleTypeLabel(type) {
+  const labels = {
+    minimum_total_score: "選定下限",
+    minimum_stage_score: "段階別下限",
+    minimum_criterion_score: "項目別下限",
+    disqualification_condition: "失格条件",
+    proposal_ceiling: "価格上限",
+    planned_price: "予定価格",
+    price_evaluation_formula: "価格点算式",
+    tie_break_rule: "同点時ルール"
+  };
+  return labels[type] || "選定ルール";
+}
+
+function ruleSummary(row) {
+  if (row.rule_type === "proposal_ceiling" || row.rule_type === "planned_price") {
+    const amount = Number(row.amount_jpy);
+    const tax = row.tax_basis === "tax_included" ? "（税込）" : row.tax_basis === "tax_excluded" ? "（税抜）" : "";
+    return ruleTypeLabel(row.rule_type) + "：" + (Number.isFinite(amount) ? amount.toLocaleString("ja-JP") + "円" : "金額未登録") + tax;
+  }
+  if (row.rule_type.startsWith("minimum_")) {
+    const suffix = row.threshold_unit === "percent_of_total" ? "% of total" : row.threshold_unit === "points" ? "点" : "";
+    return ruleTypeLabel(row.rule_type) + "：" + row.threshold_value + suffix;
+  }
+  if (row.rule_type === "price_evaluation_formula") return ruleTypeLabel(row.rule_type) + "：" + row.formula_text;
+  if (row.rule_type === "tie_break_rule") return ruleTypeLabel(row.rule_type) + (row.rule_order ? " " + row.rule_order : "") + "：" + (row.notes || "公式資料を確認");
+  return ruleTypeLabel(row.rule_type) + "：" + (row.notes || row.effect || "公式資料を確認");
+}
+
+function ruleCard(row, data) {
+  const card = document.createElement("article");
+  card.className = "evaluation-evidence";
+  appendText(card, "p", ruleTypeLabel(row.rule_type), "evaluation-role");
+  appendText(card, "h3", ruleSummary(row));
+  appendText(card, "p", data.caseById.get(row.case_id)?.government_name || row.case_id, "evaluation-case");
+  const context = [row.scope_stage, row.criterion_id].filter(Boolean).join(" ・ ");
+  appendText(card, "p", context || "案件全体のルール", "evaluation-score");
+  appendText(card, "p", row.verification_state === "fresh_verified" ? "一次資料をfresh確認済み" : "過去確認済み・現在のSource状態を要確認", "evaluation-boundary");
+  renderLinks(card, row.case_id, data.sourceById.get(row.source_id));
   return card;
 }
 
@@ -282,6 +365,7 @@ function renderTopicLinks(activeId) {
     const a = document.createElement("a");
     a.className = "theme-link" + (topic.id === activeId ? " is-active" : "");
     a.href = "./evaluation.html?topic=" + encodeURIComponent(topic.id);
+    if (topic.id === activeId) a.setAttribute("aria-current", "page");
     appendText(a, "span", String(index + 1).padStart(2, "0"));
     appendText(a, "strong", topic.label);
     appendText(a, "small", topic.question);
@@ -314,8 +398,13 @@ function renderTopic(topic, data) {
     const row = data.evaluationById.get(id);
     if (row) list.appendChild(evaluationCard(row, data));
   });
-  (topic.qualificationRefs || []).forEach(function (ref) {
-    list.appendChild(qualificationCard(ref, data));
+  (topic.gateIds || []).forEach(function (id) {
+    const row = data.gateById.get(id);
+    if (row) list.appendChild(qualificationCard(row, data));
+  });
+  (topic.ruleIds || []).forEach(function (id) {
+    const row = data.ruleById.get(id);
+    if (row) list.appendChild(ruleCard(row, data));
   });
   if (!list.children.length) appendText(list, "p", "現在の構造化コーパスでは、この論点の表示対象を登録していません。", "scope-note");
   root.appendChild(list);
@@ -337,6 +426,8 @@ function draftingDecisionForTopic(topicId) {
     "usage-pricing": "usage-pricing",
     "support-adoption": "support-adoption",
     "implementation-capability": "support-adoption",
+    "ui-usability": "interface",
+    "operations-maintenance": "support-adoption",
     "citizen-safety": "generation-boundary"
   };
   return map[topicId] || "drafting-index";
@@ -419,6 +510,8 @@ function renderCase(caseId, data) {
   const evidence = data.evidenceByCase.get(caseId);
   const evaluations = data.evaluations.filter(function (row) { return row.case_id === caseId; });
   const vendorRows = data.vendors.filter(function (row) { return row.case_id === caseId; });
+  const caseRules = data.rules.filter(function (row) { return row.case_id === caseId; });
+  const caseGates = data.gates.filter(function (row) { return row.case_id === caseId; });
 
   const header = document.createElement("div");
   header.className = "evaluation-case-header";
@@ -436,7 +529,49 @@ function renderCase(caseId, data) {
   structure.className = "evaluation-case-block";
   appendText(structure, "h3", "評価構造");
   renderStageGroups(structure, evaluations);
+  const evaluationSources = [];
+  const seenEvaluationSources = new Set();
+  evaluations.forEach(function (row) {
+    const source = sourceForEvaluation(row, data);
+    if (!source || !source.url || seenEvaluationSources.has(source.url)) return;
+    seenEvaluationSources.add(source.url);
+    evaluationSources.push(source);
+  });
+  if (evaluationSources.length) {
+    const sourceLinks = document.createElement("p");
+    sourceLinks.className = "case-dialog-actions evaluation-case-source-links";
+    evaluationSources.forEach(function (source) {
+      appendLink(sourceLinks, source.url, sourceLabel(source) + " ↗", true);
+    });
+    structure.appendChild(sourceLinks);
+  }
   root.appendChild(structure);
+
+  if (caseGates.length) {
+    const gates = document.createElement("div");
+    gates.className = "evaluation-case-block";
+    appendText(gates, "h3", "参加資格");
+    appendText(gates, "p", "評価点とは別の応募・入札条件です。未掲載の条件がないことを意味しません。", "scope-note");
+    caseGates.forEach(function (row) {
+      const p = document.createElement("p");
+      p.textContent = row.condition_summary;
+      gates.appendChild(p);
+    });
+    root.appendChild(gates);
+  }
+
+  if (caseRules.length) {
+    const rules = document.createElement("div");
+    rules.className = "evaluation-case-block";
+    appendText(rules, "h3", "選定・価格ルール");
+    appendText(rules, "p", "選定下限、失格条件、価格上限、価格点算式を別のruleとして表示します。", "scope-note");
+    caseRules.forEach(function (row) {
+      const p = document.createElement("p");
+      p.textContent = ruleSummary(row);
+      rules.appendChild(p);
+    });
+    root.appendChild(rules);
+  }
 
   const price = document.createElement("div");
   price.className = "evaluation-case-block";
@@ -469,6 +604,8 @@ async function initEvaluationSupport() {
       loadEvaluationCSV(EVALUATION_DATA_FILES.evaluations),
       loadEvaluationCSV(EVALUATION_DATA_FILES.procurement),
       loadEvaluationCSV(EVALUATION_DATA_FILES.vendors),
+      loadEvaluationCSV(EVALUATION_DATA_FILES.gates),
+      loadEvaluationCSV(EVALUATION_DATA_FILES.rules),
       loadEvaluationCSV(EVALUATION_DATA_FILES.sources),
       loadEvaluationCSV(EVALUATION_DATA_FILES.evidence)
     ]);
@@ -478,12 +615,16 @@ async function initEvaluationSupport() {
       evaluations: loaded[2],
       procurement: loaded[3],
       vendors: loaded[4],
-      sources: loaded[5],
-      evidence: loaded[6]
+      gates: loaded[5],
+      rules: loaded[6],
+      sources: loaded[7],
+      evidence: loaded[8]
     };
     data.caseById = byKey(data.cases, "case_id");
     data.effectiveById = byKey(data.effective, "effective_requirement_id");
     data.evaluationById = byKey(data.evaluations, "criterion_id");
+    data.gateById = byKey(data.gates, "gate_id");
+    data.ruleById = byKey(data.rules, "rule_id");
     data.procurementByCase = byKey(data.procurement, "case_id");
     data.sourceById = byKey(data.sources, "source_id");
     data.sourceByUrl = new Map(data.sources.filter(function (row) { return row.url; }).map(function (row) { return [row.url, row]; }));
@@ -527,6 +668,8 @@ if (typeof module !== "undefined") {
     roleForEffective,
     effectiveValue,
     effectiveSourceId,
+    ruleTypeLabel,
+    ruleSummary,
     scoreContext,
     caseBoundaryText,
     awardBasisLabel,

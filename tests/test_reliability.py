@@ -55,6 +55,52 @@ class IntegrityTests(unittest.TestCase):
                 with contextlib.redirect_stdout(io.StringIO()):
                     self.assertEqual(v.main(), 1)
 
+    def test_evaluation_rule_semantic_corruptions_fail(self):
+        """Real validator must reject exact semantic violations on isolated copies."""
+        mutations = [
+            ("RULE-MATSUE-MIN-TOTAL", "aggregation_scope", "", "missing aggregation_scope"),
+            ("RULE-MATSUE-MIN-TOTAL", "threshold_value", "sixty", "invalid numeric threshold_value"),
+            ("RULE-MATSUE-MIN-TOTAL", "threshold_value", "Infinity", "invalid numeric threshold_value"),
+            ("RULE-MATSUE-MIN-TOTAL", "threshold_value", "NaN", "invalid numeric threshold_value"),
+            ("RULE-MATSUE-MIN-TOTAL", "rule_type", "invented_rule_type", "unsupported rule_type"),
+            ("RULE-MATSUE-MIN-TOTAL", "source_id", "", "missing source_id"),
+            ("RULE-KVB-CEILING", "amount_jpy", "broken", "invalid positive integer amount_jpy"),
+            ("RULE-KVB-CEILING", "amount_jpy", "-500", "invalid positive integer amount_jpy"),
+            ("RULE-MINOH-PLANNED-PRICE", "amount_jpy", "Infinity", "invalid positive integer amount_jpy"),
+            ("RULE-SEN25-TIE-1", "rule_order", "first", "invalid positive integer rule_order"),
+        ]
+        for rule_id, field, value, reason in mutations:
+            with self.subTest(rule_id=rule_id, field=field, value=value), tempfile.TemporaryDirectory() as td:
+                root = Path(td)
+                for folder in ['data', 'claims', 'sources']:
+                    shutil.copytree(ROOT / folder, root / folder)
+                csv_path = root / 'data' / 'evaluation_rules.csv'
+                with csv_path.open(newline='', encoding='utf-8') as fh:
+                    reader = csv.DictReader(fh)
+                    fields, rows = reader.fieldnames, list(reader)
+                matched = [row for row in rows if row['rule_id'] == rule_id]
+                self.assertEqual(len(matched), 1, rule_id)
+                matched[0][field] = value
+                with csv_path.open('w', newline='', encoding='utf-8') as fh:
+                    writer = csv.DictWriter(fh, fieldnames=fields)
+                    writer.writeheader()
+                    writer.writerows(rows)
+                v = module('validate_repository')
+                v.ROOT, v.DATA = root, root / 'data'
+                output = io.StringIO()
+                with contextlib.redirect_stdout(output):
+                    code = v.main()
+                self.assertEqual(code, 1, output.getvalue())
+                self.assertIn(rule_id, output.getvalue())
+                self.assertIn(reason, output.getvalue())
+
+    def test_evaluation_rule_normal_corpus_passes(self):
+        v = module('validate_repository')
+        output = io.StringIO()
+        with contextlib.redirect_stdout(output):
+            code = v.main()
+        self.assertEqual(code, 0, output.getvalue())
+
     def test_malformed_csv_fails_without_crashing(self):
         for broken in ['case_id,case_id\nx,y\n', 'case_id,government_name,procurement_title,category\nx,y\n', 'case_id,government_name,procurement_title,category\nx,y,z,a,extra\n']:
             with self.subTest(csv=broken), tempfile.TemporaryDirectory() as td:

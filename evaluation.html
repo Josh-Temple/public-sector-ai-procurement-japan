@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="自治体AI調達の評価・配点設計支援。実案件の評価項目、最低条件、参加資格、価格評価をEvidence付きで読み分けます。">
+  <meta property="og:title" content="自治体AI調達 評価・配点設計支援 | Public Sector AI Procurement Japan">
+  <meta property="og:description" content="実案件の配点を案件内の文脈で読み、最低条件・評価項目・参加資格・価格を混同せずに比較します。">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Public Sector AI Procurement Japan">
+  <meta property="og:url" content="https://josh-temple.github.io/public-sector-ai-procurement-japan/evaluation.html">
+  <meta name="twitter:card" content="summary">
+  <link rel="canonical" href="https://josh-temple.github.io/public-sector-ai-procurement-japan/evaluation.html">
+  <title>自治体AI調達 評価・配点設計支援 | Public Sector AI Procurement Japan</title>
+  <link rel="stylesheet" href="./assets/site.css">
+  <script src="./assets/evaluation.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">本文へ移動</a>
+  <header class="site-header">
+    <div class="shell header-inner">
+      <div>
+        <p class="eyebrow">PUBLIC SECTOR AI PROCUREMENT / JAPAN</p>
+        <h1>自治体AI調達 評価・配点設計支援</h1>
+      </div>
+      <nav class="site-nav" aria-label="公開サイト">
+        <a href="./index.html">調べる</a>
+        <a href="./insights.html">理解する</a>
+        <a href="./checklist.html">仕様を考える</a>
+        <a href="./drafting.html">仕様へ落とす</a>
+        <a href="./evaluation.html" aria-current="page">評価へ分ける</a>
+        <a href="./methodology.html">データの見方</a>
+        <a href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan">GitHub / 根拠</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero shell">
+      <p class="hero-copy">仕様に書いた条件を、そのまま評価点へ変換しません。満たさなければ受け入れられない条件か、条件を満たした提案の質を比べたい項目か、参加前の資格か、価格の扱いかを先に分けます。</p>
+      <p class="scope-note">表示する点数・審査方法は、各案件で観測された設計です。項目の粒度、総点、審査段階、調達方式が異なるため、他案件への推奨配点や自治体平均としては扱いません。公開資料で確認できる選定時の設計であり、契約最終仕様を示すものではありません。</p>
+    </section>
+
+    <section class="reading shell" aria-labelledby="evaluation-flow">
+      <div class="section-heading split-heading">
+        <div><p class="eyebrow">DECISION ORDER</p><h2 id="evaluation-flow">点数を付ける前に分ける</h2></div>
+        <p class="section-lead">論点名より先に、その条件が調達のどの役割を担うかを決めます。</p>
+      </div>
+      <div class="reading-grid">
+        <div><h3>1. 受入れ条件か</h3><p>満たさない提案を受け入れられないなら、まず最低条件・契約条件・参加資格のどこに置くかを確認します。</p></div>
+        <div><h3>2. 提案差を比べるか</h3><p>最低線を満たした後でも品質差が意味を持つ場合に、評価項目として何を確認するかを整理します。</p></div>
+        <div><h3>3. どこで確認するか</h3><p>書類、プレゼン、デモ、価格評価などの審査段階と、除外条件・閾値を別に確認します。</p></div>
+      </div>
+    </section>
+
+    <section class="themes shell" aria-labelledby="evaluation-topics">
+      <div class="section-heading split-heading">
+        <div><p class="eyebrow">TOPIC VIEW</p><h2 id="evaluation-topics">論点から実案件の置き場所を見る</h2></div>
+        <p class="section-lead">同じ論点が最低条件・評価項目・参加資格に現れる違いを、canonical dataへの参照から表示します。</p>
+      </div>
+      <div id="evaluation-topic-links" class="theme-links" aria-live="polite"></div>
+    </section>
+
+    <section class="reading shell evaluation-topic-detail" aria-labelledby="evaluation-topic-heading">
+      <div id="evaluation-topic-detail" aria-live="polite">
+        <p class="loading">評価データを読み込んでいます。</p>
+      </div>
+    </section>
+
+    <section class="reading shell" aria-labelledby="evaluation-case-view">
+      <div class="section-heading split-heading">
+        <div><p class="eyebrow">CASE VIEW</p><h2 id="evaluation-case-view">案件内の評価構造を見る</h2></div>
+        <p class="section-lead">総点、審査段階、価格項目、公開された結果を案件内で読みます。異なる案件の点数を順位付けしません。</p>
+      </div>
+      <label class="evaluation-case-picker">案件
+        <select id="evaluation-case-select" aria-label="評価構造を見る案件"></select>
+      </label>
+      <div id="evaluation-case-detail" aria-live="polite"></div>
+    </section>
+
+    <section class="reading shell" aria-labelledby="evaluation-next">
+      <div class="section-heading split-heading">
+        <div><p class="eyebrow">NEXT</p><h2 id="evaluation-next">仕様とEvidenceへ戻る</h2></div>
+        <p class="section-lead">評価設計は、仕様上の最低線・Q&A反映後の有効要件・公式評価資料と往復して確認します。</p>
+      </div>
+      <p class="case-dialog-actions">
+        <a class="text-button" href="./drafting.html">仕様へ落とす →</a>
+        <a class="text-button" href="./index.html">案件・公式資料を確認する →</a>
+        <a class="text-button" href="./methodology.html">Evidenceの読み方を確認する →</a>
+      </p>
+    </section>
+  </main>
+
+  <footer class="site-footer"><div class="shell"><p>Observed scoring choices are case-specific evidence, not default recommendations. Verify the linked primary source before reuse.</p></div></footer>
+</body>
+</html>

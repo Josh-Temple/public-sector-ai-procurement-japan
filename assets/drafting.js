@@ -109,6 +109,19 @@ const DRAFTING_DECISIONS = [
   }
 ];
 
+const EVALUATION_TOPIC_BY_DECISION = {
+  "generation-boundary": "citizen-safety",
+  "rag-scope": "rag-grounding",
+  "rag-files": "rag-grounding",
+  "grounding-fallback": "rag-grounding",
+  "model-policy": "model-policy",
+  "data-handling": "data-handling",
+  "network": "network",
+  "authentication": "authentication",
+  "usage-pricing": "usage-pricing",
+  "support-adoption": "support-adoption"
+};
+
 const CITIZEN_SPECIALIZED = [
   ["kobe-2026-tax-voicebot", "answer_policy", "generative_answer_allowed"],
   ["kobe-2026-tax-voicebot", "routing", "department_transfer"],
@@ -386,6 +399,18 @@ function renderDecision(decision, data, index) {
 
   if (!evidenceList.children.length) appendText(evidenceList, "p", "現在の構造化データから表示できる例がありません。", "scope-note");
   section.appendChild(evidenceList);
+
+  const evaluationTopic = EVALUATION_TOPIC_BY_DECISION[decision.id];
+  if (evaluationTopic) {
+    const actions = document.createElement("p");
+    actions.className = "case-dialog-actions";
+    const evaluationLink = document.createElement("a");
+    evaluationLink.className = "text-button";
+    evaluationLink.href = "./evaluation.html?topic=" + encodeURIComponent(evaluationTopic);
+    evaluationLink.textContent = "この論点の評価例を見る →";
+    actions.appendChild(evaluationLink);
+    section.appendChild(actions);
+  }
   return section;
 }
 
@@ -470,6 +495,7 @@ if (typeof module !== "undefined") {
   module.exports = {
     DRAFTING_DATA_FILES,
     DRAFTING_DECISIONS,
+    EVALUATION_TOPIC_BY_DECISION,
     CITIZEN_SPECIALIZED,
     ROLE_EXAMPLES,
     parseDraftingCSV,

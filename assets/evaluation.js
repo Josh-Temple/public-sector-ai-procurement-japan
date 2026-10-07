@@ -422,7 +422,7 @@ function renderCase(caseId, data) {
 
   const header = document.createElement("div");
   header.className = "evaluation-case-header";
-  appendText(header, "h3", caseRow.government_name + " / " + (caseRow.title || caseId));
+  appendText(header, "h3", caseRow.government_name + " / " + (caseRow.procurement_title || caseId));
   appendText(header, "p", procurement ? awardBasisLabel(procurement.award_basis) : "調達構造は現在のprocurement_structure.csvでは未登録です。", "evaluation-score");
   appendText(header, "p", caseBoundaryText(evidence), "scope-note");
   const links = document.createElement("p");
@@ -500,7 +500,7 @@ async function initEvaluationSupport() {
       if (!row) return;
       const option = document.createElement("option");
       option.value = caseId;
-      option.textContent = row.government_name + " / " + (row.title || caseId);
+      option.textContent = row.government_name + " / " + (row.procurement_title || caseId);
       select.appendChild(option);
     });
     if (select.options.length) {

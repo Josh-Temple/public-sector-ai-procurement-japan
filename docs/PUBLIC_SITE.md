@@ -144,14 +144,34 @@ The home-page Research Highlights remain intentionally curated. Additional revie
 This layer does not create a new fact source or infer missing procurement states. It is a reading aid over Claims and existing structured data.
 
 
+
+
+## Evaluation and scoring support
+
+`evaluation.html` is a decision-support view over canonical evaluation and requirement data. It does not publish a recommended scoring model.
+
+The page keeps four boundaries explicit:
+
+- minimum / desirable requirements come from `data/effective_requirements.csv`, including later Q&A changes;
+- scored criteria, points, denominators and assessment stages come from `data/evaluation_criteria.csv`;
+- qualification examples use explicit reviewed Claim / Source references rather than reclassifying scored criteria;
+- procurement structure and published vendor totals remain separate from criterion-level scores, so totals are never decomposed into invented item scores.
+
+Topic mappings in `assets/evaluation.js` contain stable topic IDs and canonical row / Claim references. They do not copy points, total points, criterion wording, source URLs, thresholds, proposal ceilings, contract amounts or recommended weights.
+
+The case view is deliberately case-local. It can show different stage denominators, price criteria, structured award basis, and publicly disclosed vendor totals, but it does not calculate cross-case rankings, averages or recommended price shares. `publicly_bounded` cases remain bounded: selection evidence does not become contract-final or operation evidence.
+
+`tests/test_evaluation_support.cjs` guards canonical references, points / total / assessment-stage preservation, qualification-vs-score separation, Q&A-effective values, price-vs-contract boundaries, vendor-total separation, Source resolution and the absence of recommended/default scoring fields.
+
 ## Public navigation and shareable search state
 
-The five stable public entry points use the same compact navigation:
+The six stable public entry points use the same compact navigation:
 
 - 調べる → `index.html`
 - 理解する → `insights.html`
 - 仕様を考える → `checklist.html`
 - 仕様へ落とす → `drafting.html`
+- 評価へ分ける → `evaluation.html`
 - データの見方 → `methodology.html`
 
 The database serializes discovery state into query parameters without creating a second data source.

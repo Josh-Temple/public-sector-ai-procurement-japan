@@ -97,6 +97,7 @@ const securityTopic = EVALUATION_TOPICS.find(function (topic) { return topic.id 
 assert.ok(securityTopic.criterionIds.includes("SAI-P01"));
 assert.ok(securityTopic.gateIds.includes("QG-HOK-04"));
 assert.ok(securityTopic.gateIds.includes("QG-OUM-07"));
+assert.ok(securityTopic.gateIds.includes("QG-YAI-02"));
 
 const oumiCertification = effectiveById.get("EFF-oumi-certification");
 assert.ok(oumiCertification.changed_by_source_id, "Oumi certification must preserve Q&A changed-by source");
@@ -171,6 +172,16 @@ const saitamaQualificationRows = gates.filter(function (row) { return row.case_i
 assert.equal(saitamaQualificationRows.length, 0, "Saitama scored certification example must not be promoted to qualification");
 assert.equal(effectiveById.get("EFF-saitama-ismap_status").effective_status, "not_qualification");
 
+// Yaizu qualification migration is section-complete for guide §3, including continuing eligibility.
+const yaizuGates = gates.filter(function (row) { return row.case_id === "yaizu-2025-genai-service"; });
+assert.equal(yaizuGates.length, 4, "Yaizu qualification section must not be partially migrated");
+assert.deepEqual(new Set(yaizuGates.map(function (row) { return row.gate_id; })), new Set(["QG-YAI-01", "QG-YAI-02", "QG-YAI-03", "QG-YAI-04"]));
+assert.equal(gateById.get("QG-YAI-01").topic, "prior_experience");
+assert.equal(gateById.get("QG-YAI-02").topic, "security_certification");
+assert.equal(gateById.get("QG-YAI-02").satisfaction_rule, "列挙された認証のいずれかを満たす");
+assert.equal(gateById.get("QG-YAI-04").topic, "continued_eligibility");
+assert.equal(gateById.get("QG-YAI-04").unmet_effect, "qualification_lost");
+
 // Typed selection/pricing rules do not duplicate criterion points.
 for (const row of rules) {
   assert.ok(caseById.has(row.case_id), row.rule_id + " unknown case");
@@ -212,6 +223,56 @@ assert.equal(evaluationById.get("MATSUE-FINAL-01").total_points, "200");
 assert.equal(ruleById.get("RULE-GOSEN-PRICE-FORMULA").criterion_id, "GOS-05");
 assert.match(ruleById.get("RULE-GOSEN-PRICE-FORMULA").notes, /二次審査でも再計算せず同じ得点/);
 
+// Stage semantics stay explicit without flattening raw assessment_stage or denominators.
+const matsueRelation = ruleById.get("RULE-MATSUE-STAGE-INCLUSION");
+assert.equal(matsueRelation.rule_type, "stage_relation");
+assert.equal(matsueRelation.criterion_id, "MATSUE-FINAL-01");
+assert.equal(matsueRelation.effect, "included_in_final_total");
+assert.match(matsueRelation.notes, /80点.*200点.*加算しない/);
+assert.match(ruleSummary(matsueRelation), /審査段階の得点関係/);
+
+const gosenReuse = ruleById.get("RULE-GOSEN-PRICE-REUSE");
+assert.equal(gosenReuse.rule_type, "stage_relation");
+assert.equal(gosenReuse.criterion_id, "GOS-05");
+assert.equal(gosenReuse.effect, "reused_without_recalculation");
+assert.match(gosenReuse.notes, /再計算せず同じ得点/);
+assert.match(gosenReuse.notes, /200\/1000点/);
+assert.equal(evaluationById.get("GOS-05").points, "200", "reused price contribution must not be deduplicated to 100");
+
+// Planned price, proposal ceilings, thresholds and price formulas remain separate rule roles.
+const minohPlanned = ruleById.get("RULE-MINOH-PLANNED-PRICE");
+assert.equal(minohPlanned.rule_type, "planned_price");
+assert.equal(minohPlanned.amount_jpy, "1992000");
+assert.equal(minohPlanned.tax_basis, "tax_excluded");
+assert.equal(ruleById.get("RULE-MINOH-PLANNED-PRICE-DISQ").related_rule_id, "RULE-MINOH-PLANNED-PRICE");
+assert.equal(ruleById.get("RULE-MINOH-PRICE-FORMULA").criterion_id, "MINOH-GENAI-PRICE");
+assert.notEqual(ruleTypeLabel("planned_price"), ruleTypeLabel("proposal_ceiling"));
+
+for (const prefix of ["RULE-SEN25", "RULE-SEN26"]) {
+  assert.equal(ruleById.get(prefix + "-MIN-TOTAL").threshold_value, "60");
+  assert.equal(ruleById.get(prefix + "-MIN-TOTAL").aggregation_scope, "selection_committee_aggregate");
+  assert.equal(ruleById.get(prefix + "-CEILING-DISQ").effect, "disqualified");
+  assert.equal(ruleById.get(prefix + "-TIE-1").effect, "tie_break");
+}
+assert.equal(ruleById.get("RULE-SEN25-CEILING").amount_jpy, "2290000");
+assert.equal(ruleById.get("RULE-SEN26-CEILING").amount_jpy, "5896000");
+
+assert.equal(ruleById.get("RULE-YAI-CEILING").amount_jpy, "3000000");
+assert.equal(ruleById.get("RULE-YAI-CEILING").tax_basis, "tax_included");
+assert.equal(ruleById.get("RULE-YAI-MANDATORY-DISQ").criterion_id, "YAI-09");
+assert.equal(ruleById.get("RULE-YAI-PRICE-FORMULA").criterion_id, "YAI-10");
+assert.equal(ruleById.get("RULE-YAI-MIN-TOTAL").threshold_value, "60");
+assert.equal(ruleById.get("RULE-YAI-MIN-TOTAL").effect, "not_selected");
+
+const oumiSubtotal = ruleById.get("RULE-OUM-MIN-SUBTOTAL");
+assert.equal(oumiSubtotal.rule_type, "minimum_subtotal_score");
+assert.equal(oumiSubtotal.threshold_value, "420");
+assert.equal(oumiSubtotal.threshold_unit, "points");
+assert.equal(oumiSubtotal.aggregation_scope, "proposal_plus_function_subtotal_700");
+assert.match(ruleSummary(oumiSubtotal), /700点/);
+assert.equal(ruleById.get("RULE-OUM-TIE-1").effect, "tie_break");
+assert.equal(ruleById.get("RULE-OUM-CEILING-DISQ").amount_jpy, "", "Oumi multi-amount ceiling must not be collapsed to one number");
+
 const hokkaidoProcurement = procurementByCase.get("hokkaido-2026-genai-rag-service");
 assert.equal(hokkaidoProcurement.award_basis, "lowest_valid_bid_within_planned_price");
 assert.equal(evaluations.some(function (row) { return row.case_id === "hokkaido-2026-genai-rag-service" && PRICE_CRITERION_IDS.has(row.criterion_id); }), false);
@@ -232,5 +293,10 @@ for (const unsafe of ["標準配点", "自治体平均では", "推奨配点", "
 }
 assert.match(sourceText, /総合点から評価項目別得点を逆算しません/);
 assert.match(sourceText, /価格条件と価格点は別表示/);
+assert.match(sourceText, /renderStageRelations\(structure, stageRelations, data\)/, "case view must render canonical stage relations");
+assert.match(sourceText, /appendCaseSourceLinks/, "case-local gate and rule rows must link directly to official Sources");
+assert.match(sourceText, /原資料に参加資格が存在しないという意味ではありません/);
+assert.match(sourceText, /原資料に閾値・失格条件・価格ルールが存在しないという意味ではありません/);
+assert.doesNotMatch(sourceText, /80\s*\+\s*200\s*=\s*280/, "public UI must not present a naive Matsue denominator sum");
 
 console.log("evaluation support regression: " + EVALUATION_TOPICS.length + " topics, canonical references and role boundaries resolved");

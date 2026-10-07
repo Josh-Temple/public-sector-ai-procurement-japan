@@ -28,7 +28,7 @@ const EVALUATION_TOPICS = [
     caution: "同じ認証でも、応募可否を決める参加資格、仕様上の条件、提案を比較する評価項目では効果が異なります。",
     effectiveIds: ["EFF-oumi-certification", "EFF-oumi-ismap", "EFF-saitama-ismap_status"],
     criterionIds: ["SAI-P01", "KOG-03", "OUM-03"],
-    gateIds: ["QG-HOK-04", "QG-OUM-07"]
+    gateIds: ["QG-HOK-04", "QG-OUM-07", "QG-YAI-02"]
   },
   {
     id: "model-policy",
@@ -69,7 +69,7 @@ const EVALUATION_TOPICS = [
     caution: "価格上限、価格点、失格条件、入札額、契約金額は別の数値・ルールです。案件固有の配点を推奨比率へ変換しません。",
     effectiveIds: ["EFF-minoh-overage-no-additional-fee", "EFF-yaizu-price-fixed", "EFF-yaizu-token-topup"],
     criterionIds: ["SAI-P12", "SAI-P13", "OUM-14", "GOS-05", "KVB-05", "KOBE-DIFY-09", "MINOH-GENAI-PRICE"],
-    ruleIds: ["RULE-KVB-CEILING", "RULE-KVB-CEILING-DISQ", "RULE-KVB-MIN-TOTAL", "RULE-KVB-PRICE-FORMULA", "RULE-DIFY-CEILING", "RULE-DIFY-PRICE-FORMULA", "RULE-MATSUE-MIN-TOTAL", "RULE-GOSEN-PRICE-FORMULA"]
+    ruleIds: ["RULE-KVB-CEILING", "RULE-KVB-CEILING-DISQ", "RULE-KVB-MIN-TOTAL", "RULE-KVB-PRICE-FORMULA", "RULE-DIFY-CEILING", "RULE-DIFY-PRICE-FORMULA", "RULE-MINOH-PLANNED-PRICE", "RULE-MINOH-PRICE-FORMULA", "RULE-YAI-CEILING", "RULE-YAI-MIN-TOTAL", "RULE-YAI-PRICE-FORMULA", "RULE-OUM-MIN-SUBTOTAL", "RULE-MATSUE-MIN-TOTAL", "RULE-GOSEN-PRICE-FORMULA"]
   },
   {
     id: "support-adoption",
@@ -86,7 +86,7 @@ const EVALUATION_TOPICS = [
     caution: "類似実績は案件によって参加資格にも評価項目にもなります。評価点だけから応募条件を推測しません。",
     effectiveIds: [],
     criterionIds: ["KOB-03", "SAI-P15", "SAI-P17", "SEN-11", "OUM-04", "KVB-02"],
-    gateIds: ["QG-OUM-08"]
+    gateIds: ["QG-OUM-08", "QG-YAI-01"]
   },
   {
     id: "ui-usability",
@@ -122,6 +122,9 @@ const EVALUATION_CASE_IDS = [
   "kobe-2025-dify-platform",
   "kobe-2026-tax-voicebot",
   "minoh-2026-genai-license",
+  "sendai-2025-genai-pilot",
+  "sendai-2026-genai-service",
+  "yaizu-2025-genai-service",
   "matsue-2026-genai-support",
   "hokkaido-2026-genai-rag-service"
 ];
@@ -320,6 +323,8 @@ function ruleTypeLabel(type) {
     minimum_total_score: "選定下限",
     minimum_stage_score: "段階別下限",
     minimum_criterion_score: "項目別下限",
+    minimum_subtotal_score: "部分合計の選定下限",
+    stage_relation: "審査段階の得点関係",
     disqualification_condition: "失格条件",
     proposal_ceiling: "価格上限",
     planned_price: "予定価格",
@@ -335,10 +340,18 @@ function ruleSummary(row) {
     const tax = row.tax_basis === "tax_included" ? "（税込）" : row.tax_basis === "tax_excluded" ? "（税抜）" : "";
     return ruleTypeLabel(row.rule_type) + "：" + (Number.isFinite(amount) ? amount.toLocaleString("ja-JP") + "円" : "金額未登録") + tax;
   }
-  if (row.rule_type.startsWith("minimum_")) {
-    const suffix = row.threshold_unit === "percent_of_total" ? "% of total" : row.threshold_unit === "points" ? "点" : "";
-    return ruleTypeLabel(row.rule_type) + "：" + row.threshold_value + suffix;
+  if (row.rule_type === "minimum_subtotal_score") {
+    return ruleTypeLabel(row.rule_type) + "：" + row.threshold_value + (row.threshold_unit === "points" ? "点" : "") + (row.notes ? "。 " + row.notes : "");
   }
+  if (row.rule_type.startsWith("minimum_")) {
+    const threshold = row.threshold_unit === "percent_of_total"
+      ? "総点の" + row.threshold_value + "%"
+      : row.threshold_unit === "points"
+        ? row.threshold_value + "点"
+        : row.threshold_value;
+    return ruleTypeLabel(row.rule_type) + "：" + threshold;
+  }
+  if (row.rule_type === "stage_relation") return ruleTypeLabel(row.rule_type) + "：" + (row.notes || row.effect || "公式資料を確認");
   if (row.rule_type === "price_evaluation_formula") return ruleTypeLabel(row.rule_type) + "：" + row.formula_text;
   if (row.rule_type === "tie_break_rule") return ruleTypeLabel(row.rule_type) + (row.rule_order ? " " + row.rule_order : "") + "：" + (row.notes || "公式資料を確認");
   return ruleTypeLabel(row.rule_type) + "：" + (row.notes || row.effect || "公式資料を確認");
@@ -355,6 +368,30 @@ function ruleCard(row, data) {
   appendText(card, "p", row.verification_state === "fresh_verified" ? "一次資料をfresh確認済み" : "過去確認済み・現在のSource状態を要確認", "evaluation-boundary");
   renderLinks(card, row.case_id, data.sourceById.get(row.source_id));
   return card;
+}
+
+function appendCaseSourceLinks(parent, sources) {
+  const links = document.createElement("p");
+  links.className = "case-dialog-actions evaluation-case-source-links";
+  const seen = new Set();
+  (Array.isArray(sources) ? sources : [sources]).filter(Boolean).forEach(function (source) {
+    if (!source.url || seen.has(source.url)) return;
+    seen.add(source.url);
+    appendLink(links, source.url, sourceLabel(source) + " ↗", true);
+  });
+  if (links.children.length) parent.appendChild(links);
+}
+
+function renderStageRelations(root, rows, data) {
+  if (!rows.length) return;
+  const relations = document.createElement("div");
+  relations.className = "evaluation-stage-relations";
+  appendText(relations, "p", "段階間の得点関係", "evaluation-role");
+  rows.forEach(function (row) {
+    appendText(relations, "p", row.notes || ruleSummary(row), "scope-note");
+    appendCaseSourceLinks(relations, data.sourceById.get(row.source_id));
+  });
+  root.appendChild(relations);
 }
 
 function renderTopicLinks(activeId) {
@@ -511,6 +548,8 @@ function renderCase(caseId, data) {
   const evaluations = data.evaluations.filter(function (row) { return row.case_id === caseId; });
   const vendorRows = data.vendors.filter(function (row) { return row.case_id === caseId; });
   const caseRules = data.rules.filter(function (row) { return row.case_id === caseId; });
+  const stageRelations = caseRules.filter(function (row) { return row.rule_type === "stage_relation"; });
+  const selectionRules = caseRules.filter(function (row) { return row.rule_type !== "stage_relation"; });
   const caseGates = data.gates.filter(function (row) { return row.case_id === caseId; });
 
   const header = document.createElement("div");
@@ -529,6 +568,7 @@ function renderCase(caseId, data) {
   structure.className = "evaluation-case-block";
   appendText(structure, "h3", "評価構造");
   renderStageGroups(structure, evaluations);
+  renderStageRelations(structure, stageRelations, data);
   const evaluationSources = [];
   const seenEvaluationSources = new Set();
   evaluations.forEach(function (row) {
@@ -547,31 +587,36 @@ function renderCase(caseId, data) {
   }
   root.appendChild(structure);
 
-  if (caseGates.length) {
-    const gates = document.createElement("div");
-    gates.className = "evaluation-case-block";
-    appendText(gates, "h3", "参加資格");
-    appendText(gates, "p", "評価点とは別の応募・入札条件です。未掲載の条件がないことを意味しません。", "scope-note");
+  const gates = document.createElement("div");
+  gates.className = "evaluation-case-block";
+  appendText(gates, "h3", "参加資格");
+  appendText(gates, "p", "評価点とは別の応募・入札条件です。未掲載の条件がないことを意味しません。", "scope-note");
+  if (!caseGates.length) {
+    appendText(gates, "p", "この案件について、現在のcanonical dataに表示できる参加資格行はありません。原資料に参加資格が存在しないという意味ではありません。", "scope-note");
+  } else {
     caseGates.forEach(function (row) {
-      const p = document.createElement("p");
-      p.textContent = row.condition_summary;
-      gates.appendChild(p);
+      appendText(gates, "p", row.condition_summary);
+      appendCaseSourceLinks(gates, [
+        data.sourceById.get(row.base_source_id),
+        data.sourceById.get(row.changed_by_source_id)
+      ]);
     });
-    root.appendChild(gates);
   }
+  root.appendChild(gates);
 
-  if (caseRules.length) {
-    const rules = document.createElement("div");
-    rules.className = "evaluation-case-block";
-    appendText(rules, "h3", "選定・価格ルール");
-    appendText(rules, "p", "選定下限、失格条件、価格上限、価格点算式を別のruleとして表示します。", "scope-note");
-    caseRules.forEach(function (row) {
-      const p = document.createElement("p");
-      p.textContent = ruleSummary(row);
-      rules.appendChild(p);
+  const rules = document.createElement("div");
+  rules.className = "evaluation-case-block";
+  appendText(rules, "h3", "選定・価格ルール");
+  appendText(rules, "p", "選定下限、失格条件、価格上限、予定価格、価格点算式、同点時ルールを別のruleとして表示します。未掲載のルールがないことを意味しません。", "scope-note");
+  if (!selectionRules.length) {
+    appendText(rules, "p", "この案件について、現在のcanonical dataに表示できる選定・価格ルール行はありません。原資料に閾値・失格条件・価格ルールが存在しないという意味ではありません。", "scope-note");
+  } else {
+    selectionRules.forEach(function (row) {
+      appendText(rules, "p", ruleSummary(row));
+      appendCaseSourceLinks(rules, data.sourceById.get(row.source_id));
     });
-    root.appendChild(rules);
   }
+  root.appendChild(rules);
 
   const price = document.createElement("div");
   price.className = "evaluation-case-block";

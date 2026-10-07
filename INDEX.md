@@ -26,7 +26,8 @@
 | 横断的な機能要件projection | `data/requirements.csv` | `docs/DATA_MODEL.md` |
 | 細粒度の要求事項 | `data/requirement_facts.csv` | 該当research memo |
 | 公募年度・履行年度 | `data/case_timeline.csv` | `data/cases.csv` |
-| 評価基準・配点 | `data/evaluation_criteria.csv` | `data/vendor_scores.csv` |
+| 評価基準・配点 | `data/evaluation_criteria.csv` | `data/evaluation_rules.csv`, `data/vendor_scores.csv` |
+| 参加資格・選定下限・失格・価格境界・段階間の得点関係 | `data/qualification_gates.csv` / `data/evaluation_rules.csv` | `data/source_documents.csv`, `docs/DATA_MODEL.md` |
 | 業務特化型AIの要件 | `data/specialized_requirements.csv` | 該当research memo |
 | 調達方式・共同調達 | `data/procurement_structure.csv` | `data/joint_procurement_entities.csv` |
 | 入札額 | `data/bid_results.csv` | 案件の公式結果資料 |
@@ -158,5 +159,5 @@ research memoの分析結果は有用だが、現在の事実を確認すると�
 
 ### Evaluation evidence normalization
 
-- `data/qualification_gates.csv`
-- `data/evaluation_rules.csv`
+- `data/qualification_gates.csv` — 参加・入札資格。評価項目とは分離する。
+- `data/evaluation_rules.csv` — 選定下限、部分合計下限、失格条件、proposal ceiling、planned price、価格点算式、tie-break、Sourceで明示された段階間の得点関係。raw stageやfree-textから自動推論しない。

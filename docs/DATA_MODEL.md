@@ -92,15 +92,18 @@
 
 `data/evaluation_rules.csv`
 
-評価項目の配点とは別に、選定下限・失格条件・価格上限・価格点算式・tie-break等の明示ルールを保持するlong-form table。
+評価項目の配点とは別に、選定下限・失格条件・価格境界・価格点算式・tie-break・Evidenceで明示された段階間の得点関係を保持するlong-form table。
 
-- `rule_type` で役割を分離する。
-- `criterion_id` は価格点算式等が既存の評価項目に明示的に結び付く場合だけ使用する。
-- 配点・総点は `evaluation_criteria.csv` を正本とし、この表へ複製しない。
+- `rule_type` で役割を分離する。主な型は `minimum_total_score`、`minimum_subtotal_score`、`disqualification_condition`、`proposal_ceiling`、`planned_price`、`price_evaluation_formula`、`tie_break_rule`、`stage_relation`。
+- `proposal_ceiling` と `planned_price` は同一概念へ正規化しない。金額・税込税抜もSourceどおり保持する。
+- `minimum_subtotal_score` は対象となる小計を `aggregation_scope` で明示し、case total の下限へ読み替えない。
+- `stage_relation` はSourceが直接明示する包含・再利用等に限る。現在は松江の80点を最終200点に含む関係と、五泉の一次価格点を二次で再計算せず用いる関係を保持し、raw `assessment_stage` から自動生成しない。
+- `criterion_id` は価格点算式や段階関係が既存の評価項目に明示的に結び付く場合だけ使用する。
+- 配点・総点とraw `assessment_stage` は `evaluation_criteria.csv` を正本とし、この表へ複製・置換しない。
 - `source_id` と `locator` を必須とする。
 - `fresh_verified` は現在取得可能な公式Sourceを今回確認した行に限る。
 - Source unavailableの過去確認値を新たにfresh verifiedへ昇格しない。
-- `procurement_structure.pricing_basis` は移行中の人間向けsummaryであり、この表をregex等で生成する入力にはしない。
+- `procurement_structure.pricing_basis` やfree-text notes、stage名のregexは、この表を生成する入力にしない。
 
 ## 4. Requirement facts
 

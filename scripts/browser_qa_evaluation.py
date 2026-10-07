@@ -172,7 +172,7 @@ def main():
                                and "10 / 80点" in memo_text
                                and "該当箇所：" in memo_text
                                and "資料取得日：" in memo_text
-                               and "推奨配点" in memo_text,
+                               and "横断的な配点基準" in memo_text,
                                "markdown bytes " + str(len(memo_text)))
                     except Exception as error:
                         record(view, "SHARING", "share_or_memo_export", False, str(error))

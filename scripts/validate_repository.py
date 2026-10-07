@@ -377,9 +377,14 @@ def main() -> int:
                 errors.append(f"data/evaluation_rules.csv: {rule_id} references unknown related_rule_id {related!r}")
             elif related_row.get("case_id") != row.get("case_id"):
                 errors.append(f"data/evaluation_rules.csv: {rule_id} related rule belongs to a different case")
-        if row.get("rule_type") in {"minimum_total_score", "minimum_stage_score", "minimum_criterion_score"}:
+        if row.get("rule_type") in {"minimum_total_score", "minimum_stage_score", "minimum_criterion_score", "minimum_subtotal_score"}:
             if not row.get("threshold_value") or row.get("threshold_unit") not in {"points", "percent_of_total"}:
                 errors.append(f"data/evaluation_rules.csv: {rule_id} threshold lacks value/unit")
+        if row.get("rule_type") == "minimum_subtotal_score" and not row.get("aggregation_scope"):
+            errors.append(f"data/evaluation_rules.csv: {rule_id} subtotal threshold lacks aggregation_scope")
+        if row.get("rule_type") == "stage_relation":
+            if not criterion_id or row.get("effect") not in {"included_in_final_total", "reused_without_recalculation"} or not row.get("notes"):
+                errors.append(f"data/evaluation_rules.csv: {rule_id} stage relation lacks criterion/effect/notes")
         if row.get("rule_type") in {"proposal_ceiling", "planned_price"}:
             if not row.get("amount_jpy") or row.get("tax_basis") not in {"tax_included", "tax_excluded", "unknown"}:
                 errors.append(f"data/evaluation_rules.csv: {rule_id} monetary boundary lacks amount/tax basis")

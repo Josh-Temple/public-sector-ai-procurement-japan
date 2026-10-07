@@ -12,3 +12,7 @@ QG-OUM-06,oumi-2026-joint-genai,information_security_history,proposer,過去5年
 QG-OUM-07,oumi-2026-joint-genai,security_certification,proposer,プライバシーマーク又はISMSの認定を受け定期的に更新されていること,,participation,,SRC-oumi-2026-guide,2.2(7),,,reviewed,仕様書側の認証要件・Q&A No.13/16とは別の参加資格
 QG-OUM-08,oumi-2026-joint-genai,prior_experience,proposer,2023年4月1日以降に人口10万人以上の自治体又は自治体クラウドで生成AIサービスに関する十分な実績を有すること,2社による共同提案ではどちらか一方の実績でよいが実績を有する会社が分かるよう記載する,participation,,SRC-oumi-2026-guide,2.2(8),SRC-oumi-2026-qa,Q&A No.2,reviewed,同じ導入実績トピックがOUM-04では20/1000の評価項目としても存在する
 QG-OUM-09,oumi-2026-joint-genai,consortium_rule,joint_proposal,共同提案を行う場合は1つの共同体にのみ参加すること,,participation,,SRC-oumi-2026-guide,2.2(9),,,reviewed,共同提案の参加資格条件
+QG-YAI-01,yaizu-2025-genai-service,prior_experience,proposer,令和4年4月1日から公告日までの間に国又は地方公共団体で提供する生成AIサービスが利用された実績があること,,participation,not_qualified,SRC-yaizu-2025-guide,3(1),,,reviewed,参加資格としての実績要件。評価項目の実績評価とは別role
+QG-YAI-02,yaizu-2025-genai-service,security_certification,proposer,ISO/IEC 27001又はJISQ27001の認証若しくはJIS Q 15001（プライバシーマーク）の認証を受けていること,列挙された認証のいずれかを満たす,participation,not_qualified,SRC-yaizu-2025-guide,3(2),,,reviewed,参加資格。評価点には変換しない
+QG-YAI-03,yaizu-2025-genai-service,quotation_eligibility,proposer,焼津市随意契約見積心得第15に定める見積りする資格のない者に該当しないこと,,participation,not_qualified,SRC-yaizu-2025-guide,3(3),,,reviewed,市の見積資格に関する参加条件
+QG-YAI-04,yaizu-2025-genai-service,continued_eligibility,proposer,公告日から契約締結までの間に焼津市から指名停止の措置を受けないこと,,participation,qualification_lost,SRC-yaizu-2025-guide,3 冒頭,,,reviewed,指名停止を受けた時点で参加資格を喪失

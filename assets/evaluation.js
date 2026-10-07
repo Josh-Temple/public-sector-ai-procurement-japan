@@ -92,7 +92,7 @@ const EVALUATION_TOPICS = [
     id: "ui-usability",
     label: "UI・操作性",
     question: "利用者・管理者が迷わず操作できることを、最低条件ではなく提案比較としてどこまで評価するか。",
-    caution: "表示する点数は各案件内の配点です。複合評価項目の全点をUIだけの配点とは解釈せず、推奨配点にも変換しません。",
+    caution: "表示する点数は各案件内の配点です。複合評価項目の全点をUIだけの配点とは解釈せず、横断的な推奨値にも変換しません。",
     effectiveIds: [],
     criterionIds: ["SEN-04", "SEN-07", "GOS-02", "MATSUE-FINAL-02"]
   },

@@ -150,18 +150,19 @@ This layer does not create a new fact source or infer missing procurement states
 
 `evaluation.html` is a decision-support view over canonical evaluation and requirement data. It does not publish a recommended scoring model.
 
-The page keeps four boundaries explicit:
+The page keeps five boundaries explicit:
 
 - minimum / desirable requirements come from `data/effective_requirements.csv`, including later Q&A changes;
 - scored criteria, points, denominators and assessment stages come from `data/evaluation_criteria.csv`;
-- qualification examples use explicit reviewed Claim / Source references rather than reclassifying scored criteria;
+- participation / eligibility conditions come from `data/qualification_gates.csv` and remain separate from scored criteria;
+- selection thresholds, disqualification conditions, price ceilings, price formulas and tie-break rules come from `data/evaluation_rules.csv` without duplicating criterion points;
 - procurement structure and published vendor totals remain separate from criterion-level scores, so totals are never decomposed into invented item scores.
 
-Topic mappings in `assets/evaluation.js` contain stable topic IDs and canonical row / Claim references. They do not copy points, total points, criterion wording, source URLs, thresholds, proposal ceilings, contract amounts or recommended weights.
+Topic mappings in `assets/evaluation.js` contain stable topic IDs and canonical row references. They do not copy points, total points, criterion wording, source URLs, thresholds, proposal ceilings, contract amounts or recommended weights.
 
 The case view is deliberately case-local. It can show different stage denominators, price criteria, structured award basis, and publicly disclosed vendor totals, but it does not calculate cross-case rankings, averages or recommended price shares. `publicly_bounded` cases remain bounded: selection evidence does not become contract-final or operation evidence.
 
-`tests/test_evaluation_support.cjs` guards canonical references, points / total / assessment-stage preservation, qualification-vs-score separation, Q&A-effective values, price-vs-contract boundaries, vendor-total separation, Source resolution and the absence of recommended/default scoring fields.
+`tests/test_evaluation_support.cjs` guards canonical IDs/FKs, qualification-vs-score separation, threshold/disqualification/ceiling/formula role separation, points / total / assessment-stage preservation, Q&A chains, Source availability boundaries, vendor-total separation and the absence of recommended/default scoring fields. The public page labels its topic and case selectors as representative subsets and links case-local evaluation rows back to official evaluation Sources.
 
 ## Public navigation and shareable search state
 

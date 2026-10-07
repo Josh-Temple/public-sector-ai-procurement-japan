@@ -19,6 +19,7 @@ PUBLIC_PAGES = {
     "case-study.html": BASE_URL + "case-study.html",
     "checklist.html": BASE_URL + "checklist.html",
     "drafting.html": BASE_URL + "drafting.html",
+    "evaluation.html": BASE_URL + "evaluation.html",
     "methodology.html": BASE_URL + "methodology.html",
 }
 REQUIRED_FILES = {
@@ -26,15 +27,19 @@ REQUIRED_FILES = {
     "insights.html",
     "checklist.html",
     "drafting.html",
+    "evaluation.html",
     "methodology.html",
     "robots.txt",
     "sitemap.xml",
     "assets/app.js",
     "assets/drafting.js",
+    "assets/evaluation.js",
     "assets/site.css",
     "data/cases.csv",
     "data/effective_requirements.csv",
     "data/evaluation_criteria.csv",
+    "data/procurement_structure.csv",
+    "data/vendor_scores.csv",
     "data/specialized_requirements.csv",
     "data/source_documents.csv",
     "data/case_evidence_summary.csv",
@@ -243,6 +248,55 @@ def main() -> int:
         for forbidden in ("snapshot_locator", "blocking_roles", "source.access_state"):
             if forbidden in drafting_js:
                 errors.append(f"assets/drafting.js: internal-only evidence state exposed in drafting UI: {forbidden}")
+
+
+    evaluation_path = ROOT / "evaluation.html"
+    evaluation_js_path = ROOT / "assets/evaluation.js"
+    if evaluation_path.is_file():
+        evaluation_text = evaluation_path.read_text(encoding="utf-8")
+        for marker in (
+            'id="evaluation-topic-links"',
+            'id="evaluation-topic-detail"',
+            'id="evaluation-case-select"',
+            'id="evaluation-case-detail"',
+            "評価へ分ける",
+            "推奨配点や自治体平均としては扱いません",
+        ):
+            if marker not in evaluation_text:
+                errors.append(f"evaluation.html: required marker missing: {marker}")
+
+    if evaluation_js_path.is_file():
+        evaluation_js = evaluation_js_path.read_text(encoding="utf-8")
+        for marker in (
+            "const EVALUATION_TOPICS",
+            "const EVALUATION_CASE_IDS",
+            "data/evaluation_criteria.csv",
+            "data/effective_requirements.csv",
+            "data/procurement_structure.csv",
+            "data/vendor_scores.csv",
+            "caseBoundaryText",
+            "roleForEffective",
+            "当該案件内の配点",
+            "総合点から評価項目別得点を逆算しません",
+        ):
+            if marker not in evaluation_js:
+                errors.append(f"assets/evaluation.js: evaluation support behavior missing: {marker}")
+
+        data_refs = sorted(set(re.findall(r'["\'](\\?\./data/[^"\']+\.csv)["\']', evaluation_js)))
+        if not data_refs:
+            errors.append("assets/evaluation.js: no data CSV references found")
+        for ref in data_refs:
+            normalized = ref.replace("\\", "")
+            target = ROOT / normalized.removeprefix("./")
+            if not target.is_file():
+                errors.append(f"assets/evaluation.js: missing declared data file: {normalized}")
+
+        for forbidden in ("recommended_points", "recommended_share", "recommended_weight", "default_weight"):
+            if forbidden in evaluation_js:
+                errors.append(f"assets/evaluation.js: recommended/default score embedded in evaluation mapping: {forbidden}")
+        for unsafe_copy in ("標準配点", "自治体平均では", "推奨配点"):
+            if unsafe_copy in evaluation_js:
+                errors.append(f"assets/evaluation.js: unsafe scoring wording embedded: {unsafe_copy}")
 
     robots_path = ROOT / "robots.txt"
     if robots_path.is_file():

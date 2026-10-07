@@ -21,6 +21,7 @@
 | どんな案件があるか | `data/cases.csv` | README |
 | 人間向けの案件検索・比較 | `index.html` | `docs/PUBLIC_SITE.md`, `data/case_evidence_summary.csv` |
 | 仕様書へ落とすためのdecision support | `drafting.html` | `data/effective_requirements.csv`, `data/evaluation_criteria.csv`, `data/specialized_requirements.csv`, `claims/` |
+| 評価・配点設計のdecision support | `evaluation.html` | `data/evaluation_criteria.csv`, `data/effective_requirements.csv`, `data/procurement_structure.csv`, `data/vendor_scores.csv`, `claims/` |
 | 現在有効な要件・質疑による変更 | `data/effective_requirements.csv` | `data/source_documents.csv` |
 | 横断的な機能要件projection | `data/requirements.csv` | `docs/DATA_MODEL.md` |
 | 細粒度の要求事項 | `data/requirement_facts.csv` | 該当research memo |

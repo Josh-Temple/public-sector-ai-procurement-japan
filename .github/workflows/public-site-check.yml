@@ -8,6 +8,7 @@ on:
       - "case-study.html"
       - "checklist.html"
       - "drafting.html"
+      - "evaluation.html"
       - "methodology.html"
       - "robots.txt"
       - "sitemap.xml"
@@ -16,6 +17,7 @@ on:
       - "scripts/validate_public_site.py"
       - "tests/test_requirement_explorer.cjs"
       - "tests/test_drafting_support.cjs"
+      - "tests/test_evaluation_support.cjs"
       - ".github/workflows/pages.yml"
       - ".github/workflows/public-site-check.yml"
   workflow_dispatch:
@@ -35,7 +37,9 @@ jobs:
         run: |
           node --check assets/app.js
           node --check assets/drafting.js
+          node --check assets/evaluation.js
       - name: Test public decision support
         run: |
           node tests/test_requirement_explorer.cjs
           node tests/test_drafting_support.cjs
+          node tests/test_evaluation_support.cjs

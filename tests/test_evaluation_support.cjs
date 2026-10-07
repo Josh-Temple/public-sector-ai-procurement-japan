@@ -175,6 +175,44 @@ const saitamaQualificationRows = gates.filter(function (row) { return row.case_i
 assert.equal(saitamaQualificationRows.length, 0, "Saitama scored certification example must not be promoted to qualification");
 assert.equal(effectiveById.get("EFF-saitama-ismap_status").effective_status, "not_qualification");
 
+// Sendai qualification §2 is section-complete for two separate fiscal-year tenders.
+for (const [caseId, prefix, guideId] of [
+  ["sendai-2025-genai-pilot", "QG-SEN25-", "SRC-sendai-2025-guide"],
+  ["sendai-2026-genai-service", "QG-SEN26-", "SRC-sendai-2026-guide"],
+]) {
+  const rows = gates.filter(function (row) { return row.case_id === caseId; });
+  assert.equal(rows.length, 15, caseId + " must keep all seven primary gates and eight consortium clauses");
+  assert.deepEqual(
+    new Set(rows.map(function (row) { return row.gate_id; })),
+    new Set(Array.from({ length: 15 }, function (_, i) { return prefix + String(i + 1).padStart(2, "0"); }))
+  );
+  assert.ok(rows.every(function (row) {
+    return row.base_source_id === guideId && row.base_locator && row.review_status === "reviewed"
+      && row.applies_at_stage === "participation" && row.unmet_effect === "not_qualified";
+  }), caseId + " must keep source, locator, role, review and effect");
+  assert.equal(rows.filter(function (row) { return row.applies_to === "joint_proposal"; }).length, 8);
+}
+const sendai25Experience = gateById.get("QG-SEN25-07");
+const sendai26Experience = gateById.get("QG-SEN26-07");
+assert.match(sendai25Experience.condition_summary, /導入と研修の双方/);
+assert.match(sendai25Experience.condition_summary, /民間企業等/);
+assert.match(sendai26Experience.condition_summary, /国又は地方公共団体/);
+assert.doesNotMatch(sendai26Experience.condition_summary, /研修|民間企業/);
+assert.equal(sendai25Experience.changed_by_source_id, "SRC-sendai-2025-qa");
+assert.match(sendai25Experience.change_locator, /No\.1/);
+assert.match(gateById.get("QG-SEN25-10").satisfaction_rule, /No\.7.*代表構成員/);
+assert.equal(gateById.get("QG-SEN26-10").changed_by_source_id, "");
+assert.match(gateById.get("QG-SEN25-14").condition_summary, /業務完了時/);
+assert.match(gateById.get("QG-SEN25-15").condition_summary, /契約締結時/);
+
+const minohFinanceGate = gateById.get("QG-MINOH-01");
+assert.equal(minohFinanceGate.applies_at_stage, "participation");
+assert.equal(minohFinanceGate.base_source_id, "SRC-minoh-2026-genai-bid-guide");
+assert.match(minohFinanceGate.base_locator, /2\(16\).*9\(1\)/);
+assert.match(minohFinanceGate.condition_summary, /財務体質.*零点未満/);
+assert.match(minohFinanceGate.satisfaction_rule, /総合評価値とは別/);
+assert.equal(minohFinanceGate.unmet_effect, "not_qualified");
+
 // Yaizu qualification migration is section-complete for guide §3, including continuing eligibility.
 const yaizuGates = gates.filter(function (row) { return row.case_id === "yaizu-2025-genai-service"; });
 assert.equal(yaizuGates.length, 4, "Yaizu qualification section must not be partially migrated");

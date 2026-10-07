@@ -282,11 +282,11 @@ def main() -> int:
             if marker not in evaluation_js:
                 errors.append(f"assets/evaluation.js: evaluation support behavior missing: {marker}")
 
-        data_refs = sorted(set(re.findall(r'["\\\'](\\?\\./data/[^"\\\']+\\.csv)["\\\']', evaluation_js)))
+        data_refs = sorted(set(re.findall(r'["\'](\\?\./data/[^"\']+\.csv)["\']', evaluation_js)))
         if not data_refs:
             errors.append("assets/evaluation.js: no data CSV references found")
         for ref in data_refs:
-            normalized = ref.replace("\\\\", "")
+            normalized = ref.replace("\\", "")
             target = ROOT / normalized.removeprefix("./")
             if not target.is_file():
                 errors.append(f"assets/evaluation.js: missing declared data file: {normalized}")

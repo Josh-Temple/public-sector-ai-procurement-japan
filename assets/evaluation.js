@@ -300,7 +300,7 @@ function buildEvaluationMemo(caseId, topic, data, baseUrl) {
   if (procurement && procurement.pricing_basis) lines.push("- 調達構造の価格条件：" + procurement.pricing_basis);
   lines.push("", "## 確認上の制約", "",
     "評価項目・参加資格・選定下限・価格算式は異なる役割です。",
-    "他案件の点数との単純比較、推奨配点への変換、未確認の現行性・契約最終条件の断定は行いません。",
+    "他案件の点数との単純比較、横断的な配点基準への変換、未確認の現行性・契約最終条件の断定は行いません。",
     "公式資料の内容は該当箇所と後続Q&Aを個別に再確認してください。", "");
   return lines.join("\n");
 }

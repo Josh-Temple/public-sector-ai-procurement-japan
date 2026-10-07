@@ -94,7 +94,9 @@
 
 評価項目の配点とは別に、選定下限・失格条件・価格境界・価格点算式・tie-break・Evidenceで明示された段階間の得点関係を保持するlong-form table。
 
-- `rule_type` で役割を分離する。主な型は `minimum_total_score`、`minimum_subtotal_score`、`disqualification_condition`、`proposal_ceiling`、`planned_price`、`price_evaluation_formula`、`tie_break_rule`、`stage_relation`。
+- `rule_type` は次の8種だけを受け入れる（validatorの明示的allowlistと同期）：`minimum_total_score`、`minimum_subtotal_score`、`disqualification_condition`、`proposal_ceiling`、`planned_price`、`price_evaluation_formula`、`tie_break_rule`、`stage_relation`。未知の型は拒否する。新型の採用時は本説明、validator、public renderer、positive/negative testsを一緒に改訂する。
+- `minimum_total_score` / `minimum_subtotal_score` の `aggregation_scope` は必須。数値下限は有限・非負で `points` 又は `percent_of_total` を用いる。各評価委員の集計、委員会集計、案件全体、小計を同じ総点の割合へ変換しない。
+- `proposal_ceiling` / `planned_price` の金額は正のJPY整数、`tie_break_rule.rule_order` は正整数。複数の上限を持つ失格条件では `amount_jpy` が空欄でも正当であり、0円とは解釈しない。
 - `proposal_ceiling` と `planned_price` は同一概念へ正規化しない。金額・税込税抜もSourceどおり保持する。
 - `minimum_subtotal_score` は対象となる小計を `aggregation_scope` で明示し、case total の下限へ読み替えない。
 - `stage_relation` はSourceが直接明示する包含・再利用等に限る。現在は松江の80点を最終200点に含む関係と、五泉の一次価格点を二次で再計算せず用いる関係を保持し、raw `assessment_stage` から自動生成しない。

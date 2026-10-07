@@ -148,6 +148,34 @@ def main():
                         record(view, label, "screenshot_saved", True)
                     except Exception as error:
                         record(view, label, "case_interaction", False, str(error))
+                if view == "desktop-1280":
+                    try:
+                        picker.select_option("matsue-2026-genai-support")
+                        share = page.locator("#evaluation-share-link")
+                        share_url = share.get_attribute("href")
+                        record(view, "SHARING", "topic_case_url",
+                               "case=matsue-2026-genai-support" in share_url
+                               and "topic=rag-grounding" in share_url, share_url)
+                        page.goto(share_url, wait_until="domcontentloaded", timeout=30000)
+                        page.wait_for_function(
+                            "() => document.querySelector('#evaluation-case-select')?.value === 'matsue-2026-genai-support'",
+                            timeout=12000)
+                        record(view, "SHARING", "deep_link_roundtrip", True)
+                        with page.expect_download(timeout=12000) as memo_event:
+                            page.locator("#evaluation-memo-download").click()
+                        download = memo_event.value
+                        memo_path = out / "evaluation-note-matsue-2026-genai-support.md"
+                        download.save_as(str(memo_path))
+                        memo_text = memo_path.read_text(encoding="utf-8")
+                        record(view, "SHARING", "memo_export_has_evidence",
+                               download.suggested_filename == memo_path.name
+                               and "10 / 80点" in memo_text
+                               and "該当箇所：" in memo_text
+                               and "資料取得日：" in memo_text
+                               and "推奨配点" in memo_text,
+                               "markdown bytes " + str(len(memo_text)))
+                    except Exception as error:
+                        record(view, "SHARING", "share_or_memo_export", False, str(error))
                 try:
                     link = page.locator('#evaluation-case-detail .evaluation-case-source-links a[target="_blank"]').first
                     with page.expect_popup(timeout=8000) as popup_event:

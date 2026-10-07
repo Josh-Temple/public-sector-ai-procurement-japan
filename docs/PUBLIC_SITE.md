@@ -44,11 +44,14 @@ This keeps the public interface downstream of the repository data model.
 - `insights.html`
 - `checklist.html`
 - `drafting.html`
+- `evaluation.html`
 - `methodology.html`
 - `robots.txt`
 - `sitemap.xml`
 - `assets/`
 - `data/`
+
+After successful deployment, the `evaluation-browser-qa` dependent job runs real Chromium desktop/mobile checks, compares the published `evaluation.js` blob to the deploy commit, and uploads a JSON report and screenshots for review. Workflow success alone is not a claim of Android hardware/200% browser zoom validation.
 
 The workflow uses the current GitHub Pages Actions flow documented by GitHub. GitHub Pages must be configured to use GitHub Actions as its publishing source in repository settings before deployment can succeed.
 
@@ -59,6 +62,7 @@ The public page is intentionally more than a search table.
 
 - `insights.html` provides a stable, shareable narrative entry point for five reviewed design issues. It is presentation copy only; the linked reviewed Claims remain authoritative for scope and evidence.
 - `checklist.html` translates reviewed case differences into eight specification-design questions. It is a decision prompt, not a legal or technical standard, and every example routes back to cases, Claims, or official sources.
+- `evaluation.html` reads case-local evaluation, qualification, selection and price rules from canonical CSVs. A `?topic=<topic_id>&case=<case_id>` URL reproduces the selected representative topic and case; the share link follows selector changes. The Markdown export reads those same registered rows and their official Source titles/URLs/locators at click time without inventing a recommendation or a new canonical copy. An unknown case parameter is ignored; the export does not make an absent condition proof of nonexistence.
 - `drafting.html` is the second-stage specification drafting support page. It keeps only stable decision/navigation metadata in `assets/drafting.js`; observed requirements, scoring examples, Source links, and case evidence boundaries are read from the canonical CSVs at runtime. It does not set numeric defaults or infer mandatory/evaluation/qualification roles automatically.
 - `methodology.html` exposes the public data layers, evidence-state semantics, freshness rules, and direct CSV entry points without creating a second canonical data source.
 - The public HTML includes basic Open Graph and Twitter summary metadata for cleaner link previews without introducing a separate content source.

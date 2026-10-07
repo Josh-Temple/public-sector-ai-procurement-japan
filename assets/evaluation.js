@@ -231,6 +231,80 @@ function caseLink(caseId) {
   return "./index.html?case=" + encodeURIComponent(caseId);
 }
 
+function evaluationStateUrl(baseUrl, topicId, caseId) {
+  const url = new URL(baseUrl);
+  url.search = "";
+  url.hash = "";
+  if (topicId) url.searchParams.set("topic", topicId);
+  if (caseId) url.searchParams.set("case", caseId);
+  return url.toString();
+}
+
+function buildEvaluationMemo(caseId, topic, data, baseUrl) {
+  const caseRow = data.caseById.get(caseId);
+  if (!caseRow) throw new Error("case is not in the displayed comparison subset");
+  const link = evaluationStateUrl(baseUrl, topic.id, caseId);
+  const rows = data.evaluations.filter(function (row) { return row.case_id === caseId; });
+  const rules = data.rules.filter(function (row) { return row.case_id === caseId; });
+  const gates = data.gates.filter(function (row) { return row.case_id === caseId; });
+  const procurement = data.procurementByCase.get(caseId);
+  const evidence = data.evidenceByCase.get(caseId);
+  const lines = [
+    "# 自治体AI調達：評価・参加資格の検討メモ",
+    "",
+    "- 案件：" + caseRow.government_name + " / " + caseRow.procurement_title,
+    "- 論点：" + topic.label,
+    "- 表示状態URL：" + link,
+    "",
+    "このメモは登録された案件内の一次資料参照を整理したものです。配点の推奨、契約最終仕様、現時点の資料アクセス可否や条件の有効性を保証しません。",
+    "未登録の項目は、原資料に存在しないことを意味しません。",
+    caseBoundaryText(evidence),
+    "",
+    "## 評価項目（審査段階・当該段階の満点）",
+    ""
+  ];
+  function evidenceLine(sourceId, locator, label) {
+    const source = data.sourceById.get(sourceId);
+    const title = source ? source.title || sourceLabel(source) : "Source未登録";
+    if (!source || !source.url) return "  - " + label + "：" + title + "（公式URL未登録）";
+    return "  - " + label + "：[" + title + "](" + source.url + ")" +
+      (locator ? " — 該当箇所：" + locator : "") +
+      (source.retrieved_at ? " ／ 資料取得日：" + source.retrieved_at : "");
+  }
+  if (!rows.length) lines.push("構造化された配点行は未登録です。");
+  rows.forEach(function (row) {
+    lines.push("- " + row.criterion_summary + "：" + scoreContext(row));
+    const source = sourceForEvaluation(row, data);
+    if (source) lines.push(evidenceLine(source.source_id, row.locator || "", "根拠"));
+    else lines.push("  - 根拠：Source参照未登録");
+  });
+  lines.push("", "## 参加資格（評価点とは別）", "");
+  if (!gates.length) lines.push("参加資格の構造化行は未登録です。");
+  gates.forEach(function (row) {
+    lines.push("- " + row.condition_summary);
+    gateMeaningParts(row).forEach(function (part) { lines.push("  - " + part); });
+    lines.push(evidenceLine(row.base_source_id, row.base_locator, "元の根拠"));
+    if (row.changed_by_source_id) lines.push(evidenceLine(row.changed_by_source_id, row.change_locator, "Q&A・訂正"));
+  });
+  lines.push("", "## 選定・価格・審査段階間のルール", "");
+  if (!rules.length) lines.push("ルールの構造化行は未登録です。");
+  rules.forEach(function (row) {
+    lines.push("- " + ruleSummary(row));
+    lines.push(evidenceLine(row.source_id, row.locator, "根拠"));
+    if (row.collected_at) lines.push("  - データ収集日：" + row.collected_at);
+  });
+  lines.push("", "## 価格の扱い", "");
+  const prices = rows.filter(isCasePriceCriterion);
+  if (!prices.length) lines.push("価格に関連づけた構造化配点行は未登録です。");
+  prices.forEach(function (row) { lines.push("- " + row.criterion_summary + "：" + scoreContext(row)); });
+  if (procurement && procurement.pricing_basis) lines.push("- 調達構造の価格条件：" + procurement.pricing_basis);
+  lines.push("", "## 確認上の制約", "",
+    "評価項目・参加資格・選定下限・価格算式は異なる役割です。",
+    "他案件の点数との単純比較、横断的な配点基準への変換、未確認の現行性・契約最終条件の断定は行いません。",
+    "公式資料の内容は該当箇所と後続Q&Aを個別に再確認してください。", "");
+  return lines.join("\n");
+}
+
 function claimLink(path) {
   return "https://github.com/Josh-Temple/public-sector-ai-procurement-japan/blob/main/" + path;
 }
@@ -440,14 +514,16 @@ function renderStageRelations(root, rows, data) {
   root.appendChild(relations);
 }
 
-function renderTopicLinks(activeId) {
+function renderTopicLinks(activeId, caseId) {
   const root = document.getElementById("evaluation-topic-links");
   if (!root) return;
   root.replaceChildren();
   EVALUATION_TOPICS.forEach(function (topic, index) {
     const a = document.createElement("a");
     a.className = "theme-link" + (topic.id === activeId ? " is-active" : "");
-    a.href = "./evaluation.html?topic=" + encodeURIComponent(topic.id);
+    a.href = typeof window !== "undefined"
+      ? evaluationStateUrl(window.location.href, topic.id, caseId)
+      : "./evaluation.html?topic=" + encodeURIComponent(topic.id);
     if (topic.id === activeId) a.setAttribute("aria-current", "page");
     appendText(a, "span", String(index + 1).padStart(2, "0"));
     appendText(a, "strong", topic.label);
@@ -727,7 +803,6 @@ async function initEvaluationSupport() {
 
     const requested = new URLSearchParams(window.location.search).get("topic");
     const topic = EVALUATION_TOPICS.find(function (item) { return item.id === requested; }) || EVALUATION_TOPICS[0];
-    renderTopicLinks(topic.id);
     renderTopic(topic, data);
 
     const select = document.getElementById("evaluation-case-select");
@@ -740,8 +815,34 @@ async function initEvaluationSupport() {
       select.appendChild(option);
     });
     if (select.options.length) {
-      renderCase(select.value, data);
-      select.addEventListener("change", function () { renderCase(select.value, data); });
+      const requestedCase = new URLSearchParams(window.location.search).get("case");
+      if (requestedCase && EVALUATION_CASE_IDS.includes(requestedCase)
+          && data.caseById.has(requestedCase)) select.value = requestedCase;
+      const link = document.getElementById("evaluation-share-link");
+      const memoButton = document.getElementById("evaluation-memo-download");
+      function updateSelection() {
+        renderCase(select.value, data);
+        renderTopicLinks(topic.id, select.value);
+        if (link) link.href = evaluationStateUrl(window.location.href, topic.id, select.value);
+      }
+      updateSelection();
+      select.addEventListener("change", function () {
+        window.history.replaceState(null, "", evaluationStateUrl(window.location.href, topic.id, select.value));
+        updateSelection();
+      });
+      if (memoButton) {
+        memoButton.addEventListener("click", function () {
+          const markdown = buildEvaluationMemo(select.value, topic, data, window.location.href);
+          const blobUrl = URL.createObjectURL(new Blob([markdown], { type: "text/markdown;charset=utf-8" }));
+          const a = document.createElement("a");
+          a.href = blobUrl;
+          a.download = "evaluation-note-" + select.value + ".md";
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          window.setTimeout(function () { URL.revokeObjectURL(blobUrl); }, 1000);
+        });
+      }
     }
   } catch (error) {
     const root = document.getElementById("evaluation-topic-detail");
@@ -758,6 +859,8 @@ if (typeof module !== "undefined") {
     EVALUATION_DATA_FILES,
     EVALUATION_TOPICS,
     EVALUATION_CASE_IDS,
+    evaluationStateUrl,
+    buildEvaluationMemo,
     PRICE_CRITERION_IDS,
     isCasePriceCriterion,
     thresholdScopeLabel,

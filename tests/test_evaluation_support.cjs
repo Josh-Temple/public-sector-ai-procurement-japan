@@ -6,6 +6,8 @@ const path = require("node:path");
 const {
   EVALUATION_TOPICS,
   EVALUATION_CASE_IDS,
+  evaluationStateUrl,
+  buildEvaluationMemo,
   PRICE_CRITERION_IDS,
   isCasePriceCriterion,
   thresholdScopeLabel,
@@ -403,3 +405,33 @@ assert.match(sourceText, /データ収集日：/);
 assert.doesNotMatch(sourceText, /一次資料をfresh確認済み/);
 
 console.log("evaluation support regression: " + EVALUATION_TOPICS.length + " topics, canonical references and role boundaries resolved");
+
+
+const sharedState = evaluationStateUrl(
+  "https://josh-temple.github.io/public-sector-ai-procurement-japan/evaluation.html?unknown=old#outdated",
+  "usage-pricing", "matsue-2026-genai-support"
+);
+assert.equal(sharedState, "https://josh-temple.github.io/public-sector-ai-procurement-japan/evaluation.html?topic=usage-pricing&case=matsue-2026-genai-support");
+const memoData = {caseById, evaluations, rules, gates, procurementByCase, evidenceByCase, sourceById, sourceByUrl};
+const priceTopic = EVALUATION_TOPICS.find(function (t) { return t.id === "usage-pricing"; });
+const matsueMemo = buildEvaluationMemo("matsue-2026-genai-support", priceTopic, memoData, sharedState);
+assert.match(matsueMemo, /10 \/ 80点.*書類審査/);
+assert.match(matsueMemo, /各委員の合計得点.*60%/);
+assert.match(matsueMemo, /200点/);
+assert.match(matsueMemo, /該当箇所/);
+assert.match(matsueMemo, /資料取得日/);
+assert.match(matsueMemo, /横断的な配点基準/);
+const oumiMemo = buildEvaluationMemo("oumi-2026-joint-genai", priceTopic, memoData, sharedState);
+assert.match(oumiMemo, /小計700点.*420点/);
+assert.match(oumiMemo, /どちらか一方/);
+assert.match(oumiMemo, /Q&A・訂正/);
+const sendaiMemo = buildEvaluationMemo("sendai-2026-genai-service", priceTopic, memoData, sharedState);
+assert.match(sendaiMemo, /令和3年度〜令和7年度/);
+assert.match(sendaiMemo, /代表構成員/);
+assert.doesNotMatch(sendaiMemo, /令和2年度〜令和6年度/);
+const minohMemo = buildEvaluationMemo("minoh-2026-genai-license", priceTopic, memoData, sharedState);
+assert.match(minohMemo, /財務体質等に係る評価点の合計が零点未満とならない/);
+assert.match(minohMemo, /2\(16\); 9\(1\)/);
+assert.throws(function () {
+  buildEvaluationMemo("not-a-case", priceTopic, memoData, sharedState);
+}, /not in the displayed comparison subset/);

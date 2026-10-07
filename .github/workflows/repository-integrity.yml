@@ -44,10 +44,12 @@ jobs:
         run: |
           node --check assets/app.js
           node --check assets/drafting.js
+          node --check assets/evaluation.js
       - name: Test public decision support
         run: |
           node tests/test_requirement_explorer.cjs
           node tests/test_drafting_support.cjs
+          node tests/test_evaluation_support.cjs
       - name: Check Python helper syntax
         run: python3 -m compileall -q scripts
       - name: Test preservation and integrity failure paths

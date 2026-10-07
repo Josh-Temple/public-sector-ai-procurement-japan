@@ -426,7 +426,7 @@ function draftingDecisionForTopic(topicId) {
     "usage-pricing": "usage-pricing",
     "support-adoption": "support-adoption",
     "implementation-capability": "support-adoption",
-    "ui-usability": "interface",
+    "ui-usability": "drafting-index",
     "operations-maintenance": "support-adoption",
     "citizen-safety": "generation-boundary"
   };

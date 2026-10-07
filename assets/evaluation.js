@@ -28,7 +28,7 @@ const EVALUATION_TOPICS = [
     caution: "同じ認証でも、応募可否を決める参加資格、仕様上の条件、提案を比較する評価項目では効果が異なります。",
     effectiveIds: ["EFF-oumi-certification", "EFF-oumi-ismap", "EFF-saitama-ismap_status"],
     criterionIds: ["SAI-P01", "KOG-03", "OUM-03"],
-    gateIds: ["QG-HOK-04", "QG-OUM-07"]
+    gateIds: ["QG-HOK-04", "QG-OUM-07", "QG-YAI-02"]
   },
   {
     id: "model-policy",
@@ -86,7 +86,7 @@ const EVALUATION_TOPICS = [
     caution: "類似実績は案件によって参加資格にも評価項目にもなります。評価点だけから応募条件を推測しません。",
     effectiveIds: [],
     criterionIds: ["KOB-03", "SAI-P15", "SAI-P17", "SEN-11", "OUM-04", "KVB-02"],
-    gateIds: ["QG-OUM-08"]
+    gateIds: ["QG-OUM-08", "QG-YAI-01"]
   },
   {
     id: "ui-usability",

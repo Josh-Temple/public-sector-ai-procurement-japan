@@ -4,7 +4,7 @@
 
 [ケーススタディ：仕様書と質疑をつなぎ、有効要件を整理する](https://josh-temple.github.io/public-sector-ai-procurement-japan/case-study.html) — 問題設定・一次資料・設計・検証・限界を具体例で紹介。
 
-まず[5つの設計論点](https://josh-temple.github.io/public-sector-ai-procurement-japan/insights.html)と[仕様検討チェックリスト](https://josh-temple.github.io/public-sector-ai-procurement-japan/checklist.html)で論点を見つけ、[仕様作成支援](https://josh-temple.github.io/public-sector-ai-procurement-japan/drafting.html)で自団体の変数と調達上の置き場所を整理し、[比較サイト](https://josh-temple.github.io/public-sector-ai-procurement-japan/)から公式資料へ戻れます。
+まず[5つの設計論点](https://josh-temple.github.io/public-sector-ai-procurement-japan/insights.html)と[仕様検討チェックリスト](https://josh-temple.github.io/public-sector-ai-procurement-japan/checklist.html)で論点を見つけ、[仕様作成支援](https://josh-temple.github.io/public-sector-ai-procurement-japan/drafting.html)で自団体の変数と調達上の置き場所を整理し、[評価・配点設計支援](https://josh-temple.github.io/public-sector-ai-procurement-japan/evaluation.html)で最低条件・評価項目・参加資格・価格を分け、[比較サイト](https://josh-temple.github.io/public-sector-ai-procurement-japan/)から公式資料へ戻れます。
 
 自治体のAI調達を、仕様書だけでなく質疑・訂正・評価・公開結果と接続して構造化する個人研究です。一次情報調査、要件比較、出典設計、CIによる整合性確認のEvidenceとして、`docs/DATA_MODEL.md`、`data/source_documents.csv`、`data/effective_requirements.csv`、`scripts/validate_repository.py`を確認できます。
 
@@ -21,6 +21,8 @@
 **仕様検討チェックリスト:** https://josh-temple.github.io/public-sector-ai-procurement-japan/checklist.html
 
 **仕様作成支援:** https://josh-temple.github.io/public-sector-ai-procurement-japan/drafting.html
+
+**評価・配点設計支援:** https://josh-temple.github.io/public-sector-ai-procurement-japan/evaluation.html
 
 **データの見方・方法:** https://josh-temple.github.io/public-sector-ai-procurement-japan/methodology.html
 
@@ -134,7 +136,11 @@ python3 scripts/build_case_evidence_summary.py
 git diff --exit-code -- data/evidence_coverage.csv docs/EVIDENCE_COVERAGE.md data/case_evidence_summary.csv docs/CASE_EVIDENCE_SUMMARY.md
 python3 scripts/validate_public_site.py
 node --check assets/app.js
+node --check assets/drafting.js
+node --check assets/evaluation.js
 node tests/test_requirement_explorer.cjs
+node tests/test_drafting_support.cjs
+node tests/test_evaluation_support.cjs
 python3 -m compileall -q scripts
 python3 -m unittest discover -s tests -v
 node tests/test_main_guard.cjs

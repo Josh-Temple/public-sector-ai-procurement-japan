@@ -97,6 +97,7 @@ const securityTopic = EVALUATION_TOPICS.find(function (topic) { return topic.id 
 assert.ok(securityTopic.criterionIds.includes("SAI-P01"));
 assert.ok(securityTopic.gateIds.includes("QG-HOK-04"));
 assert.ok(securityTopic.gateIds.includes("QG-OUM-07"));
+assert.ok(securityTopic.gateIds.includes("QG-YAI-02"));
 
 const oumiCertification = effectiveById.get("EFF-oumi-certification");
 assert.ok(oumiCertification.changed_by_source_id, "Oumi certification must preserve Q&A changed-by source");
@@ -170,6 +171,16 @@ assert.ok(evaluationById.has("OUM-04"), "Oumi experience must remain separately 
 const saitamaQualificationRows = gates.filter(function (row) { return row.case_id === "saitama-2026-ai-digital-support"; });
 assert.equal(saitamaQualificationRows.length, 0, "Saitama scored certification example must not be promoted to qualification");
 assert.equal(effectiveById.get("EFF-saitama-ismap_status").effective_status, "not_qualification");
+
+// Yaizu qualification migration is section-complete for guide §3, including continuing eligibility.
+const yaizuGates = gates.filter(function (row) { return row.case_id === "yaizu-2025-genai-service"; });
+assert.equal(yaizuGates.length, 4, "Yaizu qualification section must not be partially migrated");
+assert.deepEqual(new Set(yaizuGates.map(function (row) { return row.gate_id; })), new Set(["QG-YAI-01", "QG-YAI-02", "QG-YAI-03", "QG-YAI-04"]));
+assert.equal(gateById.get("QG-YAI-01").topic, "prior_experience");
+assert.equal(gateById.get("QG-YAI-02").topic, "security_certification");
+assert.equal(gateById.get("QG-YAI-02").satisfaction_rule, "列挙された認証のいずれかを満たす");
+assert.equal(gateById.get("QG-YAI-04").topic, "continued_eligibility");
+assert.equal(gateById.get("QG-YAI-04").unmet_effect, "qualification_lost");
 
 // Typed selection/pricing rules do not duplicate criterion points.
 for (const row of rules) {

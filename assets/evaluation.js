@@ -129,9 +129,16 @@ const EVALUATION_CASE_IDS = [
   "hokkaido-2026-genai-rag-service"
 ];
 
-const PRICE_CRITERION_IDS = new Set(
-  EVALUATION_TOPICS.find(function (topic) { return topic.id === "usage-pricing"; }).criterionIds
-);
+// Audited case-local price-related scored items. Topic representatives are NOT an inventory.
+// These IDs include pricing-related scoring (not necessarily a mathematical price formula).
+const PRICE_CRITERION_IDS = new Set([
+  "SAI-P12", "SAI-P13", "OUM-14", "GOS-05", "KVB-05", "KOBE-DIFY-09",
+  "MINOH-GENAI-PRICE", "YAI-10", "MATSUE-DOC-04", "ITOSHIMA-CHATBOT-02"
+]);
+
+function isCasePriceCriterion(row) {
+  return PRICE_CRITERION_IDS.has(row.criterion_id);
+}
 
 function parseEvaluationCSV(text) {
   const out = [];
@@ -308,13 +315,11 @@ function qualificationCard(row, data) {
   appendText(card, "p", "参加資格", "evaluation-role");
   appendText(card, "h3", row.condition_summary);
   appendText(card, "p", data.caseById.get(row.case_id)?.government_name || row.case_id, "evaluation-case");
-  appendText(card, "p", row.satisfaction_rule || "応募・入札前に満たす条件として公式資料で確認", "evaluation-score");
+  gateMeaningParts(row).forEach(function (part) { appendText(card, "p", part, "evaluation-score"); });
   if (row.changed_by_source_id) appendText(card, "p", "Q&A・訂正を反映した参加資格です。", "evaluation-change");
   appendText(card, "p", "評価項目や仕様上の最低条件とは別の役割です。", "evaluation-boundary");
-  renderLinks(card, row.case_id, [
-    data.sourceById.get(row.base_source_id),
-    data.sourceById.get(row.changed_by_source_id)
-  ]);
+  appendGateEvidence(card, row, data);
+  renderLinks(card, row.case_id, null);
   return card;
 }
 
@@ -334,22 +339,39 @@ function ruleTypeLabel(type) {
   return labels[type] || "選定ルール";
 }
 
+function thresholdScopeLabel(scope) {
+  const labels = {
+    case_total: "案件全体の満点",
+    evaluator_total: "各委員の合計得点（満点基準）",
+    selection_committee_aggregate: "評価委員の合計得点（委員会集計・満点基準）",
+    proposal_plus_function_subtotal_700: "企画提案・機能デモの小計700点"
+  };
+  return labels[scope] || (scope ? "集計対象：" + scope : "集計対象未登録");
+}
+
+function gateMeaningParts(row) {
+  const targets = {bidder: "入札者", proposer: "提案者", offered_service: "提供予定サービス", joint_proposal: "共同提案"};
+  const effects = {bid_invalid: "入札無効", not_qualified: "参加資格を満たさない", qualification_lost: "参加資格喪失"};
+  const parts = [];
+  if (row.applies_to) parts.push("対象：" + (targets[row.applies_to] || row.applies_to));
+  if (row.satisfaction_rule) parts.push("充足方法：" + row.satisfaction_rule);
+  if (row.unmet_effect) parts.push("不充足時：" + (effects[row.unmet_effect] || row.unmet_effect));
+  return parts;
+}
+
 function ruleSummary(row) {
   if (row.rule_type === "proposal_ceiling" || row.rule_type === "planned_price") {
     const amount = Number(row.amount_jpy);
     const tax = row.tax_basis === "tax_included" ? "（税込）" : row.tax_basis === "tax_excluded" ? "（税抜）" : "";
     return ruleTypeLabel(row.rule_type) + "：" + (Number.isFinite(amount) ? amount.toLocaleString("ja-JP") + "円" : "金額未登録") + tax;
   }
-  if (row.rule_type === "minimum_subtotal_score") {
-    return ruleTypeLabel(row.rule_type) + "：" + row.threshold_value + (row.threshold_unit === "points" ? "点" : "") + (row.notes ? "。 " + row.notes : "");
-  }
   if (row.rule_type.startsWith("minimum_")) {
     const threshold = row.threshold_unit === "percent_of_total"
-      ? "総点の" + row.threshold_value + "%"
-      : row.threshold_unit === "points"
-        ? row.threshold_value + "点"
-        : row.threshold_value;
-    return ruleTypeLabel(row.rule_type) + "：" + threshold;
+      ? thresholdScopeLabel(row.aggregation_scope) + "の" + row.threshold_value + "%"
+      : thresholdScopeLabel(row.aggregation_scope) + "で" + row.threshold_value + "点";
+    const consequence = row.effect === "not_selected" ? "下限未満の場合は選定対象としません。" : "";
+    return ruleTypeLabel(row.rule_type) + "：" + threshold + "。" + consequence +
+      (row.notes ? " " + row.notes : "");
   }
   if (row.rule_type === "stage_relation") return ruleTypeLabel(row.rule_type) + "：" + (row.notes || row.effect || "公式資料を確認");
   if (row.rule_type === "price_evaluation_formula") return ruleTypeLabel(row.rule_type) + "：" + row.formula_text;
@@ -365,8 +387,9 @@ function ruleCard(row, data) {
   appendText(card, "p", data.caseById.get(row.case_id)?.government_name || row.case_id, "evaluation-case");
   const context = [row.scope_stage, row.criterion_id].filter(Boolean).join(" ・ ");
   appendText(card, "p", context || "案件全体のルール", "evaluation-score");
-  appendText(card, "p", row.verification_state === "fresh_verified" ? "一次資料をfresh確認済み" : "過去確認済み・現在のSource状態を要確認", "evaluation-boundary");
-  renderLinks(card, row.case_id, data.sourceById.get(row.source_id));
+  appendText(card, "p", "資料の取得記録は、現在のアクセス可否や条件の有効性を保証しません。", "evaluation-boundary");
+  appendRuleEvidence(card, row, data);
+  renderLinks(card, row.case_id, null);
   return card;
 }
 
@@ -382,6 +405,29 @@ function appendCaseSourceLinks(parent, sources) {
   if (links.children.length) parent.appendChild(links);
 }
 
+function appendSourceEvidence(parent, source, locator, prefix) {
+  const line = document.createElement("p");
+  line.className = "evaluation-case-source-links";
+  line.appendChild(document.createTextNode(prefix + "："));
+  if (source && source.url) appendLink(line, source.url, source.title || sourceLabel(source), true);
+  else line.appendChild(document.createTextNode(source ? (source.title || "公式資料・URL未登録") : "資料未登録"));
+  if (locator) line.appendChild(document.createTextNode(" ／ 該当箇所：" + locator));
+  parent.appendChild(line);
+  if (source && source.retrieved_at) appendText(parent, "p", "資料取得日：" + source.retrieved_at, "evaluation-boundary");
+}
+
+function appendRuleEvidence(parent, row, data) {
+  appendSourceEvidence(parent, data.sourceById.get(row.source_id), row.locator, "根拠");
+  if (row.collected_at) appendText(parent, "p", "データ収集日：" + row.collected_at, "evaluation-boundary");
+}
+
+function appendGateEvidence(parent, row, data) {
+  appendSourceEvidence(parent, data.sourceById.get(row.base_source_id), row.base_locator, "元の根拠");
+  if (row.changed_by_source_id) {
+    appendSourceEvidence(parent, data.sourceById.get(row.changed_by_source_id), row.change_locator, "Q&A・訂正");
+  }
+}
+
 function renderStageRelations(root, rows, data) {
   if (!rows.length) return;
   const relations = document.createElement("div");
@@ -389,7 +435,7 @@ function renderStageRelations(root, rows, data) {
   appendText(relations, "p", "段階間の得点関係", "evaluation-role");
   rows.forEach(function (row) {
     appendText(relations, "p", row.notes || ruleSummary(row), "scope-note");
-    appendCaseSourceLinks(relations, data.sourceById.get(row.source_id));
+    appendRuleEvidence(relations, row, data);
   });
   root.appendChild(relations);
 }
@@ -595,11 +641,12 @@ function renderCase(caseId, data) {
     appendText(gates, "p", "この案件について、現在のcanonical dataに表示できる参加資格行はありません。原資料に参加資格が存在しないという意味ではありません。", "scope-note");
   } else {
     caseGates.forEach(function (row) {
-      appendText(gates, "p", row.condition_summary);
-      appendCaseSourceLinks(gates, [
-        data.sourceById.get(row.base_source_id),
-        data.sourceById.get(row.changed_by_source_id)
-      ]);
+      const entry = document.createElement("div");
+      entry.className = "evaluation-case-entry";
+      appendText(entry, "p", row.condition_summary);
+      gateMeaningParts(row).forEach(function (part) { appendText(entry, "p", part, "evaluation-score"); });
+      appendGateEvidence(entry, row, data);
+      gates.appendChild(entry);
     });
   }
   root.appendChild(gates);
@@ -612,8 +659,11 @@ function renderCase(caseId, data) {
     appendText(rules, "p", "この案件について、現在のcanonical dataに表示できる選定・価格ルール行はありません。原資料に閾値・失格条件・価格ルールが存在しないという意味ではありません。", "scope-note");
   } else {
     selectionRules.forEach(function (row) {
-      appendText(rules, "p", ruleSummary(row));
-      appendCaseSourceLinks(rules, data.sourceById.get(row.source_id));
+      const entry = document.createElement("div");
+      entry.className = "evaluation-case-entry";
+      appendText(entry, "p", ruleSummary(row));
+      appendRuleEvidence(entry, row, data);
+      rules.appendChild(entry);
     });
   }
   root.appendChild(rules);
@@ -621,7 +671,7 @@ function renderCase(caseId, data) {
   const price = document.createElement("div");
   price.className = "evaluation-case-block";
   appendText(price, "h3", "価格の扱い");
-  const priceRows = evaluations.filter(function (row) { return PRICE_CRITERION_IDS.has(row.criterion_id); });
+  const priceRows = evaluations.filter(isCasePriceCriterion);
   if (priceRows.length) {
     priceRows.forEach(function (row) {
       const p = document.createElement("p");
@@ -629,7 +679,7 @@ function renderCase(caseId, data) {
       price.appendChild(p);
     });
   } else {
-    appendText(price, "p", "評価項目としての価格点は、この案件の構造化評価行にはありません。", "scope-note");
+    appendText(price, "p", "価格に関連づけて表示できる構造化評価項目は未登録です。原資料に価格条件がないという意味ではありません。", "scope-note");
   }
   if (procurement && procurement.pricing_basis) {
     appendText(price, "p", "価格条件：" + procurement.pricing_basis, "evaluation-boundary");
@@ -709,6 +759,9 @@ if (typeof module !== "undefined") {
     EVALUATION_TOPICS,
     EVALUATION_CASE_IDS,
     PRICE_CRITERION_IDS,
+    isCasePriceCriterion,
+    thresholdScopeLabel,
+    gateMeaningParts,
     parseEvaluationCSV,
     roleForEffective,
     effectiveValue,

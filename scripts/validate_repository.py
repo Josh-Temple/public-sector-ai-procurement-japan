@@ -10,9 +10,26 @@ from __future__ import annotations
 import csv
 import datetime
 import re
+from decimal import Decimal, InvalidOperation
 import sys
 from collections import Counter
 from pathlib import Path
+
+SUPPORTED_EVALUATION_RULE_TYPES = frozenset({
+    "minimum_total_score", "minimum_subtotal_score", "disqualification_condition",
+    "proposal_ceiling", "planned_price", "price_evaluation_formula",
+    "tie_break_rule", "stage_relation",
+})
+
+
+def finite_decimal(value):
+    """Return a finite Decimal, or None for malformed/non-finite input."""
+    try:
+        number = Decimal((value or "").strip())
+    except (InvalidOperation, ValueError, AttributeError):
+        return None
+    return number if number.is_finite() else None
+
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "data"
@@ -357,6 +374,11 @@ def main() -> int:
     }
     for row in tables["evaluation_rules.csv"]:
         rule_id = row.get("rule_id") or "<unknown>"
+        rule_type = (row.get("rule_type") or "").strip()
+        if rule_type not in SUPPORTED_EVALUATION_RULE_TYPES:
+            errors.append(f"data/evaluation_rules.csv: {rule_id} unsupported rule_type {rule_type!r}")
+        if not (row.get("source_id") or "").strip():
+            errors.append(f"data/evaluation_rules.csv: {rule_id} missing source_id")
         if not row.get("locator"):
             errors.append(f"data/evaluation_rules.csv: {rule_id} lacks locator")
         if row.get("verification_state") not in {"fresh_verified", "previously_verified_source_unavailable"}:
@@ -377,18 +399,31 @@ def main() -> int:
                 errors.append(f"data/evaluation_rules.csv: {rule_id} references unknown related_rule_id {related!r}")
             elif related_row.get("case_id") != row.get("case_id"):
                 errors.append(f"data/evaluation_rules.csv: {rule_id} related rule belongs to a different case")
-        if row.get("rule_type") in {"minimum_total_score", "minimum_stage_score", "minimum_criterion_score", "minimum_subtotal_score"}:
-            if not row.get("threshold_value") or row.get("threshold_unit") not in {"points", "percent_of_total"}:
-                errors.append(f"data/evaluation_rules.csv: {rule_id} threshold lacks value/unit")
-        if row.get("rule_type") == "minimum_subtotal_score" and not row.get("aggregation_scope"):
-            errors.append(f"data/evaluation_rules.csv: {rule_id} subtotal threshold lacks aggregation_scope")
+        if rule_type in {"minimum_total_score", "minimum_subtotal_score"}:
+            if row.get("threshold_unit") not in {"points", "percent_of_total"}:
+                errors.append(f"data/evaluation_rules.csv: {rule_id} threshold lacks supported unit")
+            threshold = finite_decimal(row.get("threshold_value"))
+            if threshold is None or threshold < 0:
+                errors.append(f"data/evaluation_rules.csv: {rule_id} invalid numeric threshold_value")
+            if not (row.get("aggregation_scope") or "").strip():
+                errors.append(f"data/evaluation_rules.csv: {rule_id} missing aggregation_scope")
         if row.get("rule_type") == "stage_relation":
             if not criterion_id or row.get("effect") not in {"included_in_final_total", "reused_without_recalculation"} or not row.get("notes"):
                 errors.append(f"data/evaluation_rules.csv: {rule_id} stage relation lacks criterion/effect/notes")
-        if row.get("rule_type") in {"proposal_ceiling", "planned_price"}:
+        if rule_type in {"proposal_ceiling", "planned_price"}:
             if not row.get("amount_jpy") or row.get("tax_basis") not in {"tax_included", "tax_excluded", "unknown"}:
                 errors.append(f"data/evaluation_rules.csv: {rule_id} monetary boundary lacks amount/tax basis")
+        if (row.get("amount_jpy") or "").strip():
+            amount = finite_decimal(row.get("amount_jpy"))
+            if amount is None or amount <= 0 or amount != amount.to_integral_value():
+                errors.append(f"data/evaluation_rules.csv: {rule_id} invalid positive integer amount_jpy")
+        if rule_type == "tie_break_rule":
+            order = (row.get("rule_order") or "").strip()
+            if not order.isascii() or not order.isdecimal() or int(order or "0") <= 0:
+                errors.append(f"data/evaluation_rules.csv: {rule_id} invalid positive integer rule_order")
         source = sources_by_id.get(row.get("source_id"))
+        if source and source.get("case_id") != row.get("case_id"):
+            errors.append(f"data/evaluation_rules.csv: {rule_id} source belongs to a different case")
         if source and source.get("access_state") != "accessible" and row.get("verification_state") == "fresh_verified":
             errors.append(f"data/evaluation_rules.csv: {rule_id} marks unavailable source as fresh_verified")
 

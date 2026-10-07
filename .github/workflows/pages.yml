@@ -84,3 +84,33 @@ jobs:
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4
+
+
+  evaluation-browser-qa:
+    name: Production Chromium evaluation QA
+    needs: deploy
+    if: ${{ needs.deploy.result == 'success' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout exact deployed commit
+        uses: actions/checkout@v6
+      - name: Install Playwright Chromium
+        run: |
+          python3 -m pip install --user "playwright==1.56.0"
+          python3 -m playwright install --with-deps chromium
+      - name: Check actual published evaluation UI and JS revision
+        run: |
+          python3 scripts/browser_qa_evaluation.py \
+            --expected-js-blob-sha "$(git hash-object assets/evaluation.js)" \
+            --output-dir evaluation-browser-qa
+      - name: Preserve browser report and screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: evaluation-browser-qa-${{ github.run_id }}
+          path: evaluation-browser-qa/
+          retention-days: 30
+          if-no-files-found: warn

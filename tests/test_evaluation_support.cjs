@@ -7,6 +7,9 @@ const {
   EVALUATION_TOPICS,
   EVALUATION_CASE_IDS,
   PRICE_CRITERION_IDS,
+  isCasePriceCriterion,
+  thresholdScopeLabel,
+  gateMeaningParts,
   parseEvaluationCSV,
   roleForEffective,
   effectiveValue,
@@ -298,5 +301,67 @@ assert.match(sourceText, /appendCaseSourceLinks/, "case-local gate and rule rows
 assert.match(sourceText, /原資料に参加資格が存在しないという意味ではありません/);
 assert.match(sourceText, /原資料に閾値・失格条件・価格ルールが存在しないという意味ではありません/);
 assert.doesNotMatch(sourceText, /80\s*\+\s*200\s*=\s*280/, "public UI must not present a naive Matsue denominator sum");
+
+// Public case-local consumption must not depend on curated topic representative IDs.
+for (const [criterionId, caseId, points, denominator, stage] of [
+  ["YAI-10", "yaizu-2025-genai-service", "10", "100", "価格評価"],
+  ["MATSUE-DOC-04", "matsue-2026-genai-support", "10", "80", "書類審査"]
+]) {
+  const row = evaluationById.get(criterionId);
+  assert.equal(row.case_id, caseId);
+  assert.ok(isCasePriceCriterion(row), criterionId + " hidden from case-local pricing");
+  assert.equal(row.points, points);
+  assert.equal(row.total_points, denominator);
+  assert.equal(row.assessment_stage, stage);
+  assert.match(scoreContext(row), new RegExp(points + " / " + denominator + "点.*" + stage));
+}
+const pricingTopic = EVALUATION_TOPICS.find((topic) => topic.id === "usage-pricing");
+assert.ok(!pricingTopic.criterionIds.includes("YAI-10"));
+assert.ok(!pricingTopic.criterionIds.includes("MATSUE-DOC-04"));
+assert.ok(isCasePriceCriterion(evaluationById.get("YAI-10")));
+assert.ok(isCasePriceCriterion(evaluationById.get("MATSUE-DOC-04")));
+assert.ok(isCasePriceCriterion(evaluationById.get("ITOSHIMA-CHATBOT-02")), "latent Itoshima price row");
+assert.equal(PRICE_CRITERION_IDS.has("SEN-13"), false, "qualitative cost is not a price formula");
+
+// Keep different aggregation scopes distinct even when the numerical cutoffs coincide.
+const matsueThreshold = ruleSummary(ruleById.get("RULE-MATSUE-MIN-TOTAL"));
+const sendai25Threshold = ruleSummary(ruleById.get("RULE-SEN25-MIN-TOTAL"));
+const sendai26Threshold = ruleSummary(ruleById.get("RULE-SEN26-MIN-TOTAL"));
+const yaizuThreshold = ruleSummary(ruleById.get("RULE-YAI-MIN-TOTAL"));
+assert.match(matsueThreshold, /各委員.*60%.*選定/);
+assert.match(sendai25Threshold, /評価委員.*委員会集計.*60%.*選定/);
+assert.match(sendai26Threshold, /評価委員.*委員会集計.*60%.*選定/);
+assert.match(yaizuThreshold, /案件全体.*60%.*選定/);
+assert.notEqual(matsueThreshold, sendai25Threshold);
+assert.notEqual(yaizuThreshold, sendai25Threshold);
+assert.equal(thresholdScopeLabel("proposal_plus_function_subtotal_700").includes("700点"), true);
+assert.match(ruleSummary(oumiSubtotal), /420点.*700点/);
+assert.doesNotMatch(ruleSummary(oumiSubtotal), /1000点の42%/);
+
+// The source and gate relationships must remain visible in the public rendering path.
+for (const id of ["RULE-MATSUE-MIN-TOTAL", "RULE-SEN25-MIN-TOTAL",
+                   "RULE-OUM-MIN-SUBTOTAL", "RULE-MATSUE-STAGE-INCLUSION",
+                   "RULE-GOSEN-PRICE-REUSE"]) {
+  const row = ruleById.get(id);
+  assert.ok(row.locator, id + " missing exact Source location");
+  assert.ok(sourceById.get(row.source_id).url, id + " missing official Source URL");
+}
+const changedGate = gateById.get("QG-OUM-08");
+assert.ok(changedGate.base_locator);
+assert.ok(changedGate.change_locator);
+assert.notEqual(changedGate.base_source_id, changedGate.changed_by_source_id);
+assert.ok(sourceById.get(changedGate.base_source_id).url);
+assert.ok(sourceById.get(changedGate.changed_by_source_id).url);
+assert.match(gateMeaningParts(changedGate).join(" "), /どちらか一方/);
+assert.match(gateMeaningParts(gateById.get("QG-YAI-02")).join(" "), /いずれか/);
+assert.match(gateMeaningParts(gateById.get("QG-YAI-04")).join(" "), /参加資格喪失/);
+assert.match(gateMeaningParts(gateById.get("QG-HOK-04")).join(" "), /提供予定サービス.*入札無効/);
+assert.match(sourceText, /appendGateEvidence\(entry, row, data\)/);
+assert.match(sourceText, /appendRuleEvidence\(entry, row, data\)/);
+assert.match(sourceText, /appendRuleEvidence\(relations, row, data\)/);
+assert.match(sourceText, /source.title \|\| sourceLabel\(source\)/);
+assert.match(sourceText, /資料取得日：/);
+assert.match(sourceText, /データ収集日：/);
+assert.doesNotMatch(sourceText, /一次資料をfresh確認済み/);
 
 console.log("evaluation support regression: " + EVALUATION_TOPICS.length + " topics, canonical references and role boundaries resolved");

@@ -1,0 +1,14 @@
+gate_id,case_id,topic,applies_to,condition_summary,satisfaction_rule,applies_at_stage,unmet_effect,base_source_id,base_locator,changed_by_source_id,change_locator,review_status,notes
+QG-HOK-01,hokkaido-2026-genai-rag-service,procurement_registration,bidder,北海道の競争入札参加資格のうち情報システムの開発の資格を有すること,,participation,bid_invalid,SRC-hokkaido-2026-notice,2(1),,,reviewed,§13(1)は§2の資格を有しない者の入札を無効とする
+QG-HOK-02,hokkaido-2026-genai-rag-service,debarment_status,bidder,北海道が行う指名競争入札に関する指名を停止されていないこと,,participation,bid_invalid,SRC-hokkaido-2026-notice,2(2),,,reviewed,§13(1)は§2の資格を有しない者の入札を無効とする
+QG-HOK-03,hokkaido-2026-genai-rag-service,organized_crime_exclusion,bidder,暴力団関係事業者等であることにより北海道の競争入札への参加を除外されていないこと,,participation,bid_invalid,SRC-hokkaido-2026-notice,2(3),,,reviewed,§13(1)は§2の資格を有しない者の入札を無効とする
+QG-HOK-04,hokkaido-2026-genai-rag-service,security_certification,offered_service,提供予定のクラウドサービスについてISO/IEC 27001認証を取得していること,中小企業等協同組合等に係る資格要件の特例では組合が指定する組合員が保有する資格を含められる,participation,bid_invalid,SRC-hokkaido-2026-notice,2(4); 3,,,reviewed,認証はこの案件では参加資格。評価点とは扱わない
+QG-OUM-01,oumi-2026-joint-genai,legal_eligibility,proposer,地方自治法施行令第167条の4の規定に該当しないこと,,participation,,SRC-oumi-2026-guide,2.2(1),,,reviewed,参加資格要件は全て満たす必要がある
+QG-OUM-02,oumi-2026-joint-genai,insolvency_status,proposer,更生手続又は再生手続の開始申立てがある場合は更生計画又は再生計画の認可決定がなされていること,,participation,,SRC-oumi-2026-guide,2.2(2),,,reviewed,参加資格要件は全て満たす必要がある
+QG-OUM-03,oumi-2026-joint-genai,organized_crime_exclusion,proposer,実施要領2.2(3)に列挙された暴力団等の除外事由のいずれにも該当しないこと,,participation,,SRC-oumi-2026-guide,2.2(3),,,reviewed,列挙された個別類型を一つの除外条件として保持
+QG-OUM-04,oumi-2026-joint-genai,debarment_status,proposer,公告時点で構成8市の指名停止を受けていないこと,,participation,,SRC-oumi-2026-guide,2.2(4),,,reviewed,8市は実施要領1.4(4)の構成市
+QG-OUM-05,oumi-2026-joint-genai,continued_eligibility,proposer,請負業者決定までの間も参加資格条件を満たすこと,,participation,,SRC-oumi-2026-guide,2.2(5),,,reviewed,参加時点だけでなく選定まで継続
+QG-OUM-06,oumi-2026-joint-genai,information_security_history,proposer,過去5年間に情報漏洩等の情報セキュリティ事項について判決による罰金又は和解金の支払いがないこと,,participation,,SRC-oumi-2026-guide,2.2(6),,,reviewed,Source記載範囲を超えて違反歴一般へ拡張しない
+QG-OUM-07,oumi-2026-joint-genai,security_certification,proposer,プライバシーマーク又はISMSの認定を受け定期的に更新されていること,,participation,,SRC-oumi-2026-guide,2.2(7),,,reviewed,仕様書側の認証要件・Q&A No.13/16とは別の参加資格
+QG-OUM-08,oumi-2026-joint-genai,prior_experience,proposer,2023年4月1日以降に人口10万人以上の自治体又は自治体クラウドで生成AIサービスに関する十分な実績を有すること,2社による共同提案ではどちらか一方の実績でよいが実績を有する会社が分かるよう記載する,participation,,SRC-oumi-2026-guide,2.2(8),SRC-oumi-2026-qa,Q&A No.2,reviewed,同じ導入実績トピックがOUM-04では20/1000の評価項目としても存在する
+QG-OUM-09,oumi-2026-joint-genai,consortium_rule,joint_proposal,共同提案を行う場合は1つの共同体にのみ参加すること,,participation,,SRC-oumi-2026-guide,2.2(9),,,reviewed,共同提案の参加資格条件

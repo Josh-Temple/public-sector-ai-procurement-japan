@@ -77,6 +77,11 @@
         <select id="evaluation-case-select" aria-label="評価構造を見る案件"></select>
       </label>
       <p class="scope-note">案件表示も代表subsetです。原資料へのリンクと案件詳細を併読してください。</p>
+      <div class="case-dialog-actions evaluation-export-actions" aria-label="表示中の案件・論点を共有">
+        <a id="evaluation-share-link" class="text-button" href="./evaluation.html">この論点・案件を共有する →</a>
+        <button id="evaluation-memo-download" class="text-button" type="button">根拠付き検討メモ（Markdown）を保存</button>
+      </div>
+      <p class="scope-note">メモは、表示中の案件に登録されたデータと公式資料への参照を整理したものであり、調達判断や推奨配点を自動生成しません。</p>
       <div id="evaluation-case-detail" aria-live="polite"></div>
     </section>
 

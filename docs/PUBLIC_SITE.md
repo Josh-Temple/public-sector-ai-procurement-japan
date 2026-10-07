@@ -155,14 +155,18 @@ The page keeps five boundaries explicit:
 - minimum / desirable requirements come from `data/effective_requirements.csv`, including later Q&A changes;
 - scored criteria, points, denominators and assessment stages come from `data/evaluation_criteria.csv`;
 - participation / eligibility conditions come from `data/qualification_gates.csv` and remain separate from scored criteria;
-- selection thresholds, disqualification conditions, price ceilings, price formulas and tie-break rules come from `data/evaluation_rules.csv` without duplicating criterion points;
+- selection thresholds, subtotal thresholds, disqualification conditions, proposal ceilings, planned prices, price formulas, tie-break rules and explicitly evidenced stage-score relations come from `data/evaluation_rules.csv` without duplicating criterion points;
 - procurement structure and published vendor totals remain separate from criterion-level scores, so totals are never decomposed into invented item scores.
 
 Topic mappings in `assets/evaluation.js` contain stable topic IDs and canonical row references. They do not copy points, total points, criterion wording, source URLs, thresholds, proposal ceilings, contract amounts or recommended weights.
 
-The case view is deliberately case-local. It can show different stage denominators, price criteria, structured award basis, and publicly disclosed vendor totals, but it does not calculate cross-case rankings, averages or recommended price shares. `publicly_bounded` cases remain bounded: selection evidence does not become contract-final or operation evidence.
+The case view is deliberately case-local. It can show different stage denominators, price criteria, structured award basis, typed selection/pricing rules, and publicly disclosed vendor totals, but it does not calculate cross-case rankings, averages or recommended price shares. `publicly_bounded` cases remain bounded: selection evidence does not become contract-final or operation evidence.
 
-`tests/test_evaluation_support.cjs` guards canonical IDs/FKs, qualification-vs-score separation, threshold/disqualification/ceiling/formula role separation, points / total / assessment-stage preservation, Q&A chains, Source availability boundaries, vendor-total separation and the absence of recommended/default scoring fields. The public page labels its topic and case selectors as representative subsets and links case-local evaluation rows back to official evaluation Sources.
+Stage relationships are displayed only from canonical typed rows backed by a Source and locator. The UI does not infer carry-over from stage labels or add denominators across stages. In particular, Matsue's document-review 80 points are shown as included in the final 200-point structure rather than as an 80+200 total, and Gosen's first-stage price score is shown as reused without recalculation while retaining its explicit 200/1000 final contribution.
+
+Case-local qualification and rule rows link directly to their registered official Sources. When a case currently has no structured gate or rule rows, the page renders an explicit bounded empty state rather than claiming that the original procurement had no such condition.
+
+`tests/test_evaluation_support.cjs` guards canonical IDs/FKs, qualification-vs-score separation, threshold/disqualification/ceiling/planned-price/formula role separation, subtotal scope, stage inclusion/reuse semantics, points / total / raw assessment-stage preservation, Q&A chains, Source availability boundaries, vendor-total separation and the absence of recommended/default scoring fields. The public page labels its topic and case selectors as representative subsets and links case-local evaluation rows and rules back to official Sources.
 
 ## Public navigation and shareable search state
 

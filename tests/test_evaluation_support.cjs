@@ -420,7 +420,7 @@ assert.match(matsueMemo, /各委員の合計得点.*60%/);
 assert.match(matsueMemo, /200点/);
 assert.match(matsueMemo, /該当箇所/);
 assert.match(matsueMemo, /資料取得日/);
-assert.match(matsueMemo, /推奨配点/);
+assert.match(matsueMemo, /横断的な配点基準/);
 const oumiMemo = buildEvaluationMemo("oumi-2026-joint-genai", priceTopic, memoData, sharedState);
 assert.match(oumiMemo, /小計700点.*420点/);
 assert.match(oumiMemo, /どちらか一方/);

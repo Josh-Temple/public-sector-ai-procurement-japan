@@ -4,14 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="自治体AI調達の実案件とreviewed Claimから整理した、仕様検討時に確認する8つの問い。AI利用境界、RAG、根拠表示、質疑反映、評価、データ取扱い、契約段階を一次資料へ辿れます。">
-  <meta property="og:title" content="自治体AI調達 仕様検討チェックリスト | Public Sector AI Procurement Japan">
+  <meta property="og:title" content="AI調達の仕様検討で確認する8項目 | Public Sector AI Procurement Japan">
   <meta property="og:description" content="実際の自治体AI調達をもとに、仕様検討で確認したい8つの問いを一次資料・Claim付きで整理。">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Public Sector AI Procurement Japan">
   <meta property="og:url" content="https://josh-temple.github.io/public-sector-ai-procurement-japan/checklist.html">
   <meta name="twitter:card" content="summary">
   <link rel="canonical" href="https://josh-temple.github.io/public-sector-ai-procurement-japan/checklist.html">
-  <title>自治体AI調達 仕様検討チェックリスト | Public Sector AI Procurement Japan</title>
+  <title>AI調達の仕様検討で確認する8項目 | Public Sector AI Procurement Japan</title>
   <link rel="stylesheet" href="./assets/site.css">
 </head>
 <body>
@@ -19,16 +19,15 @@
   <header class="site-header">
     <div class="shell header-inner">
       <div>
-        <p class="eyebrow">PUBLIC SECTOR AI PROCUREMENT / JAPAN</p>
-        <h1>自治体AI調達 仕様検討チェックリスト</h1>
+        <p class="eyebrow">自治体のAI調達・公開事例</p>
+        <h1>AI調達の仕様検討で確認する8項目</h1>
       </div>
-<nav class="site-nav" aria-label="公開サイト">
-          <a href="./index.html">調べる</a>
-          <a href="./insights.html">理解する</a>
-          <a href="./checklist.html" aria-current="page">仕様を考える</a>
-          <a href="./drafting.html">仕様へ落とす</a>
-          <a href="./evaluation.html">評価へ分ける</a>\n        <a href="./methodology.html">データの見方</a>
-          <a href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan">GitHub / 根拠</a>
+<nav class="site-nav" aria-label="主要ページ">
+          <a href="./index.html#search-heading">調達事例</a>
+          <a href="./drafting.html">仕様を検討</a>
+          <a href="./evaluation.html">評価基準</a>
+          <a href="./insights.html">事例の解説</a>
+          <a href="./methodology.html">資料の確認方法</a>
         </nav>
     </div>
   </header>
@@ -41,14 +40,14 @@
       <p class="scope-note">
         これは法令・政府標準・必須要件の一覧ではありません。2026年10月3日時点でRepositoryに保存されたreviewed Claimと公式一次資料から、実案件で差が出た論点を「確認する問い」に変換したものです。各案件の条件を他自治体へそのまま転用せず、リンク先のClaimの適用範囲を確認してください。
       </p>
-      <p class="case-dialog-actions"><a class="text-button" href="./drafting.html">仕様へ落とすためのdecision supportへ →</a></p>
+      <p class="case-dialog-actions"><a class="text-button" href="./drafting.html">実案件を参考に仕様の条件を整理する →</a></p>
     </section>
 
     <section class="themes shell" aria-labelledby="checklist-index">
       <div class="section-heading split-heading">
         <div>
-          <p class="eyebrow">8 QUESTIONS</p>
-          <h2 id="checklist-index">仕様検討で先に決めたいこと</h2>
+          
+          <h2 id="checklist-index">仕様に書く前に確認したい8項目</h2>
         </div>
         <p class="section-lead">項目を満たすことが目的ではなく、未決のまま仕様書へ流れ込む論点を見つけるための入口です。</p>
       </div>
@@ -66,7 +65,7 @@
 
     <section class="reading shell" aria-labelledby="q1">
       <div class="section-heading split-heading">
-        <div><p class="eyebrow">01 / GENERATION BOUNDARY</p><h2 id="q1">どこで生成AIに回答・文章を生成させるか</h2></div>
+        <div><h2 id="q1">どこで生成AIに回答・文章を生成させるか</h2></div>
         <p class="section-lead">「AIを使う / 使わない」では粗すぎます。生成を許す工程と、人間や固定データに残す工程を分けます。</p>
       </div>
       <p>
@@ -85,7 +84,7 @@
 
     <section class="reading shell" aria-labelledby="q2">
       <div class="section-heading split-heading">
-        <div><p class="eyebrow">02 / RAG SCOPE</p><h2 id="q2">RAGを必須・任意・対象外のどこに置くか</h2></div>
+        <div><h2 id="q2">RAGを必須・任意・対象外のどこに置くか</h2></div>
         <p class="section-lead">RAGが仕様にないことと、組織としてRAGを使わないことは同じではありません。</p>
       </div>
       <p>
@@ -103,13 +102,13 @@
 
     <section class="reading shell" aria-labelledby="q3">
       <div class="section-heading split-heading">
-        <div><p class="eyebrow">03 / GROUNDING</p><h2 id="q3">回答根拠と「分からない」の扱いをどう定義するか</h2></div>
+        <div><h2 id="q3">回答根拠と「分からない」の扱いをどう定義するか</h2></div>
         <p class="section-lead">RAGを入れるだけでは、回答時の根拠提示や根拠不足時の挙動は決まりません。</p>
       </div>
       <p>
         埼玉県は県民向けチャットボットにも元データや参照ページへのリンク等を提示する想定を明確化し、根拠が見つからない場合は回答が不明であると回答できることを要求しています。焼津市は登録データをできる限り優先する一方、一般知識からの回答を100%排除できない前提を公式Q&Aで受け入れています。
       </p>
-      <p><strong>確認すること:</strong> 引用・リンクの見せ方、根拠不足時のfallback、一般知識の利用範囲、正答率やテスト方法を別々に定義しているか。</p>
+      <p><strong>確認すること:</strong> 引用・リンクの見せ方、根拠を確認できない場合の応答、一般知識の利用範囲、正答率やテスト方法を別々に定義しているか。</p>
       <div class="highlight-links">
         <a href="./index.html?case=saitama-2026-ai-digital-support">埼玉県AI相談 →</a>
         <a href="./index.html?case=yaizu-2025-genai-service">焼津市生成AI →</a>
@@ -120,7 +119,7 @@
 
     <section class="reading shell" aria-labelledby="q4">
       <div class="section-heading split-heading">
-        <div><p class="eyebrow">04 / EFFECTIVE REQUIREMENTS</p><h2 id="q4">Q&A・訂正後の有効要件をどう管理するか</h2></div>
+        <div><h2 id="q4">Q&A・訂正後の有効要件をどう管理するか</h2></div>
         <p class="section-lead">比較対象は最初に公開された仕様書ではなく、後続資料を反映した応募時の条件です。</p>
       </div>
       <p>
@@ -136,7 +135,7 @@
 
     <section class="reading shell" aria-labelledby="q5">
       <div class="section-heading split-heading">
-        <div><p class="eyebrow">05 / PROCUREMENT ROLE</p><h2 id="q5">必須・加点・参加資格をどう分けるか</h2></div>
+        <div><h2 id="q5">必須・加点・参加資格をどう分けるか</h2></div>
         <p class="section-lead">同じ条件でも、調達上の役割が違えば意味は大きく変わります。</p>
       </div>
       <p>
@@ -153,7 +152,7 @@
 
     <section class="reading shell" aria-labelledby="q6">
       <div class="section-heading split-heading">
-        <div><p class="eyebrow">06 / DATA HANDLING</p><h2 id="q6">データ取扱いの対象をどこまで具体化するか</h2></div>
+        <div><h2 id="q6">データ取扱いの対象をどこまで具体化するか</h2></div>
         <p class="section-lead">「国内」「保存しない」「学習しない」は、対象を省略すると別の条件に読めます。</p>
       </div>
       <p>
@@ -171,7 +170,7 @@
 
     <section class="reading shell" aria-labelledby="q7">
       <div class="section-heading split-heading">
-        <div><p class="eyebrow">07 / LIFECYCLE</p><h2 id="q7">選定・契約・稼働を別々に確認できるか</h2></div>
+        <div><h2 id="q7">選定・契約・稼働を別々に確認できるか</h2></div>
         <p class="section-lead">候補者の選定結果だけでは、契約締結や実稼働を確認したことにはなりません。</p>
       </div>
       <p>
@@ -188,7 +187,7 @@
 
     <section class="reading shell" aria-labelledby="q8">
       <div class="section-heading split-heading">
-        <div><p class="eyebrow">08 / PROCUREMENT STAGE</p><h2 id="q8">実証・本格導入・今回の調達範囲を区別できるか</h2></div>
+        <div><h2 id="q8">実証・本格導入・今回の調達範囲を区別できるか</h2></div>
         <p class="section-lead">機能が高度でも、案件自体が本格導入フェーズとは限りません。</p>
       </div>
       <p>
@@ -205,7 +204,7 @@
 
     <section class="reading shell" aria-labelledby="workflow">
       <div class="section-heading split-heading">
-        <div><p class="eyebrow">HOW TO USE</p><h2 id="workflow">チェックリストの使い方</h2></div>
+        <div><h2 id="workflow">チェックリストの使い方</h2></div>
         <p class="section-lead">既存自治体の文言をコピーする前に、自組織で決めるべき境界を特定します。</p>
       </div>
       <div class="reading-grid">
@@ -228,7 +227,7 @@
       <p class="case-dialog-actions">
         <a class="text-button" href="./index.html">案件データベースで比較する →</a>
         <a class="text-button" href="./insights.html">5つの設計論点を読む →</a>
-        <a class="text-button" href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan">Repositoryで根拠を見る ↗</a>
+        <a class="text-button" href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan">調査記録（GitHub）を見る ↗</a>
       </p>
     </section>
   </main>
@@ -237,6 +236,12 @@
     <div class="shell">
       <p>Evidence-backed prompts for specification design. The linked Claims and primary sources define the factual scope.</p>
     </div>
-  </footer>
+  <nav class="site-footer-links shell" aria-label="関連ページ">
+  <a href="./index.html">サイトトップ</a>
+  <a href="./checklist.html" aria-current="page">仕様検討のチェックリスト</a>
+  <a href="./case-study.html">個人研究の事例</a>
+  <a href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan">データと調査記録（GitHub）</a>
+</nav>
+</footer>
 </body>
 </html>

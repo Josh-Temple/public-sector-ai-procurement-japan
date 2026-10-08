@@ -18,6 +18,7 @@ on:
       - "tests/test_requirement_explorer.cjs"
       - "tests/test_drafting_support.cjs"
       - "tests/test_evaluation_support.cjs"
+      - "tests/test_first_time_ui_contract.cjs"
       - ".github/workflows/pages.yml"
       - ".github/workflows/public-site-check.yml"
   workflow_dispatch:
@@ -43,3 +44,4 @@ jobs:
           node tests/test_requirement_explorer.cjs
           node tests/test_drafting_support.cjs
           node tests/test_evaluation_support.cjs
+          node tests/test_first_time_ui_contract.cjs

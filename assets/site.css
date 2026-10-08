@@ -347,3 +347,8 @@ code { font-size: 0.9em; }
   .site-overview .metrics { grid-template-columns: 1fr; }
   .site-overview .metrics div, .site-overview .metrics div + div { padding: 12px 0; border-right: 0; border-bottom: 1px solid var(--line); }
 }
+
+/* Increase primary case action hit areas while keeping source metadata visible. */
+.case-title-button, .evidence-button, .source-actions a { min-height: 44px; display: inline-flex; align-items: center; }
+.requirement-source-links .source-date { display: block; overflow-wrap: anywhere; margin: 2px 0 7px; }
+[hidden] { display: none !important; }

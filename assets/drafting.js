@@ -484,9 +484,13 @@ async function initDraftingSupport() {
     });
     renderCitizenExamples(data);
     renderRoleExamples(data);
+    const status = document.getElementById("drafting-load-status");
+    if (status) status.textContent = "仕様の検討例を表示しています。";
   } catch (error) {
     const root = document.getElementById("drafting-sections");
     if (root) appendText(root, "p", "データを読み込めませんでした。ページを再読み込みしてお試しください。", "shell scope-note");
+    const status = document.getElementById("drafting-load-status");
+    if (status) status.textContent = "仕様の検討例を読み込めませんでした。";
     console.error(error);
   }
 }

@@ -45,6 +45,10 @@ def main():
     parser.add_argument("--expected-js-blob-sha", required=True)
     parser.add_argument("--expected-home-blob-sha", default=None)
     parser.add_argument("--expected-app-js-blob-sha", default=None)
+    parser.add_argument("--expected-drafting-html-blob-sha", default=None)
+    parser.add_argument("--expected-evaluation-html-blob-sha", default=None)
+    parser.add_argument("--expected-drafting-js-blob-sha", default=None)
+    parser.add_argument("--expected-css-blob-sha", default=None)
     parser.add_argument("--output-dir", default="evaluation-browser-qa")
     args = parser.parse_args()
     out = Path(args.output_dir)
@@ -53,6 +57,7 @@ def main():
     metadata = {"url": args.url, "timestamp_utc": datetime.now(timezone.utc).isoformat(),
                 "expected_js_blob_sha": args.expected_js_blob_sha,
                 "served_js_blob_sha": None, "served_home_blob_sha": None, "served_app_js_blob_sha": None, "browser": None, "environment_blocker": None}
+    metadata["served_extra_blobs"] = {}
     blocked = False
 
     def record(view, case, check, passed, detail=""):
@@ -85,6 +90,36 @@ def main():
                     context.close()
                     break
                 record(view, "ENV", "production_navigable", True)
+                # A long evidence article must not be a live region.
+                live = page.evaluate("""() => {
+                  const ids = ['evaluation-topic-links','evaluation-topic-detail','evaluation-case-detail'];
+                  const status = document.getElementById('evaluation-update-status');
+                  return {contentLive: ids.map(id => document.getElementById(id)?.hasAttribute('aria-live')),
+                          statusRole: status?.getAttribute('role'), statusLive: status?.getAttribute('aria-live'),
+                          text: status?.textContent || ''};
+                }""")
+                record(view, "A11Y", "evaluation_short_live_status",
+                       live["contentLive"] == [False, False, False]
+                       and live["statusRole"] == "status" and live["statusLive"] == "polite"
+                       and 0 < len(live["text"]) <= 90, live)
+                if view == "desktop-1280":
+                    base = args.url.rsplit("/", 1)[0]
+                    for asset, expected in [
+                        ("drafting.html", args.expected_drafting_html_blob_sha),
+                        ("evaluation.html", args.expected_evaluation_html_blob_sha),
+                        ("assets/drafting.js", args.expected_drafting_js_blob_sha),
+                        ("assets/site.css", args.expected_css_blob_sha),
+                    ]:
+                        if not expected:
+                            continue
+                        try:
+                            asset_response = page.request.get(base + "/" + asset, timeout=30000)
+                            served = git_blob_sha(asset_response.body()) if asset_response.status == 200 else ""
+                            metadata["served_extra_blobs"][asset] = served
+                            record(view, "DEPLOY", asset + "_matches_main",
+                                   asset_response.status == 200 and served == expected, served)
+                        except Exception as error:
+                            record(view, "DEPLOY", asset + "_matches_main", False, str(error))
                 if view == "desktop-1280":
                     try:
                         js_response = page.request.get(
@@ -159,6 +194,35 @@ def main():
                         home.goto(home_url + "?case=oumi-2026-joint-genai", wait_until="domcontentloaded", timeout=30000)
                         home.wait_for_function("() => document.querySelector('#case-dialog')?.open === true", timeout=15000)
                         record(view, "HOME", "case_deeplink_dialog", home.locator("#case-dialog").is_visible())
+                    # Include every public page at each configured CSS viewport.
+                    for page_name in ["insights.html", "checklist.html", "drafting.html",
+                                      "methodology.html", "case-study.html"]:
+                        extra = context.new_page()
+                        try:
+                            extra_url = home_url.rsplit("/", 1)[0] + "/" + page_name
+                            extra_response = extra.goto(extra_url, wait_until="domcontentloaded", timeout=30000)
+                            record(view, "PAGES", page_name + "_loads",
+                                   bool(extra_response and extra_response.status == 200
+                                        and extra.locator("h1").count() == 1))
+                            if page_name == "drafting.html":
+                                extra.wait_for_function(
+                                    "() => Boolean(document.querySelector('#drafting-load-status')?.textContent)",
+                                    timeout=30000)
+                                drafting_live = extra.evaluate("""() => ({
+                                  areas: ['drafting-topic-links','citizen-examples','role-examples']
+                                    .map(id => document.getElementById(id)?.hasAttribute('aria-live')),
+                                  status: document.getElementById('drafting-load-status')?.textContent || '',
+                                  role: document.getElementById('drafting-load-status')?.getAttribute('role')
+                                })""")
+                                record(view, "A11Y", "drafting_short_live_status",
+                                       drafting_live["areas"] == [False, False, False]
+                                       and drafting_live["role"] == "status"
+                                       and drafting_live["status"] == "仕様の検討例を表示しています。",
+                                       drafting_live)
+                        except Exception as error:
+                            record(view, "PAGES", page_name + "_interactive", False, str(error))
+                        finally:
+                            extra.close()
                     record(view, "HOME", "no_client_page_errors", not home_errors, home_errors)
                 except Exception as error:
                     record(view, "HOME", "home_interaction", False, str(error))
@@ -178,6 +242,10 @@ def main():
                                  else "仙台" if label.startswith("仙台") else label),
                             timeout=10000)
                         record(view, label, "case_selector_and_render", True)
+                        status_text = page.locator("#evaluation-update-status").inner_text()
+                        record(view, label, "case_change_short_status",
+                               status_text.endswith("の評価基準を表示しています。")
+                               and 0 < len(status_text) <= 90, status_text)
                         rules = case_block(page, "選定・価格ルール").inner_text()
                         price = case_block(page, "価格の扱い").inner_text()
                         relations = root.locator(".evaluation-stage-relations").inner_text() if root.locator(".evaluation-stage-relations").count() else ""

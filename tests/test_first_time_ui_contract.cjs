@@ -38,4 +38,26 @@ assert.match(html, /id="reset-requirement"/);
 for (const code of ["assessed","publicly_bounded","not_assessed"]) {
   assert.ok(html.includes('<option value="' + code + '">'));
 }
+// Long evidence sections must not be live regions; only concise status is announced.
+for (const [pageName, contentIds, statusId, jsName] of [
+  ["drafting.html", ["drafting-topic-links", "citizen-examples", "role-examples"], "drafting-load-status", "drafting.js"],
+  ["evaluation.html", ["evaluation-topic-links", "evaluation-topic-detail", "evaluation-case-detail"], "evaluation-update-status", "evaluation.js"]
+]) {
+  const page = fs.readFileSync(pageName, "utf8");
+  for (const id of contentIds) {
+    const tag = page.match(new RegExp("<[^>]+id=\\\"" + id + "\\\"[^>]*>"));
+    assert.ok(tag, "missing evidence area " + id);
+    assert.doesNotMatch(tag[0], /aria-live/, "long evidence content is a live region: " + id);
+  }
+  const status = page.match(new RegExp("<[^>]+id=\\\"" + statusId + "\\\"[^>]*>"));
+  assert.ok(status, "missing short status " + statusId);
+  assert.match(status[0], /role="status"/);
+  assert.match(status[0], /aria-live="polite"/);
+  assert.match(status[0], /aria-atomic="true"/);
+  const script = fs.readFileSync("assets/" + jsName, "utf8");
+  assert.ok(script.includes('getElementById("' + statusId + '")'), "status not populated by JS");
+}
+const css = fs.readFileSync("assets/site.css", "utf8");
+assert.match(css, /input, select\s*\{[^}]*border: 1px solid var\(--muted\)/);
+
 console.log("First-time UI evidence, empty state, and scoring contract: PASS");

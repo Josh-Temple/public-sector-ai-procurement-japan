@@ -60,6 +60,7 @@ jobs:
           node tests/test_requirement_explorer.cjs
           node tests/test_drafting_support.cjs
           node tests/test_evaluation_support.cjs
+          node tests/test_first_time_ui_contract.cjs
       - name: Prepare static site
         run: |
           mkdir -p _site
@@ -107,6 +108,10 @@ jobs:
             --expected-js-blob-sha "$(git hash-object assets/evaluation.js)" \
             --expected-home-blob-sha "$(git hash-object index.html)" \
             --expected-app-js-blob-sha "$(git hash-object assets/app.js)" \
+            --expected-drafting-html-blob-sha "$(git hash-object drafting.html)" \
+            --expected-evaluation-html-blob-sha "$(git hash-object evaluation.html)" \
+            --expected-drafting-js-blob-sha "$(git hash-object assets/drafting.js)" \
+            --expected-css-blob-sha "$(git hash-object assets/site.css)" \
             --output-dir evaluation-browser-qa
       - name: Preserve browser report and screenshots
         if: always()

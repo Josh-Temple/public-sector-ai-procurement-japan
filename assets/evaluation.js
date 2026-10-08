@@ -826,6 +826,9 @@ async function initEvaluationSupport() {
         renderCase(select.value, data);
         renderTopicLinks(topic.id, select.value);
         if (link) link.href = evaluationStateUrl(window.location.href, topic.id, select.value);
+        const status = document.getElementById("evaluation-update-status");
+        const selectedCase = data.caseById.get(select.value);
+        if (status && selectedCase) status.textContent = selectedCase.government_name + "の評価基準を表示しています。";
       }
       updateSelection();
       select.addEventListener("change", function () {
@@ -852,6 +855,8 @@ async function initEvaluationSupport() {
       root.replaceChildren();
       appendText(root, "p", "データを読み込めませんでした。ページを再読み込みしてお試しください。", "error");
     }
+    const status = document.getElementById("evaluation-update-status");
+    if (status) status.textContent = "評価データを読み込めませんでした。";
     console.error(error);
   }
 }

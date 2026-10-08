@@ -436,7 +436,8 @@ function gateMeaningParts(row) {
 
 function ruleSummary(row) {
   if (row.rule_type === "proposal_ceiling" || row.rule_type === "planned_price") {
-    const amount = Number(row.amount_jpy);
+    const rawAmount = String(row.amount_jpy ?? "").trim();
+    const amount = rawAmount ? Number(rawAmount) : NaN;
     const tax = row.tax_basis === "tax_included" ? "（税込）" : row.tax_basis === "tax_excluded" ? "（税抜）" : "";
     return ruleTypeLabel(row.rule_type) + "：" + (Number.isFinite(amount) ? amount.toLocaleString("ja-JP") + "円" : "金額未登録") + tax;
   }

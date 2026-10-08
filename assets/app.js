@@ -29,6 +29,7 @@ const state = {
   evidenceByCase: new Map(),
   effectiveRows: [],
   activeCase: null,
+  returnToCaseAfterEvidence: false,
 };
 
 const REQUIREMENT_TOPICS = new Set([
@@ -197,9 +198,10 @@ function evidenceSummaryText(row) {
 }
 
 function sourceDateText(source) {
-  if (source?.published_at) return `公開: ${source.published_at}`;
-  if (source?.retrieved_at) return `取得確認: ${source.retrieved_at}`;
-  return "";
+  return [
+    source?.published_at && `公表日: ${source.published_at}`,
+    source?.retrieved_at && `資料取得日: ${source.retrieved_at}`,
+  ].filter(Boolean).join(" / ");
 }
 
 function sourceDocumentRoleLabel(value) {
@@ -257,7 +259,8 @@ function appendEvidenceSource(container, sourceId) {
   }
 }
 
-function openEvidenceDialog(row) {
+function openEvidenceDialog(row, fromCase = false) {
+  state.returnToCaseAfterEvidence = fromCase;
   const dialog = document.getElementById("evidence-dialog");
   const evidence = row.evidence || {};
   document.getElementById("evidence-dialog-case").textContent =
@@ -710,6 +713,8 @@ async function copyCurrentFilterUrl() {
   const params = currentFilterParams();
   const url = new URL(window.location.pathname, window.location.origin);
   url.search = params.toString();
+  url.hash = ["topic", "rq", "amended", "change"].some(key => params.has(key))
+    ? "requirement-explorer" : "search-heading";
   const button = document.getElementById("share-filter-url");
   const original = button.textContent;
   try {
@@ -890,23 +895,34 @@ function renderExpandableRows(container, rows, renderRow, noun = "件", initialL
   return true;
 }
 
-function appendRequirementSourceLink(container, sourceId, label) {
+function requirementSourcePresentation(source, locator, label) {
+  return {
+    name: `${label}｜${source ? sourceDocumentRoleLabel(source.document_type) : "資料参照先未登録"}`,
+    url: source?.url || "",
+    detail: [
+      source?.title || (source ? "資料名未登録" : "資料参照先未登録"),
+      locator && `該当箇所: ${locator}`,
+      sourceDateText(source),
+      !source?.url && "公式URL未登録",
+    ].filter(Boolean).join(" / "),
+  };
+}
+
+function appendRequirementSourceLink(container, sourceId, label, locator) {
   const source = sourceId ? state.sourceById.get(sourceId) : null;
-  if (!source?.url) return;
-  const link = document.createElement("a");
-  link.className = "inline-source";
-  link.href = source.url;
-  link.target = "_blank";
-  link.rel = "noreferrer";
-  link.textContent = `${label}｜${sourceDocumentRoleLabel(source.document_type)} ↗`;
-  container.append(link);
-  const metaText = [source.title, sourceDateText(source)].filter(Boolean).join(" / ");
-  if (metaText) {
-    const meta = document.createElement("small");
-    meta.className = "source-date";
-    meta.textContent = metaText;
-    container.append(meta);
+  const presentation = requirementSourcePresentation(source, locator, label);
+  const element = document.createElement(presentation.url ? "a" : "span");
+  element.className = "inline-source";
+  if (presentation.url) {
+    element.href = presentation.url;
+    element.target = "_blank";
+    element.rel = "noreferrer";
   }
+  element.textContent = presentation.name + (presentation.url ? " ↗" : "");
+  const meta = document.createElement("small");
+  meta.className = "source-date";
+  meta.textContent = presentation.detail;
+  container.append(element, meta);
 }
 
 function renderEffectiveRequirements(caseId) {
@@ -953,8 +969,8 @@ function renderEffectiveRequirements(caseId) {
     }
     const links = document.createElement("div");
     links.className = "requirement-source-links";
-    appendRequirementSourceLink(links, row.base_source_id, "当初根拠");
-    if (row.changed_by_source_id) appendRequirementSourceLink(links, row.changed_by_source_id, "変更根拠");
+    appendRequirementSourceLink(links, row.base_source_id, "当初根拠", row.base_locator);
+    if (row.changed_by_source_id) appendRequirementSourceLink(links, row.changed_by_source_id, "変更根拠", row.change_locator);
     values.append(links);
 
     const stateText = document.createElement("span");
@@ -1111,8 +1127,8 @@ function renderRequirementExplorer() {
 
     const evidenceTd = document.createElement("td");
     evidenceTd.className = "requirement-source-links";
-    appendRequirementSourceLink(evidenceTd, row.base_source_id, "当初根拠");
-    if (row.changed_by_source_id) appendRequirementSourceLink(evidenceTd, row.changed_by_source_id, "変更根拠");
+    appendRequirementSourceLink(evidenceTd, row.base_source_id, "当初根拠", row.base_locator);
+    if (row.changed_by_source_id) appendRequirementSourceLink(evidenceTd, row.changed_by_source_id, "変更根拠", row.change_locator);
 
     const boundaryTd = document.createElement("td");
     const requirementBoundary = document.createElement("p");
@@ -1127,7 +1143,8 @@ function renderRequirementExplorer() {
   });
   tbody.append(fragment);
   document.getElementById("requirement-result-count").textContent =
-    `${rows.length}件を表示 / 構造化済み有効要件 全${state.effectiveRows.length}件`;
+    `${rows.length}件を表示 / 登録済みの公募時要件 全${state.effectiveRows.length}件`;
+  document.getElementById("requirement-empty").hidden = rows.length !== 0;
 }
 
 function renderSpecialized(caseId) {
@@ -1250,6 +1267,12 @@ function renderTimeline(caseId) {
   });
 }
 
+function evaluationPointsText(row) {
+  if (!row.points) return "配点未登録";
+  const points = row.total_points ? `${row.points} / ${row.total_points}点` : `${row.points}点（満点未登録）`;
+  return [points, row.assessment_stage].filter(Boolean).join("・");
+}
+
 function renderEvaluation(caseId) {
   const container = document.getElementById("case-dialog-evaluation");
   const rows = state.evaluationsByCase.get(caseId) || [];
@@ -1275,7 +1298,7 @@ function renderEvaluation(caseId) {
 
     const points = document.createElement("span");
     points.className = "points";
-    points.textContent = row.points ? `${row.points}点` : "—";
+    points.textContent = evaluationPointsText(row);
 
     item.append(group, summary, points);
     return item;
@@ -1503,7 +1526,8 @@ function renderRows() {
   });
 
   tbody.append(frag);
-  document.getElementById("result-count").textContent = `${state.filtered.length}件を表示 / 全${state.rows.length}件`;
+  document.getElementById("result-count").textContent = `検索結果 ${state.filtered.length}件 / 収録${state.rows.length}件`;
+  document.getElementById("search-empty").hidden = state.filtered.length !== 0;
 }
 
 function toggleCompare(caseId, checkbox) {
@@ -1669,6 +1693,14 @@ async function init() {
       });
     });
     document.getElementById("reset").addEventListener("click", resetFilters);
+    document.getElementById("reset-requirement").addEventListener("click", () => {
+      ["requirement-query", "requirement-topic", "requirement-amended", "requirement-change"].forEach(id => {
+        document.getElementById(id).value = "";
+      });
+      renderRequirementExplorer();
+      syncFilterUrl();
+      document.getElementById("requirement-query").focus();
+    });
     document.getElementById("share-filter-url").addEventListener("click", copyCurrentFilterUrl);
     document.querySelectorAll("[data-theme-filter]").forEach(button => {
       button.addEventListener("click", () => applyThemeFilter(button.dataset.themeFilter));
@@ -1684,8 +1716,20 @@ async function init() {
     });
     document.getElementById("case-dialog-evidence").addEventListener("click", () => {
       if (!state.activeCase) return;
+      state.returnToCaseAfterEvidence = true;
       document.getElementById("case-dialog").close();
-      openEvidenceDialog(state.activeCase);
+      openEvidenceDialog(state.activeCase, true);
+    });
+    document.getElementById("evidence-dialog").addEventListener("close", () => {
+      if (!state.returnToCaseAfterEvidence || !state.activeCase) return;
+      state.returnToCaseAfterEvidence = false;
+      document.getElementById("case-dialog").showModal();
+      document.getElementById("case-dialog-evidence").focus();
+    });
+    document.getElementById("case-dialog").addEventListener("close", () => {
+      if (state.returnToCaseAfterEvidence || !state.activeCase) return;
+      state.activeCase = null;
+      syncFilterUrl();
     });
     document.getElementById("close-evidence").addEventListener("click", () => {
       document.getElementById("evidence-dialog").close();
@@ -1703,7 +1747,9 @@ async function init() {
     }
   } catch (error) {
     console.error(error);
-    tbody.innerHTML = '<tr><td colspan="9" class="error">データを読み込めませんでした。GitHub上のCSVと公開設定を確認してください。</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="9" class="error">案件データを読み込めませんでした。ページを再読み込みしてください。</td></tr>';
+    document.getElementById("result-count").textContent = "案件データの読み込みに失敗しました。";
+    document.getElementById("requirement-result-count").textContent = "要件データの読み込みに失敗しました。";
   }
 }
 
@@ -1715,6 +1761,9 @@ if (typeof module !== "undefined" && module.exports) {
     requirementChangeSourceKind,
     requirementMatchesExplorerFilters,
     sourceDocumentRoleLabel,
+    sourceDateText,
+    requirementSourcePresentation,
+    evaluationPointsText,
   };
 }
 

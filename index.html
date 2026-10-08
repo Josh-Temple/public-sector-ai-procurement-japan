@@ -6,7 +6,7 @@
   <meta name="description" content="自治体が公開したAI調達の仕様書、質問回答、評価資料をもとに、案件・仕様条件・評価基準を探して比較できます。">
   <meta name="google-site-verification" content="b9nfpuA9jwHYTec0Rx6jx1EAxkTrDSkCnbPI2Vc4df8" />
   <meta property="og:title" content="自治体AI調達データベース | Public Sector AI Procurement Japan">
-  <meta property="og:description" content="日本の自治体による生成AI調達を、公式一次資料に基づいて検索・比較する公開データベース。">
+  <meta property="og:description" content="自治体の公開資料から、AI調達の案件・公募時の仕様条件・評価基準を探して比較できます。契約後の最終条件とは限りません。">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Public Sector AI Procurement Japan">
   <meta property="og:url" content="https://josh-temple.github.io/public-sector-ai-procurement-japan/">
@@ -74,18 +74,20 @@
           </select>
         </label>
         <label>
-          <span>資料の確認状況</span>
+          <span>公開資料で確認できる範囲</span>
           <select id="evidence">
             <option value="">すべて</option>
-            <option value="assessed">監査あり</option>
-            <option value="publicly_bounded">公開範囲に境界あり</option>
-            <option value="not_assessed">未監査</option>
+            <option value="assessed">確認範囲を評価済み</option>
+            <option value="publicly_bounded">公開資料だけでは確認できない範囲あり</option>
+            <option value="not_assessed">確認範囲は未評価</option>
           </select>
         </label>
         <button id="reset" class="text-button" type="button">条件をクリア</button>
         <button id="share-filter-url" class="text-button" type="button">検索条件のURLをコピー</button>
       </div>
+      <p class="scope-note">この絞り込みは公開資料による確認範囲の整理状況です。契約・運用の確認や資料の新しさを示すものではありません。</p>
       <p id="result-count" class="result-count" aria-live="polite"></p>
+      <p id="search-empty" class="scope-note" hidden>検索条件に一致する案件はありません。検索語を変えるか「条件をクリア」を押してください。未収録の案件が存在しないという意味ではありません。</p>
     </section>
 
     <section class="results shell" aria-labelledby="results-heading">
@@ -171,9 +173,11 @@
           </select>
         </label>
         <a class="text-button requirement-qa-link" href="?amended=qa#requirement-explorer">Q&A・訂正で変わった要件を見る</a>
+        <button id="reset-requirement" class="text-button" type="button">要件の絞り込みを解除</button>
       </div>
       <p class="scope-note">表示がないことは、その要件が存在しないことを意味しません。ここでは構造化・レビュー済みの有効要件だけを表示します。</p>
       <p id="requirement-result-count" class="result-count" aria-live="polite"></p>
+      <p id="requirement-empty" class="scope-note" hidden>選択した条件に一致する登録済み要件はありません。要件の絞り込みを解除して確認できます。公式資料に要件がないことを意味しません。</p>
       <p class="scroll-hint">表は左右にスクロールして確認できます。</p>
       <div class="table-wrap" tabindex="0" aria-label="有効要件の横断比較。横スクロールできます">
         <table class="requirement-table">
@@ -357,7 +361,7 @@
         <button id="case-dialog-evidence" class="text-button" type="button">資料の確認状況と根拠を見る</button>
         <a id="case-dialog-source" class="text-button" target="_blank" rel="noreferrer">代表する公式資料 ↗</a>
       </div>
-      <p class="dialog-note">表示内容はRepositoryの構造化データから生成しています。空欄・未監査は不存在を意味しません。</p>
+      <p class="dialog-note">表示内容は公開資料を整理した登録データに基づきます。空欄や確認範囲の未評価は、資料や条件が存在しないことを意味しません。</p>
     </div>
   </dialog>
 

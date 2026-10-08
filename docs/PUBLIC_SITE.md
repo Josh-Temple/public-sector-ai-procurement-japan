@@ -9,6 +9,12 @@ The primary navigation links to cases, specification topics, evaluation, case co
 
 The repository root `index.html` is a dependency-free public comparison interface for the structured procurement data.
 
+## First-time use and evidence display (2026-10-08)
+
+The three primary tasks are (1) find a case and its source, (2) compare original and Q&A/amended requirements, and (3) read evaluation points, qualification gates and selection thresholds separately. Registered Source titles, published/retrieved dates and exact locators remain next to the corresponding requirement even when a Source URL is not registered. A missing URL does not mean the source is absent. Case-detail evaluation points include their recorded denominator and assessment stage; absent denominators are never inferred. Empty filtered results are distinct from an unsuccessful CSV load, and filters can be cleared separately. A filtered search share URL includes the relevant search/requirements anchor.
+
+These are implementation claims, **not** evidence of an independent usability assessment. Automated Chromium viewport results and the D-worker artifact do not substitute for native 200% browser zoom, physical Android Chrome, TalkBack/NVDA, or consented third-party first-time-user observation. Those tests remain `PENDING` until actually performed. Do not equate a successful Pages deployment with live byte-level confirmation of the deployed revision.
+
 ## Data source
 
 The UI does not maintain a second copy of procurement facts. It reads the canonical CSV projections at runtime:

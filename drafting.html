@@ -4,14 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="自治体AI調達の仕様作成支援。実案件の有効要件・評価基準・業務特化要件を参照しながら、自団体で決める変数、調達上の置き場所、Evidence境界を整理します。">
-  <meta property="og:title" content="自治体AI調達 仕様作成支援 | Public Sector AI Procurement Japan">
+  <meta property="og:title" content="AI調達の仕様条件を検討する | Public Sector AI Procurement Japan">
   <meta property="og:description" content="他自治体の文言をコピーせず、自団体で決める変数と調達上の役割をEvidence付きで整理。">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Public Sector AI Procurement Japan">
   <meta property="og:url" content="https://josh-temple.github.io/public-sector-ai-procurement-japan/drafting.html">
   <meta name="twitter:card" content="summary">
   <link rel="canonical" href="https://josh-temple.github.io/public-sector-ai-procurement-japan/drafting.html">
-  <title>自治体AI調達 仕様作成支援 | Public Sector AI Procurement Japan</title>
+  <title>AI調達の仕様条件を検討する | Public Sector AI Procurement Japan</title>
   <link rel="stylesheet" href="./assets/site.css">
   <script src="./assets/drafting.js" defer></script>
 </head>
@@ -20,50 +20,49 @@
   <header class="site-header">
     <div class="shell header-inner">
       <div>
-        <p class="eyebrow">PUBLIC SECTOR AI PROCUREMENT / JAPAN</p>
-        <h1>自治体AI調達 仕様作成支援</h1>
+        <p class="eyebrow">自治体のAI調達・公開事例</p>
+        <h1>AI調達の仕様条件を検討する</h1>
       </div>
-      <nav class="site-nav" aria-label="公開サイト">
-        <a href="./index.html">調べる</a>
-        <a href="./insights.html">理解する</a>
-        <a href="./checklist.html">仕様を考える</a>
-        <a href="./drafting.html" aria-current="page">仕様へ落とす</a>
-        <a href="./evaluation.html">評価へ分ける</a>\n        <a href="./methodology.html">データの見方</a>
-        <a href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan">GitHub / 根拠</a>
-      </nav>
+      <nav class="site-nav" aria-label="主要ページ">
+          <a href="./index.html#search-heading">調達事例</a>
+          <a href="./drafting.html" aria-current="page">仕様を検討</a>
+          <a href="./evaluation.html">評価基準</a>
+          <a href="./insights.html">事例の解説</a>
+          <a href="./methodology.html">資料の確認方法</a>
+        </nav>
     </div>
   </header>
 
   <main id="main">
     <section class="hero shell">
       <p class="hero-copy">
-        他自治体の仕様書をコピーする前に、「自団体では何を決める必要があるか」を分解します。実案件で確認できる選択肢はEvidenceとして示し、値や必須性は自動で推奨しません。
+        他自治体の公募事例を参考に、自団体で決める仕様条件を整理できます。掲載例は検討材料であり、設定値や必須・任意の区分を推奨するものではありません。
       </p>
       <p class="scope-note">
-        このページは法令・政府標準・標準仕様書ではありません。Repositoryの現在の公開コーパスを、仕様検討の判断材料として再利用するための画面です。公開資料で公募時の有効要件を確認できても、契約後の最終仕様まで再構成できるとは限りません。
+        このページは法令・政府標準・標準仕様書ではありません。収録済みの公開資料を、仕様検討の判断材料として再利用するための画面です。公開資料で公募時の有効要件を確認できても、契約後の最終仕様まで再構成できるとは限りません。
       </p>
     </section>
 
     <section class="themes shell" aria-labelledby="drafting-index">
       <div class="section-heading split-heading">
         <div>
-          <p class="eyebrow">DECISION MAP</p>
-          <h2 id="drafting-index">仕様へ落とす前に決めること</h2>
+          
+          <h2 id="drafting-index">仕様に書く前に確認したい条件</h2>
         </div>
-        <p class="section-lead">各論点で、自団体の変数 → 調達上の置き場所 → 実案件の選択肢 → Evidence境界の順に確認します。</p>
+        <p class="section-lead">各論点で、自団体で決める事項 → 調達上の役割 → 他自治体の事例 → 資料で確認できる範囲の順に確認します。</p>
       </div>
       <div id="drafting-topic-links" class="theme-links" aria-live="polite"></div>
     </section>
 
     <section class="reading shell" aria-labelledby="drafting-workflow">
       <div class="section-heading split-heading">
-        <div><p class="eyebrow">HOW TO USE</p><h2 id="drafting-workflow">使い方</h2></div>
+        <div><h2 id="drafting-workflow">使い方</h2></div>
         <p class="section-lead">数値の相場を探す画面ではなく、仕様化する前提と未決事項を見つけるための画面です。</p>
       </div>
       <div class="reading-grid">
-        <div><h3>1. 自団体の変数を埋める</h3><p>対象者、利用量、データ範囲、ネットワーク、運用責任など、比較前に自団体で決める変数を確認します。</p></div>
+        <div><h3>1. 自団体で決める事項を確認する</h3><p>対象者、利用量、データ範囲、ネットワーク、運用責任など、比較前に自団体で決める変数を確認します。</p></div>
         <div><h3>2. 調達上の役割を決める</h3><p>満たさない提案を受け入れられない条件、より良い提案を比べたい条件、事業者として事前に満たす条件を分けます。</p></div>
-        <div><h3>3. Evidenceから差を見る</h3><p>実案件の有効要件・評価基準・業務特化要件へ戻り、Q&Aによる変更や契約最終状態の確認限界も含めて読みます。</p></div>
+        <div><h3>3. 他自治体の公募資料と比較する</h3><p>実案件の有効要件・評価基準・業務特化要件へ戻り、Q&Aによる変更や契約最終状態の確認限界も含めて読みます。</p></div>
       </div>
     </section>
 
@@ -71,8 +70,8 @@
 
     <section class="reading shell citizen-branch" aria-labelledby="citizen-branch">
       <div class="section-heading split-heading">
-        <div><p class="eyebrow">CITIZEN-FACING BRANCH</p><h2 id="citizen-branch">市民向けAIは別の枝で確認する</h2></div>
-        <p class="section-lead">職員向けSaaSの条件をそのまま移さず、回答生成、根拠、fallback、案内経路、運用時間を個別に確認します。</p>
+        <div><h2 id="citizen-branch">市民向けAIは別の枝で確認する</h2></div>
+        <p class="section-lead">職員向けSaaSの条件をそのまま移さず、回答生成、根拠がない場合の対応、案内経路、運用時間を個別に確認します。</p>
       </div>
       <div id="citizen-examples" class="drafting-evidence-list" aria-live="polite"></div>
       <p class="scope-note">稼働率や応答時間の目標があっても、それだけで回答の安全性や正確性を証明するものではありません。</p>
@@ -80,7 +79,7 @@
 
     <section class="reading shell" aria-labelledby="role-guide">
       <div class="section-heading split-heading">
-        <div><p class="eyebrow">PROCUREMENT ROLE</p><h2 id="role-guide">仕様・評価・参加資格を分ける</h2></div>
+        <div><h2 id="role-guide">仕様・評価・参加資格を分ける</h2></div>
         <p class="section-lead">項目名だけから置き場所を自動決定しません。同じ論点が案件によって最低条件にも評価項目にもなります。</p>
       </div>
       <div class="role-guide">
@@ -94,14 +93,14 @@
 
     <section class="reading shell" aria-labelledby="drafting-next">
       <div class="section-heading split-heading">
-        <div><p class="eyebrow">NEXT</p><h2 id="drafting-next">次に確認する場所</h2></div>
+        <div><h2 id="drafting-next">次に確認する場所</h2></div>
         <p class="section-lead">文章化する前に、比較対象の元資料とQ&A反映後の条件を確認します。</p>
       </div>
       <p class="case-dialog-actions">
         <a class="text-button" href="./checklist.html">論点発見のチェックリストへ →</a>
         <a class="text-button" href="./evaluation.html">評価へ分ける →</a>
         <a class="text-button" href="./index.html#requirement-explorer">有効要件を横断比較する →</a>
-        <a class="text-button" href="./methodology.html">Evidenceの読み方を確認する →</a>
+        <a class="text-button" href="./methodology.html">資料の確認範囲を確認する →</a>
       </p>
     </section>
   </main>
@@ -110,6 +109,12 @@
     <div class="shell">
       <p>Observed procurement choices are evidence, not default recommendations. Verify the linked primary source before reuse.</p>
     </div>
-  </footer>
+  <nav class="site-footer-links shell" aria-label="関連ページ">
+  <a href="./index.html">サイトトップ</a>
+  <a href="./checklist.html">仕様検討のチェックリスト</a>
+  <a href="./case-study.html">個人研究の事例</a>
+  <a href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan">データと調査記録（GitHub）</a>
+</nav>
+</footer>
 </body>
 </html>

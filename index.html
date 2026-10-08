@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="日本の自治体による生成AI調達を、公式一次資料に基づいて検索・比較する公開データベース。">
+  <meta name="description" content="自治体が公開したAI調達の仕様書、質問回答、評価資料をもとに、案件・仕様条件・評価基準を探して比較できます。">
   <meta name="google-site-verification" content="b9nfpuA9jwHYTec0Rx6jx1EAxkTrDSkCnbPI2Vc4df8" />
   <meta property="og:title" content="自治体AI調達データベース | Public Sector AI Procurement Japan">
   <meta property="og:description" content="日本の自治体による生成AI調達を、公式一次資料に基づいて検索・比較する公開データベース。">
@@ -20,40 +20,218 @@
   <header class="site-header">
     <div class="shell header-inner">
       <div>
-        <p class="eyebrow">PUBLIC SECTOR AI PROCUREMENT / JAPAN</p>
+        <p class="eyebrow">自治体のAI調達・公開事例</p>
         <h1>自治体AI調達データベース</h1>
       </div>
-<nav class="site-nav" aria-label="公開サイト">
-          <a href="./index.html" aria-current="page">調べる</a>
-          <a href="./insights.html">理解する</a>
-          <a href="./checklist.html">仕様を考える</a>
-          <a href="./drafting.html">仕様へ落とす</a>
-          <a href="./evaluation.html">評価へ分ける</a>\n        <a href="./methodology.html">データの見方</a>
-          <a href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan">GitHub / 根拠</a>
+<nav class="site-nav" aria-label="主要ページ">
+          <a href="./index.html#search-heading" aria-current="page">調達事例</a>
+          <a href="./drafting.html">仕様を検討</a>
+          <a href="./evaluation.html">評価基準</a>
+          <a href="./insights.html">事例の解説</a>
+          <a href="./methodology.html">資料の確認方法</a>
         </nav>
     </div>
   </header>
 
   <main id="main">
     <section class="hero shell">
-      <p class="hero-copy">
-        自治体の生成AI調達を、案件名だけでなく、要求仕様・調達方式・公開証拠の確認範囲まで横断して見ます。
-        「仕様書にある」と「契約最終状態まで確認できる」は分けて表示します。
+      <h2 class="hero-title">自治体のAI調達を、公開事例から比較・検討する</h2>
+      <p class="hero-copy">自治体が公表した仕様書、質問回答、評価資料などをもとに、調達事例と条件を調べられます。</p>
+      <div class="primary-actions" aria-label="主な使い方">
+        <a href="./index.html#search-heading"><strong>調達事例を探す</strong><span>自治体名や方式などで案件を検索する</span></a>
+        <a href="./index.html#requirement-explorer"><strong>仕様の条件を比較する</strong><span>質問回答・訂正を反映した要件を確認する</span></a>
+        <a href="./evaluation.html#evaluation-topics"><strong>評価基準を調べる</strong><span>評価項目・参加資格・価格の扱いを確認する</span></a>
+      </div>
+      <p class="scope-note">公開資料で確認できる範囲を示します。未確認は「存在しない」という意味ではありません。契約後の最終条件も、確認できない場合があります。</p>
+    </section>
+
+    <section class="controls shell" aria-labelledby="search-heading">
+      <div class="section-heading">
+        
+        <h2 id="search-heading">案件を探す</h2>
+      </div>
+      <div class="filter-grid">
+        <label class="wide">
+          <span>キーワード</span>
+          <input id="search" type="search" placeholder="自治体、案件名、事業者、カテゴリ…" autocomplete="off">
+        </label>
+        <label>
+          <span>都道府県</span>
+          <select id="prefecture"><option value="">すべて</option></select>
+        </label>
+        <label>
+          <span>調達方式</span>
+          <select id="method"><option value="">すべて</option></select>
+        </label>
+        <label>
+          <span>RAG</span>
+          <select id="rag">
+            <option value="">すべて</option>
+            <option value="true">要件あり</option>
+            <option value="false">要件外 / 不要</option>
+            <option value="soft">望ましい・任意等</option>
+            <option value="unknown">未確認</option>
+          </select>
+        </label>
+        <label>
+          <span>資料の確認状況</span>
+          <select id="evidence">
+            <option value="">すべて</option>
+            <option value="assessed">監査あり</option>
+            <option value="publicly_bounded">公開範囲に境界あり</option>
+            <option value="not_assessed">未監査</option>
+          </select>
+        </label>
+        <button id="reset" class="text-button" type="button">条件をクリア</button>
+        <button id="share-filter-url" class="text-button" type="button">検索条件のURLをコピー</button>
+      </div>
+      <p id="result-count" class="result-count" aria-live="polite"></p>
+    </section>
+
+    <section class="results shell" aria-labelledby="results-heading">
+      <div class="section-heading">
+        
+        <h2 id="results-heading">案件一覧</h2>
+      </div>
+      <p class="scroll-hint">表は左右にスクロールして確認できます。</p>
+      <div class="table-wrap" tabindex="0" aria-label="案件一覧。横スクロールできます">
+        <table class="case-table">
+          <thead>
+            <tr>
+              <th scope="col">比較</th>
+              <th scope="col">自治体 / 案件</th>
+              <th scope="col">年度</th>
+              <th scope="col">方式</th>
+              <th scope="col">RAG</th>
+              <th scope="col">LGWAN</th>
+              <th scope="col">選定事業者</th>
+              <th scope="col">資料の確認状況</th>
+              <th scope="col">公式資料</th>
+            </tr>
+          </thead>
+          <tbody id="case-rows"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="compare-section" class="compare shell" hidden aria-labelledby="compare-heading">
+      <div class="section-heading inline-heading">
+        <div>
+          
+          <h2 id="compare-heading">選択した案件を比較</h2>
+        </div>
+        <button id="clear-compare" class="text-button" type="button">比較を解除</button>
+      </div>
+      <div class="table-wrap">
+        <table id="compare-table"></table>
+      </div>
+    </section>
+
+    <section id="requirement-explorer" class="requirement-explorer shell" aria-labelledby="requirement-explorer-heading">
+      <div class="section-heading split-heading">
+        <div>
+          
+          <h2 id="requirement-explorer-heading">仕様の条件を案件間で比較する</h2>
+        </div>
+        <p class="section-lead">質問回答や訂正を反映し、整理・確認済みの公募時の要件を、テーマ別に比較します。</p>
+      </div>
+      <div class="requirement-toolbar">
+        <label>
+          <span>要件キーワード</span>
+          <input id="requirement-query" type="search" placeholder="例: SSO / 100GB / 研修">
+        </label>
+        <label>
+          <span>仕様テーマ</span>
+          <select id="requirement-topic">
+            <option value="">すべて</option>
+            <option value="rag">RAG・ナレッジ</option>
+            <option value="data-handling">データ学習・保持</option>
+            <option value="network">ネットワーク / LGWAN</option>
+            <option value="security">セキュリティ・ログ・保存先</option>
+            <option value="model">モデル条件</option>
+            <option value="accounts-usage">アカウント・利用量</option>
+            <option value="files-capacity">ファイル・容量</option>
+            <option value="support-training">支援・研修</option>
+            <option value="authentication">認証・利用者識別</option>
+            <option value="pricing-overage">料金・超過条件</option>
+          </select>
+        </label>
+        <label>
+          <span>変更を確認した資料</span>
+          <select id="requirement-amended">
+            <option value="">すべて</option>
+            <option value="qa">Q&A・訂正による変更</option>
+            <option value="other">その他の公式資料による変更</option>
+          </select>
+        </label>
+        <label>
+          <span>どのように変更されたか</span>
+          <select id="requirement-change">
+            <option value="">すべて</option>
+          </select>
+        </label>
+        <a class="text-button requirement-qa-link" href="?amended=qa#requirement-explorer">Q&A・訂正で変わった要件を見る</a>
+      </div>
+      <p class="scope-note">表示がないことは、その要件が存在しないことを意味しません。ここでは構造化・レビュー済みの有効要件だけを表示します。</p>
+      <p id="requirement-result-count" class="result-count" aria-live="polite"></p>
+      <p class="scroll-hint">表は左右にスクロールして確認できます。</p>
+      <div class="table-wrap" tabindex="0" aria-label="有効要件の横断比較。横スクロールできます">
+        <table class="requirement-table">
+          <thead>
+            <tr>
+              <th scope="col">自治体 / 案件</th>
+              <th scope="col">要件</th>
+              <th scope="col">当初記載</th>
+              <th scope="col">有効要件</th>
+              <th scope="col">変更</th>
+              <th scope="col">公式根拠</th>
+              <th scope="col">公開資料の確認範囲</th>
+            </tr>
+          </thead>
+          <tbody id="requirement-rows"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="themes shell" aria-labelledby="themes-heading">
+      <div class="section-heading split-heading">
+        <div>
+          
+          <h2 id="themes-heading">調達条件のテーマから事例を探す</h2>
+        </div>
+        <p class="section-lead">「どの自治体が何を書いたか」から比較を始めます。</p>
+      </div>
+      <div class="theme-links">
+        <button type="button" class="theme-link" data-theme-filter="rag"><span>01</span><strong>RAGを要求している案件</strong><small>検索拡張・庁内文書参照</small></button>
+        <button type="button" class="theme-link" data-theme-filter="lgwan"><span>02</span><strong>LGWAN対応案件</strong><small>接続環境・閉域利用</small></button>
+        <button type="button" class="theme-link" data-theme-filter="learning"><span>03</span><strong>学習利用を禁止する案件</strong><small>入力・出力データの扱い</small></button>
+        <button type="button" class="theme-link" data-theme-filter="joint"><span>04</span><strong>共同調達を見る</strong><small>共通選定と個別契約</small></button>
+        <button type="button" class="theme-link" data-theme-filter="evaluated"><span>05</span><strong>評価基準を確認できる案件</strong><small>価格以外に何を採点するか</small></button>
+        <button type="button" class="theme-link" data-theme-filter="bounded"><span>06</span><strong>公開資料で確認できる範囲を見る</strong><small>公開資料でどこまで追えるか</small></button>
+      </div>
+    </section>
+
+    <section class="highlights shell" aria-labelledby="highlights-heading">
+      <div class="section-heading split-heading">
+        <div>
+          
+          <h2 id="highlights-heading">実際の調達事例から確認できること</h2>
+        </div>
+        <p class="section-lead">単なる案件一覧では見えにくい、仕様・質疑・評価・契約構造の具体例です。</p>
+      </div>
+      <div id="research-highlights" class="highlight-list"></div>
+      <p class="scope-note">
+        <a href="./insights.html">5つの設計論点をまとめて読む →</a><br>
+        <a href="./checklist.html">仕様検討チェックリスト（8つの問い） →</a><br>
+        各項目は照合済みの調査記録に基づきます。該当する案件や資料の範囲を超えて一般化しません。
       </p>
-      <dl class="metrics" aria-label="データベース概要">
-        <div><dt>案件</dt><dd id="metric-cases">—</dd></div>
-        <div><dt>要件比較あり</dt><dd id="metric-requirements">—</dd></div>
-        <div><dt>Evidence監査あり</dt><dd id="metric-audited">—</dd></div>
-        <div><dt>一次資料</dt><dd id="metric-sources">—</dd></div>
-      </dl>
-      <p class="scope-note">公開一次資料に基づく調査用データです。未確認は「存在しない」を意味しません。</p>
     </section>
 
     <section class="insights shell" aria-labelledby="insights-heading">
       <div class="section-heading split-heading">
         <div>
-          <p class="eyebrow">WHAT THE DATA SHOWS</p>
-          <h2 id="insights-heading">自治体のAI調達で見えてくること</h2>
+          
+          <h2 id="insights-heading">公開資料から分かる調達条件の違い</h2>
         </div>
         <p class="section-lead">要件プロファイルを持つ案件を母数に、公開データから自動集計します。</p>
       </div>
@@ -85,189 +263,9 @@
       </div>
     </section>
 
-    <section class="highlights shell" aria-labelledby="highlights-heading">
-      <div class="section-heading split-heading">
-        <div>
-          <p class="eyebrow">RESEARCH HIGHLIGHTS</p>
-          <h2 id="highlights-heading">一次資料をつないで分かったこと</h2>
-        </div>
-        <p class="section-lead">単なる案件一覧では見えにくい、仕様・質疑・評価・契約構造の具体例です。</p>
-      </div>
-      <div id="research-highlights" class="highlight-list"></div>
-      <p class="scope-note">
-        <a href="./insights.html">5つの設計論点をまとめて読む →</a><br>
-        <a href="./checklist.html">仕様検討チェックリスト（8つの問い） →</a><br>
-        各項目はRepositoryのreviewed Claimを入口にしています。適用範囲を超えて一般化しません。
-      </p>
-    </section>
-
-    <section class="themes shell" aria-labelledby="themes-heading">
-      <div class="section-heading split-heading">
-        <div>
-          <p class="eyebrow">EXPLORE BY QUESTION</p>
-          <h2 id="themes-heading">仕様検討の問いから探す</h2>
-        </div>
-        <p class="section-lead">「どの自治体が何を書いたか」から比較を始めます。</p>
-      </div>
-      <div class="theme-links">
-        <button type="button" class="theme-link" data-theme-filter="rag"><span>01</span><strong>RAGを要求している案件</strong><small>検索拡張・庁内文書参照</small></button>
-        <button type="button" class="theme-link" data-theme-filter="lgwan"><span>02</span><strong>LGWAN対応案件</strong><small>接続環境・閉域利用</small></button>
-        <button type="button" class="theme-link" data-theme-filter="learning"><span>03</span><strong>学習利用を禁止する案件</strong><small>入力・出力データの扱い</small></button>
-        <button type="button" class="theme-link" data-theme-filter="joint"><span>04</span><strong>共同調達を見る</strong><small>共通選定と個別契約</small></button>
-        <button type="button" class="theme-link" data-theme-filter="evaluated"><span>05</span><strong>評価基準を確認できる案件</strong><small>価格以外に何を採点するか</small></button>
-        <button type="button" class="theme-link" data-theme-filter="bounded"><span>06</span><strong>Evidenceの境界を見る</strong><small>公開資料でどこまで追えるか</small></button>
-      </div>
-    </section>
-
-    <section id="requirement-explorer" class="requirement-explorer shell" aria-labelledby="requirement-explorer-heading">
-      <div class="section-heading split-heading">
-        <div>
-          <p class="eyebrow">COMPARE REQUIREMENTS</p>
-          <h2 id="requirement-explorer-heading">要件から比較する</h2>
-        </div>
-        <p class="section-lead">Q&A・訂正等を反映した構造化済みの有効要件を、自治体名ではなく仕様テーマから横断します。</p>
-      </div>
-      <div class="requirement-toolbar">
-        <label>
-          <span>要件キーワード</span>
-          <input id="requirement-query" type="search" placeholder="例: SSO / 100GB / 研修">
-        </label>
-        <label>
-          <span>仕様テーマ</span>
-          <select id="requirement-topic">
-            <option value="">すべて</option>
-            <option value="rag">RAG・ナレッジ</option>
-            <option value="data-handling">データ学習・保持</option>
-            <option value="network">ネットワーク / LGWAN</option>
-            <option value="security">セキュリティ・ログ・保存先</option>
-            <option value="model">モデル条件</option>
-            <option value="accounts-usage">アカウント・利用量</option>
-            <option value="files-capacity">ファイル・容量</option>
-            <option value="support-training">支援・研修</option>
-            <option value="authentication">認証・利用者識別</option>
-            <option value="pricing-overage">料金・超過条件</option>
-          </select>
-        </label>
-        <label>
-          <span>変更根拠</span>
-          <select id="requirement-amended">
-            <option value="">すべて</option>
-            <option value="qa">Q&A・訂正による変更</option>
-            <option value="other">その他の公式資料による変更</option>
-          </select>
-        </label>
-        <label>
-          <span>変更種別</span>
-          <select id="requirement-change">
-            <option value="">すべて</option>
-          </select>
-        </label>
-        <a class="text-button requirement-qa-link" href="?amended=qa#requirement-explorer">Q&A・訂正で変わった要件を見る</a>
-      </div>
-      <p class="scope-note">表示がないことは、その要件が存在しないことを意味しません。ここでは構造化・レビュー済みの有効要件だけを表示します。</p>
-      <p id="requirement-result-count" class="result-count" aria-live="polite"></p>
-      <div class="table-wrap" tabindex="0" aria-label="有効要件の横断比較。横スクロールできます">
-        <table class="requirement-table">
-          <thead>
-            <tr>
-              <th scope="col">自治体 / 案件</th>
-              <th scope="col">要件</th>
-              <th scope="col">当初記載</th>
-              <th scope="col">有効要件</th>
-              <th scope="col">変更</th>
-              <th scope="col">公式根拠</th>
-              <th scope="col">公開資料の確認範囲</th>
-            </tr>
-          </thead>
-          <tbody id="requirement-rows"></tbody>
-        </table>
-      </div>
-    </section>
-
-    <section class="controls shell" aria-labelledby="search-heading">
-      <div class="section-heading">
-        <p class="eyebrow">SEARCH / FILTER</p>
-        <h2 id="search-heading">案件を探す</h2>
-      </div>
-      <div class="filter-grid">
-        <label class="wide">
-          <span>キーワード</span>
-          <input id="search" type="search" placeholder="自治体、案件名、事業者、カテゴリ…" autocomplete="off">
-        </label>
-        <label>
-          <span>都道府県</span>
-          <select id="prefecture"><option value="">すべて</option></select>
-        </label>
-        <label>
-          <span>調達方式</span>
-          <select id="method"><option value="">すべて</option></select>
-        </label>
-        <label>
-          <span>RAG</span>
-          <select id="rag">
-            <option value="">すべて</option>
-            <option value="true">要件あり</option>
-            <option value="false">要件外 / 不要</option>
-            <option value="soft">望ましい・任意等</option>
-            <option value="unknown">未確認</option>
-          </select>
-        </label>
-        <label>
-          <span>Evidence</span>
-          <select id="evidence">
-            <option value="">すべて</option>
-            <option value="assessed">監査あり</option>
-            <option value="publicly_bounded">公開範囲に境界あり</option>
-            <option value="not_assessed">未監査</option>
-          </select>
-        </label>
-        <button id="reset" class="text-button" type="button">条件をクリア</button>
-        <button id="share-filter-url" class="text-button" type="button">この条件を共有</button>
-      </div>
-      <p id="result-count" class="result-count" aria-live="polite"></p>
-    </section>
-
-    <section id="compare-section" class="compare shell" hidden aria-labelledby="compare-heading">
-      <div class="section-heading inline-heading">
-        <div>
-          <p class="eyebrow">COMPARE</p>
-          <h2 id="compare-heading">選択した案件を比較</h2>
-        </div>
-        <button id="clear-compare" class="text-button" type="button">比較を解除</button>
-      </div>
-      <div class="table-wrap">
-        <table id="compare-table"></table>
-      </div>
-    </section>
-
-    <section class="results shell" aria-labelledby="results-heading">
-      <div class="section-heading">
-        <p class="eyebrow">CASES</p>
-        <h2 id="results-heading">案件一覧</h2>
-      </div>
-      <div class="table-wrap" tabindex="0" aria-label="案件一覧。横スクロールできます">
-        <table class="case-table">
-          <thead>
-            <tr>
-              <th scope="col">比較</th>
-              <th scope="col">自治体 / 案件</th>
-              <th scope="col">年度</th>
-              <th scope="col">方式</th>
-              <th scope="col">RAG</th>
-              <th scope="col">LGWAN</th>
-              <th scope="col">選定事業者</th>
-              <th scope="col">Evidence</th>
-              <th scope="col">根拠</th>
-            </tr>
-          </thead>
-          <tbody id="case-rows"></tbody>
-        </table>
-      </div>
-    </section>
-
     <section class="reading shell" aria-labelledby="reading-heading">
       <div class="section-heading">
-        <p class="eyebrow">HOW TO READ</p>
+        
         <h2 id="reading-heading">このデータの読み方</h2>
       </div>
       <div class="reading-grid">
@@ -276,14 +274,26 @@
           <p>受託候補者の選定、契約締結、サービス稼働は別々の証拠で確認します。</p>
         </div>
         <div>
-          <h3>仕様 ≠ 最終要件</h3>
+          <h3>公募時の仕様と契約後の条件を区別</h3>
           <p>質問回答・訂正・契約協議で条件が変わり得るため、公募時仕様だけで最終状態を断定しません。</p>
         </div>
         <div>
           <h3>未確認 ≠ 存在しない</h3>
-          <p><code>not_assessed</code> や空欄は、現時点の確認範囲を示すもので、不存在の判定ではありません。</p>
+          <p>資料の確認状況が未整理の場合や空欄の場合でも、その情報が存在しないとは限りません。</p>
         </div>
       </div>
+    </section>
+
+    <section class="site-overview shell" aria-labelledby="overview-heading">
+      <h2 id="overview-heading">収録内容</h2>
+      <p class="scope-note">以下は調査対象の収録件数であり、全国の自治体を代表する件数ではありません。</p>
+      <dl class="metrics" aria-label="データベース概要">
+        <div><dt>案件</dt><dd id="metric-cases">—</dd></div>
+        <div><dt>要件を比較できる案件</dt><dd id="metric-requirements">—</dd></div>
+        <div><dt>資料の確認状況を整理した案件</dt><dd id="metric-audited">—</dd></div>
+        <div><dt>一次資料</dt><dd id="metric-sources">—</dd></div>
+      </dl>
+      <p class="scope-note"><a href="./methodology.html">資料の確認範囲と調査方法を見る</a></p>
     </section>
   </main>
 
@@ -291,7 +301,7 @@
     <div class="dialog-shell case-dialog-shell">
       <div class="dialog-head">
         <div>
-          <p class="eyebrow">CASE DETAIL</p>
+          
           <h2 id="case-dialog-title">案件詳細</h2>
         </div>
         <button id="close-case" class="dialog-close" type="button" aria-label="閉じる">×</button>
@@ -301,50 +311,50 @@
       <dl id="case-dialog-facts" class="case-facts"></dl>
 
       <section class="detail-section case-highlights-section" aria-labelledby="detail-highlights-heading">
-        <p class="eyebrow">CASE HIGHLIGHTS</p>
+        
         <h3 id="detail-highlights-heading">この案件の注目点</h3>
         <div id="case-dialog-highlights" class="case-highlight-list"></div>
       </section>
 
       <section class="detail-section" aria-labelledby="detail-requirements-heading">
-        <p class="eyebrow">REQUIREMENTS</p>
-        <h3 id="detail-requirements-heading">横断要件プロファイル</h3>
+        
+        <h3 id="detail-requirements-heading">この案件の主な仕様条件</h3>
         <p class="section-lead">仕様書のみ、または仕様書と質疑等を統合した比較用プロファイルです。当初記載からの変更は次の「当初記載と有効要件」で確認してください。</p>
         <div id="case-dialog-requirements" class="requirement-grid"></div>
       </section>
 
       <section class="detail-section" aria-labelledby="detail-effective-heading">
-        <p class="eyebrow">EFFECTIVE REQUIREMENTS</p>
+        
         <h3 id="detail-effective-heading">当初記載と有効要件</h3>
         <div id="case-dialog-effective" class="detail-list"></div>
       </section>
 
       <section class="detail-section" aria-labelledby="detail-evaluation-heading">
-        <p class="eyebrow">EVALUATION</p>
+        
         <h3 id="detail-evaluation-heading">評価基準</h3>
         <div id="case-dialog-evaluation" class="detail-list"></div>
       </section>
 
       <section class="detail-section" aria-labelledby="detail-specialized-heading">
-        <p class="eyebrow">SPECIALIZED AI</p>
+        
         <h3 id="detail-specialized-heading">業務特化型AIの要件</h3>
         <div id="case-dialog-specialized" class="detail-list"></div>
       </section>
 
       <section class="detail-section" aria-labelledby="detail-results-heading">
-        <p class="eyebrow">PUBLIC RESULTS</p>
+        
         <h3 id="detail-results-heading">公開された得点・入札結果</h3>
         <div id="case-dialog-results" class="detail-list"></div>
       </section>
 
       <section class="detail-section" aria-labelledby="detail-timeline-heading">
-        <p class="eyebrow">TIMELINE</p>
+        
         <h3 id="detail-timeline-heading">公募とサービス期間</h3>
         <div id="case-dialog-timeline" class="detail-list"></div>
       </section>
 
       <div class="case-dialog-actions">
-        <button id="case-dialog-evidence" class="text-button" type="button">Evidence chainを見る</button>
+        <button id="case-dialog-evidence" class="text-button" type="button">資料の確認状況と根拠を見る</button>
         <a id="case-dialog-source" class="text-button" target="_blank" rel="noreferrer">代表する公式資料 ↗</a>
       </div>
       <p class="dialog-note">表示内容はRepositoryの構造化データから生成しています。空欄・未監査は不存在を意味しません。</p>
@@ -355,7 +365,7 @@
     <div class="dialog-shell">
       <div class="dialog-head">
         <div>
-          <p class="eyebrow">EVIDENCE CHAIN</p>
+          
           <h2 id="evidence-dialog-title">根拠の確認範囲</h2>
         </div>
         <button id="close-evidence" class="dialog-close" type="button" aria-label="閉じる">×</button>
@@ -371,7 +381,13 @@
     <div class="shell">
       <p>Source-first public research. Data and methodology are maintained in the repository.</p>
     </div>
-  </footer>
+  <nav class="site-footer-links shell" aria-label="関連ページ">
+  <a href="./index.html">サイトトップ</a>
+  <a href="./checklist.html">仕様検討のチェックリスト</a>
+  <a href="./case-study.html">個人研究の事例</a>
+  <a href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan">データと調査記録（GitHub）</a>
+</nav>
+</footer>
 
   <script src="./assets/app.js" defer></script>
 </body>

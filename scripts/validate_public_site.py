@@ -179,11 +179,30 @@ def main() -> int:
             'id="requirement-change"',
             'id="requirement-rows"',
             'id="requirement-result-count"',
-            "横断要件プロファイル",
+            "この案件の主な仕様条件",
             "当初記載と有効要件",
         ):
             if marker not in index_text:
                 errors.append(f"index.html: requirement explorer marker missing: {marker}")
+
+        if "何をしたいですか？" in index_text:
+            errors.append("index.html: prohibited abstract hero question")
+        for expected_href in ('./index.html#search-heading', './index.html#requirement-explorer', './evaluation.html#evaluation-topics'):
+            if f'href="{expected_href}"' not in index_text:
+                errors.append(f"index.html: primary action missing: {expected_href}")
+        if index_text.find('class="primary-actions"') < 0 or not (index_text.find('class="primary-actions"') < index_text.find('class="controls shell"') < index_text.find('class="metrics"')):
+            errors.append("index.html: primary actions/search must precede management metrics")
+        for label in ("資料の確認状況", "当初記載と有効要件"):
+            if label not in index_text:
+                errors.append(f"index.html: evidence meaning marker missing: {label}")
+    for page_name in PUBLIC_PAGES:
+        page_text = (ROOT / page_name).read_text(encoding="utf-8")
+        if 'aria-label="主要ページ"' not in page_text or 'aria-label="関連ページ"' not in page_text:
+            errors.append(f"{page_name}: public navigation incomplete")
+        if 'href="#main"' not in page_text:
+            errors.append(f"{page_name}: skip to main missing")
+        if "\\n        <a" in page_text:
+            errors.append(f"{page_name}: literal backslash-n in navigation")
 
     if app_path.is_file():
         for marker in (
@@ -217,7 +236,7 @@ def main() -> int:
             'id="drafting-sections"',
             'id="citizen-examples"',
             'id="role-examples"',
-            "仕様へ落とす",
+            "仕様に書く前に確認したい条件",
         ):
             if marker not in drafting_text:
                 errors.append(f"drafting.html: required marker missing: {marker}")
@@ -233,7 +252,7 @@ def main() -> int:
             "data/specialized_requirements.csv",
             "caseBoundaryText",
             "effectiveSourceId",
-            "自団体で埋める変数",
+            "自団体で決める事項",
         ):
             if marker not in drafting_js:
                 errors.append(f"assets/drafting.js: drafting support behavior missing: {marker}")
@@ -261,7 +280,7 @@ def main() -> int:
             'id="evaluation-topic-detail"',
             'id="evaluation-case-select"',
             'id="evaluation-case-detail"',
-            "評価へ分ける",
+            "評価する論点を選ぶ",
             "推奨配点や自治体平均としては扱いません",
             'data-evaluation-subset="representative"',
         ):

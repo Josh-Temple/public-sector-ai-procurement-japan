@@ -123,7 +123,7 @@ function yn(value) {
 }
 
 function evidenceLabel(row) {
-  if (!row || row.public_reconstructability === "not_assessed") return "未監査";
+  if (!row || row.public_reconstructability === "not_assessed") return "資料の確認状況は未整理";
   if (row.public_reconstructability === "publicly_bounded") return "公開範囲に境界";
   if (row.public_reconstructability === "publicly_reconstructable") return "公開資料で再構成可";
   return row.public_reconstructability || "—";
@@ -155,7 +155,7 @@ function reviewStateLabel(value) {
     source_unavailable: "資料取得不可",
     not_found_in_reviewed_sources: "確認範囲では未発見",
     not_applicable: "対象外",
-    not_assessed: "未監査",
+    not_assessed: "資料の確認状況は未整理",
     conflicting_sources: "資料間に不整合",
     selected_candidate_confirmed: "受託候補者の選定確認済み",
     contracted_confirmed: "契約確認済み",
@@ -190,7 +190,7 @@ function requirementBoundaryText(row) {
 
 function evidenceSummaryText(row) {
   const evidence = row.evidence;
-  if (!evidence) return "Evidence監査情報はありません。";
+  if (!evidence) return "資料の確認状況はまだ整理されていません。";
   const parts = [caseBoundaryText(evidence)];
   if (evidence.last_verified) parts.push(`最終確認: ${evidence.last_verified}`);
   return parts.join(" ");
@@ -443,7 +443,7 @@ function renderResearchHighlights() {
     claim.href = `https://github.com/Josh-Temple/public-sector-ai-procurement-japan/blob/main/claims/${item.claimId}.md`;
     claim.target = "_blank";
     claim.rel = "noreferrer";
-    claim.textContent = "Claimと適用範囲 ↗";
+    claim.textContent = "調査記録と適用範囲 ↗";
     links.append(claim);
 
     article.append(n, copy, links);
@@ -571,7 +571,7 @@ function renderCaseHighlights(row) {
       claim.href = `https://github.com/Josh-Temple/public-sector-ai-procurement-japan/blob/main/claims/${item.claimId}.md`;
       claim.target = "_blank";
       claim.rel = "noreferrer";
-      claim.textContent = "Claimと適用範囲 ↗";
+      claim.textContent = "調査記録と適用範囲 ↗";
       actions.append(claim);
 
       const source = state.sourceById.get(item.sourceId);
@@ -586,7 +586,7 @@ function renderCaseHighlights(row) {
     } else if (item.action === "evidence") {
       const button = document.createElement("button");
       button.type = "button";
-      button.textContent = "Evidence chain →";
+      button.textContent = "資料の確認状況を見る →";
       button.addEventListener("click", () => {
         document.getElementById("case-dialog").close();
         openEvidenceDialog(row);
@@ -666,7 +666,7 @@ function currentFilterParams() {
 
 function replaceUrl(params) {
   const query = params.toString();
-  const next = query ? `${window.location.pathname}?${query}` : window.location.pathname;
+  const next = (query ? `${window.location.pathname}?${query}` : window.location.pathname) + window.location.hash;
   window.history.replaceState(null, "", next);
 }
 
@@ -1298,8 +1298,8 @@ function openCaseDialog(row, updateUrl = true) {
   addFact(facts, "契約額", formatMoney(row.contract_amount_jpy));
   addFact(facts, "応募者数", row.applicant_count);
   addFact(facts, "契約期間", [row.contract_start, row.contract_end].filter(Boolean).join(" — "));
-  addFact(facts, "Evidence", evidenceLabel(row.evidence));
-  addFact(facts, "登録Source", row.sourceCount ? `${row.sourceCount}件` : "—");
+  addFact(facts, "資料の確認状況", evidenceLabel(row.evidence));
+  addFact(facts, "登録資料", row.sourceCount ? `${row.sourceCount}件` : "—");
 
   const req = document.getElementById("case-dialog-requirements");
   req.replaceChildren();
@@ -1454,7 +1454,7 @@ function renderRows() {
     title.textContent = `${row.government_name}｜${row.procurement_title}`;
     const sub = document.createElement("span");
     sub.className = "case-sub";
-    sub.textContent = `${row.prefecture} / ${categoryLabel(row.category)} / Sources ${row.sourceCount}`;
+    sub.textContent = `${row.prefecture} / ${categoryLabel(row.category)} / 登録資料 ${row.sourceCount}件`;
     titleTd.append(title, sub);
 
     const yearTd = document.createElement("td");
@@ -1493,7 +1493,7 @@ function renderRows() {
     const evidenceButton = document.createElement("button");
     evidenceButton.type = "button";
     evidenceButton.className = "evidence-button";
-    evidenceButton.textContent = "Evidence chain";
+    evidenceButton.textContent = "資料の確認状況";
     evidenceButton.addEventListener("click", () => openEvidenceDialog(row));
     sourceActions.append(evidenceButton);
     sourceTd.append(sourceActions);
@@ -1562,7 +1562,7 @@ function renderCompare() {
   const fields = [
     ["title", "案件名"], ["year", "公募年度"], ["method", "調達方式"], ["structure", "契約構造"],
     ["users", "利用規模"], ["rag", "RAG"], ["lgwan", "LGWAN"], ["learning", "学習利用禁止"],
-    ["vendor", "選定事業者"], ["budget", "上限額"], ["contract", "契約額"], ["evidence", "Evidence"],
+    ["vendor", "選定事業者"], ["budget", "上限額"], ["contract", "契約額"], ["evidence", "資料の確認状況"],
   ];
   const body = document.createElement("tbody");
   fields.forEach(([key, label]) => {

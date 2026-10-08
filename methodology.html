@@ -4,14 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="自治体AI調達データベースの収集範囲、Evidenceの読み方、鮮度ルール、構造化CSVの使い方を説明します。">
-  <meta property="og:title" content="データの見方・方法 | Public Sector AI Procurement Japan">
+  <meta property="og:title" content="資料の確認範囲と調査方法 | Public Sector AI Procurement Japan">
   <meta property="og:description" content="公式一次資料から構造化データ、Evidence chain、Claimへつなぐ方法と、公開CSVの利用方法。">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Public Sector AI Procurement Japan">
   <meta property="og:url" content="https://josh-temple.github.io/public-sector-ai-procurement-japan/methodology.html">
   <meta name="twitter:card" content="summary">
   <link rel="canonical" href="https://josh-temple.github.io/public-sector-ai-procurement-japan/methodology.html">
-  <title>データの見方・方法 | Public Sector AI Procurement Japan</title>
+  <title>資料の確認範囲と調査方法 | Public Sector AI Procurement Japan</title>
   <link rel="stylesheet" href="./assets/site.css">
 </head>
 <body>
@@ -19,16 +19,15 @@
   <header class="site-header">
     <div class="shell header-inner">
       <div>
-        <p class="eyebrow">PUBLIC SECTOR AI PROCUREMENT / JAPAN</p>
-        <h1>データの見方・方法</h1>
+        <p class="eyebrow">自治体のAI調達・公開事例</p>
+        <h1>資料の確認範囲と調査方法</h1>
       </div>
-      <nav class="site-nav" aria-label="公開サイト">
-          <a href="./index.html">調べる</a>
-          <a href="./insights.html">理解する</a>
-          <a href="./checklist.html">仕様を考える</a>
-          <a href="./drafting.html">仕様へ落とす</a>
-          <a href="./evaluation.html">評価へ分ける</a>\n        <a href="./methodology.html" aria-current="page">データの見方</a>
-          <a href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan">GitHub / 根拠</a>
+      <nav class="site-nav" aria-label="主要ページ">
+          <a href="./index.html#search-heading">調達事例</a>
+          <a href="./drafting.html">仕様を検討</a>
+          <a href="./evaluation.html">評価基準</a>
+          <a href="./insights.html">事例の解説</a>
+          <a href="./methodology.html" aria-current="page">資料の確認方法</a>
         </nav>
     </div>
   </header>
@@ -36,7 +35,7 @@
   <main id="main">
     <section class="hero shell">
       <p class="hero-copy">
-        このサイトは、自治体のAI導入事例を数えるための一覧ではありません。
+        このサイトでは、自治体のAI調達について、公表された資料で確認できる内容と、まだ確認できない内容を区別しています。
         公式一次資料から、案件・要求仕様・質疑による変更・評価・選定・契約の確認範囲を分けて記録し、
         構造化された値から根拠まで戻れることを重視しています。
       </p>
@@ -48,8 +47,8 @@
 
     <section class="reading shell" aria-labelledby="flow-heading">
       <div class="section-heading split-heading">
-        <div><p class="eyebrow">EVIDENCE FLOW</p><h2 id="flow-heading">事実から根拠までの流れ</h2></div>
-        <p class="section-lead">表示用HTMLを独立した事実の正本にせず、Repository内の構造化データとSource / Claimへ戻ります。</p>
+        <div><h2 id="flow-heading">事実から根拠までの流れ</h2></div>
+        <p class="section-lead">表示用HTMLを独立した事実の正本にせず、収録済みの構造化データと元資料・調査記録へ戻ります。</p>
       </div>
       <div class="reading-grid">
         <div><h3>1. 公式一次資料</h3><p>自治体の案件ページ、仕様書、質問回答、評価基準、選定結果などを優先します。取得できない資料は取得済みとして扱いません。</p></div>
@@ -60,7 +59,7 @@
 
     <section class="themes shell" aria-labelledby="data-heading">
       <div class="section-heading split-heading">
-        <div><p class="eyebrow">PUBLIC DATA</p><h2 id="data-heading">公開CSVを直接使う</h2></div>
+        <div><h2 id="data-heading">公開CSVを直接使う</h2></div>
         <p class="section-lead">公開サイトも同じCSVを読みます。用途に応じて必要な層だけ参照できます。</p>
       </div>
       <div class="theme-links">
@@ -77,7 +76,7 @@
 
     <section class="reading shell" aria-labelledby="read-heading">
       <div class="section-heading split-heading">
-        <div><p class="eyebrow">HOW TO READ</p><h2 id="read-heading">誤読を避けるための原則</h2></div>
+        <div><h2 id="read-heading">誤読を避けるための原則</h2></div>
         <p class="section-lead">空欄やステータスを、実態の不存在や品質評価へ読み替えません。</p>
       </div>
       <div class="reading-grid">
@@ -89,7 +88,7 @@
 
     <section class="reading shell" aria-labelledby="evidence-heading">
       <div class="section-heading split-heading">
-        <div><p class="eyebrow">EVIDENCE STATES</p><h2 id="evidence-heading">Evidence表示の意味</h2></div>
+        <div><h2 id="evidence-heading">資料の確認状況の意味</h2></div>
         <p class="section-lead">「公開資料でどこまで追えるか」と「調達の良し悪し」は別の軸です。</p>
       </div>
       <div class="reading-grid">
@@ -101,7 +100,7 @@
 
     <section class="reading shell" aria-labelledby="freshness-heading">
       <div class="section-heading split-heading">
-        <div><p class="eyebrow">FRESHNESS / REUSE</p><h2 id="freshness-heading">現在性と再利用</h2></div>
+        <div><h2 id="freshness-heading">現在性と再利用</h2></div>
         <p class="section-lead">Repositoryは調査の起点として使い、変化する事実を永久に固定するものではありません。</p>
       </div>
       <p>
@@ -120,6 +119,12 @@
     </section>
   </main>
 
-  <footer class="site-footer"><div class="shell"><p>Source-first public research. Public pages are downstream of the repository data and evidence model.</p></div></footer>
+  <footer class="site-footer"><div class="shell"><p>Source-first public research. Public pages are downstream of the repository data and evidence model.</p></div><nav class="site-footer-links shell" aria-label="関連ページ">
+  <a href="./index.html">サイトトップ</a>
+  <a href="./checklist.html">仕様検討のチェックリスト</a>
+  <a href="./case-study.html">個人研究の事例</a>
+  <a href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan">データと調査記録（GitHub）</a>
+</nav>
+</footer>
 </body>
 </html>

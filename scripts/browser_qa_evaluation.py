@@ -26,6 +26,7 @@ CASES = [
 VIEWPORTS = [("desktop-1280", 1280, 900, False),
              ("mobile-360", 360, 780, True),
              ("mobile-390", 390, 844, True),
+             ("mobile-320", 320, 640, True),
              ("desktop-narrow-640", 640, 450, False)]
 
 
@@ -42,6 +43,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--url", default=URL)
     parser.add_argument("--expected-js-blob-sha", required=True)
+    parser.add_argument("--expected-home-blob-sha", default=None)
+    parser.add_argument("--expected-app-js-blob-sha", default=None)
     parser.add_argument("--output-dir", default="evaluation-browser-qa")
     args = parser.parse_args()
     out = Path(args.output_dir)
@@ -49,7 +52,7 @@ def main():
     results = []
     metadata = {"url": args.url, "timestamp_utc": datetime.now(timezone.utc).isoformat(),
                 "expected_js_blob_sha": args.expected_js_blob_sha,
-                "served_js_blob_sha": None, "browser": None, "environment_blocker": None}
+                "served_js_blob_sha": None, "served_home_blob_sha": None, "served_app_js_blob_sha": None, "browser": None, "environment_blocker": None}
     blocked = False
 
     def record(view, case, check, passed, detail=""):
@@ -94,6 +97,64 @@ def main():
                                metadata["served_js_blob_sha"])
                     except Exception as error:
                         record(view, "ENV", "served_js_matches_main", False, str(error))
+                # Validate the public home task flow against actual served HTML and JS.
+                home = context.new_page()
+                home_errors = []
+                home.on("pageerror", lambda error: home_errors.append(str(error)))
+                try:
+                    home_url = args.url.rsplit("/", 1)[0] + "/index.html"
+                    home_response = home.goto(home_url, wait_until="domcontentloaded", timeout=30000)
+                    if not home_response or home_response.status != 200:
+                        raise RuntimeError("home HTTP status not 200")
+                    home.wait_for_function("() => document.querySelectorAll('#case-rows tr').length > 0", timeout=30000)
+                    home_text = home.locator(".hero").inner_text()
+                    for label in ("調達事例を探す", "仕様の条件を比較する", "評価基準を調べる"):
+                        record(view, "HOME", "main_action_" + label, label in home_text)
+                    actions = home.locator(".primary-actions a")
+                    hrefs = actions.evaluate_all("(nodes) => nodes.map(n => n.getAttribute('href'))")
+                    record(view, "HOME", "task_link_destinations",
+                           hrefs == ["./index.html#search-heading",
+                                     "./index.html#requirement-explorer",
+                                     "./evaluation.html#evaluation-topics"], hrefs)
+                    order = home.evaluate("""() => {
+                      const hero = document.querySelector('.primary-actions');
+                      const search = document.querySelector('.controls');
+                      const metrics = document.querySelector('.metrics');
+                      return Boolean(hero && search && metrics &&
+                        (hero.compareDocumentPosition(search) & Node.DOCUMENT_POSITION_FOLLOWING) &&
+                        (search.compareDocumentPosition(metrics) & Node.DOCUMENT_POSITION_FOLLOWING));
+                    }""")
+                    record(view, "HOME", "tasks_before_management", order)
+                    dims = home.evaluate("() => ({width: document.documentElement.clientWidth, scroll: document.documentElement.scrollWidth})")
+                    record(view, "HOME", "no_horizontal_page_overflow",
+                           dims["scroll"] <= dims["width"] + 2, dims)
+                    home.screenshot(path=str(out / (view + "_home_first_view.png")),
+                                    full_page=False, timeout=15000)
+                    record(view, "HOME", "first_view_screenshot", True)
+                    if view == "desktop-1280":
+                        if args.expected_home_blob_sha:
+                            metadata["served_home_blob_sha"] = git_blob_sha(home_response.body())
+                            record(view, "HOME", "served_home_matches_main",
+                                   metadata["served_home_blob_sha"] == args.expected_home_blob_sha,
+                                   metadata["served_home_blob_sha"])
+                        if args.expected_app_js_blob_sha:
+                            app_response = home.request.get(home_url.rsplit("/", 1)[0] + "/assets/app.js", timeout=30000)
+                            metadata["served_app_js_blob_sha"] = git_blob_sha(app_response.body())
+                            record(view, "HOME", "served_app_js_matches_main",
+                                   app_response.status == 200 and metadata["served_app_js_blob_sha"] == args.expected_app_js_blob_sha,
+                                   metadata["served_app_js_blob_sha"])
+                        home.locator("#search").fill("おうみ")
+                        home.wait_for_timeout(350)
+                        record(view, "HOME", "search_filters_case_list",
+                               "おうみ" in home.locator("#case-rows").inner_text())
+                        home.goto(home_url + "?case=oumi-2026-joint-genai", wait_until="domcontentloaded", timeout=30000)
+                        home.wait_for_function("() => document.querySelector('#case-dialog')?.open === true", timeout=15000)
+                        record(view, "HOME", "case_deeplink_dialog", home.locator("#case-dialog").is_visible())
+                    record(view, "HOME", "no_client_page_errors", not home_errors, home_errors)
+                except Exception as error:
+                    record(view, "HOME", "home_interaction", False, str(error))
+                finally:
+                    home.close()
                 picker = page.locator("#evaluation-case-select")
                 picker_size = picker.bounding_box()
                 record(view, "ENV", "picker_accessible",

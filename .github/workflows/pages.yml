@@ -105,6 +105,8 @@ jobs:
         run: |
           python3 scripts/browser_qa_evaluation.py \
             --expected-js-blob-sha "$(git hash-object assets/evaluation.js)" \
+            --expected-home-blob-sha "$(git hash-object index.html)" \
+            --expected-app-js-blob-sha "$(git hash-object assets/app.js)" \
             --output-dir evaluation-browser-qa
       - name: Preserve browser report and screenshots
         if: always()

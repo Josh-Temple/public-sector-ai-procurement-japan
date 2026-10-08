@@ -265,11 +265,12 @@ function buildEvaluationMemo(caseId, topic, data, baseUrl) {
   ];
   function evidenceLine(sourceId, locator, label) {
     const source = data.sourceById.get(sourceId);
-    const title = source ? source.title || sourceLabel(source) : "Source未登録";
-    if (!source || !source.url) return "  - " + label + "：" + title + "（公式URL未登録）";
-    return "  - " + label + "：[" + title + "](" + source.url + ")" +
+    const title = source ? source.title || sourceLabel(source) : "資料の参照先が未登録";
+    const citation = source && source.url ? "[" + title + "](" + source.url + ")" : title + "（公式URL未登録）";
+    return "  - " + label + "：" + citation +
       (locator ? " — 該当箇所：" + locator : "") +
-      (source.retrieved_at ? " ／ 資料取得日：" + source.retrieved_at : "");
+      (source && source.published_at ? " ／ 公表日：" + source.published_at : "") +
+      (source && source.retrieved_at ? " ／ 資料取得日：" + source.retrieved_at : "");
   }
   if (!rows.length) lines.push("構造化された配点行は未登録です。");
   rows.forEach(function (row) {
@@ -350,7 +351,7 @@ function renderLinks(card, caseId, sourceOrSources, claimPath) {
     seen.add(source.url);
     appendLink(links, source.url, sourceLabel(source) + " ↗", true);
   });
-  if (claimPath) appendLink(links, claimLink(claimPath), "reviewed Claim ↗", true);
+  if (claimPath) appendLink(links, claimLink(claimPath), "照合済みの調査記録 ↗", true);
   card.appendChild(links);
 }
 
@@ -848,7 +849,7 @@ async function initEvaluationSupport() {
     const root = document.getElementById("evaluation-topic-detail");
     if (root) {
       root.replaceChildren();
-      appendText(root, "p", "構造化データの読み込みに失敗しました。RepositoryのCSVを確認してください。", "error");
+      appendText(root, "p", "データを読み込めませんでした。ページを再読み込みしてお試しください。", "error");
     }
     console.error(error);
   }

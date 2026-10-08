@@ -1,5 +1,12 @@
 # Public comparison UI
 
+## User-facing site structure (2026-10-08)
+
+The public site opens with three tasks: **調達事例を探す** (`index.html#search-heading`), **仕様の条件を比較する** (`index.html#requirement-explorer`), and **評価基準を調べる** (`evaluation.html#evaluation-topics`). The case search and results are placed before the research summaries and internal collection metrics. The seven existing public URLs, case/query deep links, source locators, and comparison/download functions remain part of the compatibility contract.
+
+The primary navigation links to cases, specification topics, evaluation, case commentary, and source-review methodology. The supplementary footer keeps the specification checklist, individual case study, and repository reachable. Introductory text and user actions are Japanese-first; technical Source/Claim and validation details remain in methodology/repository documentation. The site does not infer standard scores or contract-final conditions from publicly bounded examples. Search discovery is not a quality ranking. Human first-time-user and physical Android Chrome usability tests are separate from automated QA and must not be reported as complete without observation.
+
+
 The repository root `index.html` is a dependency-free public comparison interface for the structured procurement data.
 
 ## Data source

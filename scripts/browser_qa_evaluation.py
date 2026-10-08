@@ -116,6 +116,15 @@ def main():
                            hrefs == ["./index.html#search-heading",
                                      "./index.html#requirement-explorer",
                                      "./evaluation.html#evaluation-topics"], hrefs)
+                    if view in ("mobile-320", "mobile-360", "mobile-390"):
+                        visibility = home.evaluate("""() => {
+                          const link = document.querySelector('.primary-actions a:last-child');
+                          const rect = link && link.getBoundingClientRect();
+                          return {bottom: rect && rect.bottom, viewport: window.innerHeight};
+                        }""")
+                        record(view, "HOME", "three_tasks_visible_without_scroll",
+                               bool(visibility["bottom"] and visibility["bottom"] <= visibility["viewport"] - 4),
+                               visibility)
                     order = home.evaluate("""() => {
                       const hero = document.querySelector('.primary-actions');
                       const search = document.querySelector('.controls');

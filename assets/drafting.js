@@ -43,7 +43,7 @@ const DRAFTING_DECISIONS = [
   },
   {
     id: "grounding-fallback",
-    label: "根拠表示・fallback・Web参照",
+    label: "根拠表示・回答できない場合の対応・Web参照",
     question: "回答根拠を何で示し、根拠がないときにどう振る舞わせるか。",
     variables: ["根拠表示対象（RAG / Web）", "表示粒度（文書 / URL / 該当箇所）", "根拠なし時の動作", "一般知識を許す条件", "Web検索範囲と管理者制御"],
     placement: "根拠・fallbackが安全上不可欠なら最低条件候補。表示方法や運用品質の差は評価候補になり得る。",
@@ -264,7 +264,7 @@ function evidenceCardForEffective(row, data) {
   appendText(card, "h3", valueForEffective(row));
   appendText(card, "p", "位置づけ: " + (row.effective_status || row.original_status || "—") + " / 適用段階: " + (row.applicability_stage || "—"), "drafting-evidence-meta");
   if (row.changed_by_source_id) {
-    appendText(card, "p", "後続資料反映: " + (row.change_type || "変更あり") + " / " + (row.change_locator || "locator未登録"), "drafting-evidence-change");
+    appendText(card, "p", "後続資料反映: " + (row.change_type || "変更あり") + " / " + (row.change_locator || "該当箇所は未登録"), "drafting-evidence-change");
   }
   if (row.scope) appendText(card, "p", "scope: " + row.scope, "drafting-evidence-meta");
   if (row.condition) appendText(card, "p", "条件: " + row.condition, "drafting-evidence-meta");
@@ -363,7 +363,7 @@ function renderDecision(decision, data, index) {
   const grid = document.createElement("div");
   grid.className = "drafting-decision-grid";
   const variableBox = document.createElement("div");
-  appendText(variableBox, "h3", "自団体で埋める変数");
+  appendText(variableBox, "h3", "自団体で決める事項");
   const ul = document.createElement("ul");
   decision.variables.forEach(function (variable) { appendText(ul, "li", variable); });
   variableBox.appendChild(ul);
@@ -442,12 +442,12 @@ function renderRoleExamples(data) {
   claim.className = "drafting-evidence";
   appendText(claim, "p", "北海道 2026 RAG調達", "drafting-evidence-case");
   appendText(claim, "h3", "参加資格と提案評価を同一視しない例");
-  appendText(claim, "p", "参加資格のEvidenceはreviewed Claimから確認してください。機能要件・評価項目の自動分類には使いません。", "drafting-evidence-meta");
+  appendText(claim, "p", "参加資格は、照合済みの調査記録で確認してください。機能要件や評価項目を自動分類するものではありません。", "drafting-evidence-meta");
   const links = document.createElement("div");
   links.className = "drafting-evidence-links";
   const a = document.createElement("a");
   a.href = "https://github.com/Josh-Temple/public-sector-ai-procurement-japan/blob/main/" + ROLE_EXAMPLES.qualificationClaim;
-  a.textContent = "参加資格のClaim ↗";
+  a.textContent = "参加資格の調査記録 ↗";
   links.appendChild(a);
   claim.appendChild(links);
   root.appendChild(claim);
@@ -486,7 +486,7 @@ async function initDraftingSupport() {
     renderRoleExamples(data);
   } catch (error) {
     const root = document.getElementById("drafting-sections");
-    if (root) appendText(root, "p", "構造化データの読み込みに失敗しました。RepositoryのCSVを確認してください。", "shell scope-note");
+    if (root) appendText(root, "p", "データを読み込めませんでした。ページを再読み込みしてお試しください。", "shell scope-note");
     console.error(error);
   }
 }

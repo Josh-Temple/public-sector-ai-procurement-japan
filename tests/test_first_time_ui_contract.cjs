@@ -59,5 +59,6 @@ for (const [pageName, contentIds, statusId, jsName] of [
 }
 const css = fs.readFileSync("assets/site.css", "utf8");
 assert.match(css, /input, select\s*\{[^}]*border: 1px solid var\(--muted\)/);
+assert.match(css, /\.evaluation-case-picker select\s*\{[^}]*border:\s*1px solid var\(--muted\)/, "evaluation case selector must retain a distinguishable border");
 
 console.log("First-time UI evidence, empty state, and scoring contract: PASS");

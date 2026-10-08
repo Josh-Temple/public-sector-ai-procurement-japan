@@ -58,6 +58,6 @@ for (const [pageName, contentIds, statusId, jsName] of [
   assert.ok(script.includes('getElementById("' + statusId + '")'), "status not populated by JS");
 }
 const css = fs.readFileSync("assets/site.css", "utf8");
-assert.match(css, /input, select\\s*\\{[^}]*border: 1px solid var\\(--muted\\)/);
+assert.match(css, /input, select\s*\{[^}]*border: 1px solid var\(--muted\)/);
 
 console.log("First-time UI evidence, empty state, and scoring contract: PASS");

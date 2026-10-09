@@ -352,3 +352,35 @@ code { font-size: 0.9em; }
 .case-title-button, .evidence-button, .source-actions a { min-height: 44px; display: inline-flex; align-items: center; }
 .requirement-source-links .source-date { display: block; overflow-wrap: anywhere; margin: 2px 0 7px; }
 [hidden] { display: none !important; }
+
+
+/* At narrow widths, reflow the existing nine-cell case rows; never clone source data or focus targets. */
+@media (max-width: 767px) {
+  .results .table-wrap { overflow-x: visible; border-top: 0; }
+  .results .case-table, .results .case-table tbody { display: block; min-width: 0; width: 100%; }
+  .results .case-table thead {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+  }
+  .results .case-table tbody tr {
+    display: block; padding: 8px 14px; margin: 0 0 16px;
+    border: 1px solid var(--line); overflow-wrap: anywhere;
+  }
+  .results .case-table tbody td {
+    display: grid; grid-template-columns: minmax(0, 98px) minmax(0, 1fr);
+    gap: 10px; align-items: start; padding: 10px 0;
+    width: 100%; border-bottom: 1px solid var(--line); white-space: normal;
+  }
+  .results .case-table tbody td::before {
+    content: attr(data-label); display: block; color: var(--muted);
+    font-size: .74rem; font-weight: 650; letter-spacing: 0;
+  }
+  .results .case-table tbody td:nth-child(2) { display: block; }
+  .results .case-table tbody td:nth-child(2)::before { margin-bottom: 6px; }
+  .results .case-table tbody td:last-child { border-bottom: 0; }
+  .results .case-table tbody td[colspan] { display: block; }
+  .results .case-table tbody td[colspan]::before { content: none; }
+  .results .case-table .source-link { white-space: normal; }
+  .results .case-table .source-actions { min-width: 0; }
+  .results .case-table .compare-check { width: 24px; height: 24px; }
+}

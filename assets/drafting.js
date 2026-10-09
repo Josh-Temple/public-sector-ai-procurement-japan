@@ -353,7 +353,7 @@ function renderDecision(decision, data, index) {
   const heading = document.createElement("div");
   heading.className = "section-heading split-heading";
   const left = document.createElement("div");
-  appendText(left, "p", String(index + 1).padStart(2, "0") + " / DECISION", "eyebrow");
+  appendText(left, "p", String(index + 1).padStart(2, "0") + " / 検討項目", "eyebrow");
   const h2 = appendText(left, "h2", decision.label);
   h2.id = decision.id + "-heading";
   heading.appendChild(left);

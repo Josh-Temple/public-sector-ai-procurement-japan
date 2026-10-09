@@ -15,9 +15,9 @@ const EVALUATION_DATA_FILES = {
 const EVALUATION_TOPICS = [
   {
     id: "rag-grounding",
-    label: "RAG・根拠表示・fallback",
+    label: "RAG・根拠表示・根拠がない場合の応答",
     question: "RAGの有無ではなく、検索品質、根拠表示、根拠がない場合の応答をどこまで最低条件にし、どこを比較するか。",
-    caution: "RAG、検索精度、根拠表示、容量、fallbackは別の比較軸です。市民向けの安全設計を職員向けSaaS全般へ一般化しません。",
+    caution: "RAG、検索精度、根拠表示、容量、根拠がない場合の応答は別の比較軸です。市民向けの安全設計を職員向けSaaS全般へ一般化しません。",
     effectiveIds: ["EFF-saitama-citizen_grounding", "EFF-matsue-source-display"],
     criterionIds: ["SAI-P06", "SAI-P07", "SEN-06", "MATSUE-DOC-03"]
   },
@@ -610,7 +610,7 @@ function awardBasisLabel(value) {
 
 function renderStageGroups(root, rows) {
   if (!rows.length) {
-    appendText(root, "p", "この案件にはproposal scoreの構造化行がありません。価格競争や参加資格が中心の案件では、評価点が存在しない場合があります。", "scope-note");
+    appendText(root, "p", "この案件には、提案評価の配点として整理したデータが登録されていません。価格競争や参加資格が中心の案件では、評価点が存在しない場合があります。", "scope-note");
     return;
   }
   const groups = new Map();
@@ -716,7 +716,7 @@ function renderCase(caseId, data) {
   appendText(gates, "h3", "参加資格");
   appendText(gates, "p", "評価点とは別の応募・入札条件です。未掲載の条件がないことを意味しません。", "scope-note");
   if (!caseGates.length) {
-    appendText(gates, "p", "この案件について、現在のcanonical dataに表示できる参加資格行はありません。原資料に参加資格が存在しないという意味ではありません。", "scope-note");
+    appendText(gates, "p", "この案件について、収録データには表示できる参加資格の記録がありません。原資料に参加資格が存在しないという意味ではありません。", "scope-note");
   } else {
     caseGates.forEach(function (row) {
       const entry = document.createElement("div");
@@ -732,9 +732,9 @@ function renderCase(caseId, data) {
   const rules = document.createElement("div");
   rules.className = "evaluation-case-block";
   appendText(rules, "h3", "選定・価格ルール");
-  appendText(rules, "p", "選定下限、失格条件、価格上限、予定価格、価格点算式、同点時ルールを別のruleとして表示します。未掲載のルールがないことを意味しません。", "scope-note");
+  appendText(rules, "p", "選定下限、失格条件、価格上限、予定価格、価格点算式、同点時ルールを別々のルールとして表示します。未掲載のルールがないことを意味しません。", "scope-note");
   if (!selectionRules.length) {
-    appendText(rules, "p", "この案件について、現在のcanonical dataに表示できる選定・価格ルール行はありません。原資料に閾値・失格条件・価格ルールが存在しないという意味ではありません。", "scope-note");
+    appendText(rules, "p", "この案件について、収録データには表示できる選定・価格ルールの記録がありません。原資料に閾値・失格条件・価格ルールが存在しないという意味ではありません。", "scope-note");
   } else {
     selectionRules.forEach(function (row) {
       const entry = document.createElement("div");

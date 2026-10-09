@@ -125,7 +125,7 @@ function yn(value) {
 
 function evidenceLabel(row) {
   if (!row || row.public_reconstructability === "not_assessed") return "資料の確認状況は未整理";
-  if (row.public_reconstructability === "publicly_bounded") return "公開範囲に境界";
+  if (row.public_reconstructability === "publicly_bounded") return "公開資料だけでは確認しきれない範囲あり";
   if (row.public_reconstructability === "publicly_reconstructable") return "公開資料で再構成可";
   return row.public_reconstructability || "—";
 }
@@ -801,7 +801,7 @@ function changeTypeLabel(value) {
     context: "前提情報",
     evaluation_context: "評価上の補足",
   };
-  return labels[value] || "確認済み";
+  return labels[value] || "変更種別は未登録";
 }
 
 function specializedValue(row) {
@@ -1521,7 +1521,10 @@ function renderRows() {
     sourceActions.append(evidenceButton);
     sourceTd.append(sourceActions);
 
-    tr.append(selectTd, titleTd, yearTd, methodTd, ragTd, lgwanTd, vendorTd, evTd, sourceTd);
+    const columns = [selectTd, titleTd, yearTd, methodTd, ragTd, lgwanTd, vendorTd, evTd, sourceTd];
+    const labels = ["比較", "自治体／案件", "公募年度", "調達方式", "RAG", "LGWAN", "選定事業者", "資料の確認状況", "公式資料"];
+    columns.forEach((cell, index) => { cell.dataset.label = labels[index]; });
+    tr.append(...columns);
     frag.append(tr);
   });
 

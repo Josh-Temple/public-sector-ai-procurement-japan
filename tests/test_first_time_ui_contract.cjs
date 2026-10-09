@@ -1,7 +1,7 @@
 "use strict";
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
-const {sourceDateText, requirementSourcePresentation, evaluationPointsText} = require("../assets/app.js");
+const {sourceDateText, requirementSourcePresentation, evaluationPointsText, changeTypeLabel} = require("../assets/app.js");
 const {ruleSummary, parseEvaluationCSV} = require("../assets/evaluation.js");
 
 const dated = {title:"公表資料", document_type:"official_qa", url:"", published_at:"2026-03-01", retrieved_at:"2026-04-01"};
@@ -60,5 +60,20 @@ for (const [pageName, contentIds, statusId, jsName] of [
 const css = fs.readFileSync("assets/site.css", "utf8");
 assert.match(css, /input, select\s*\{[^}]*border: 1px solid var\(--muted\)/);
 assert.match(css, /\.evaluation-case-picker select\s*\{[^}]*border:\s*1px solid var\(--muted\)/, "evaluation case selector must retain a distinguishable border");
+
+
+/* Reflow contract: all nine case fields remain in one DOM and keep their original actions. */
+const appSource = fs.readFileSync("assets/app.js", "utf8");
+assert.match(appSource, /const columns = \[selectTd, titleTd, yearTd, methodTd, ragTd, lgwanTd, vendorTd, evTd, sourceTd\]/);
+assert.match(appSource, /columns\.forEach\(\(cell, index\) => \{ cell\.dataset\.label = labels\[index\]; \}\)/);
+assert.match(css, /@media \(max-width: 767px\)/);
+assert.match(css, /content:\s*attr\(data-label\)/);
+assert.match(css, /\.results \.case-table tbody td\[colspan\]/);
+assert.equal(changeTypeLabel("relaxed"), "緩和");
+assert.equal(changeTypeLabel("unknown_value"), "変更種別は未登録");
+assert.equal(changeTypeLabel(""), "変更種別は未登録");
+for (const page of ["index.html", "insights.html", "checklist.html", "drafting.html", "evaluation.html", "methodology.html"]) {
+  assert.doesNotMatch(fs.readFileSync(page, "utf8"), /Source-first public research|Observed procurement choices|Observed scoring choices|Evidence-backed prompts/);
+}
 
 console.log("First-time UI evidence, empty state, and scoring contract: PASS");

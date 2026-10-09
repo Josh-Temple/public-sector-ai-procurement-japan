@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="自治体AI調達の実案件とreviewed Claimから整理した、仕様検討時に確認する8つの問い。AI利用境界、RAG、根拠表示、質疑反映、評価、データ取扱い、契約段階を一次資料へ辿れます。">
+  <meta name="description" content="自治体AI調達の実案件と根拠・対象範囲を確認した調査記録から整理した、仕様検討時に確認する8つの問い。AI利用境界、RAG、根拠表示、質疑反映、評価、データ取扱い、契約段階を一次資料へ辿れます。">
   <meta property="og:title" content="AI調達の仕様検討で確認する8項目 | Public Sector AI Procurement Japan">
-  <meta property="og:description" content="実際の自治体AI調達をもとに、仕様検討で確認したい8つの問いを一次資料・Claim付きで整理。">
+  <meta property="og:description" content="実際の自治体AI調達をもとに、仕様検討で確認したい8つの問いを一次資料と調査記録を付けて整理。">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Public Sector AI Procurement Japan">
   <meta property="og:url" content="https://josh-temple.github.io/public-sector-ai-procurement-japan/checklist.html">
@@ -38,7 +38,7 @@
         仕様書を書く前に「何を要求するか」だけでなく、「どこまでAIに任せるか」「根拠がない時にどう振る舞わせるか」「どの条件を必須・評価・参加資格に置くか」を切り分けます。
       </p>
       <p class="scope-note">
-        これは法令・政府標準・必須要件の一覧ではありません。2026年10月3日時点でRepositoryに保存されたreviewed Claimと公式一次資料から、実案件で差が出た論点を「確認する問い」に変換したものです。各案件の条件を他自治体へそのまま転用せず、リンク先のClaimの適用範囲を確認してください。
+        これは法令・政府標準・必須要件の一覧ではありません。2026年10月3日時点で根拠と適用範囲を確認した調査記録と公式一次資料から、実案件で差が出た論点を「確認する問い」に変換したものです。各案件の条件を他自治体へそのまま転用せず、リンク先の調査記録の適用範囲を確認してください。
       </p>
       <p class="case-dialog-actions"><a class="text-button" href="./drafting.html">実案件を参考に仕様の条件を整理する →</a></p>
     </section>
@@ -54,7 +54,7 @@
       <div class="theme-links">
         <a class="theme-link" href="#q1"><span>01</span><strong>どこで生成AIに回答・文章を生成させるか</strong><small>禁止 / 生成＋人判断 / 生成＋根拠制御</small></a>
         <a class="theme-link" href="#q2"><span>02</span><strong>RAGを必須・任意・対象外のどこに置くか</strong><small>調達スコープと組織全体を分ける</small></a>
-        <a class="theme-link" href="#q3"><span>03</span><strong>回答根拠と「分からない」の扱いをどう定義するか</strong><small>根拠表示 / fallback / 一般知識</small></a>
+        <a class="theme-link" href="#q3"><span>03</span><strong>回答根拠と「分からない」の扱いをどう定義するか</strong><small>根拠表示／根拠がない場合の応答／一般知識</small></a>
         <a class="theme-link" href="#q4"><span>04</span><strong>Q&A・訂正後の有効要件をどう管理するか</strong><small>元仕様と現行条件を分ける</small></a>
         <a class="theme-link" href="#q5"><span>05</span><strong>必須・加点・参加資格をどう分けるか</strong><small>同じ条件でも調達上の意味が違う</small></a>
         <a class="theme-link" href="#q6"><span>06</span><strong>データ取扱いの対象をどこまで具体化するか</strong><small>保存場所 / API接続 / 学習 / 一時保持</small></a>
@@ -214,7 +214,7 @@
         </div>
         <div>
           <h3>2. 実案件を比較する</h3>
-          <p>リンク先の案件詳細で、仕様・Q&A反映後要件・評価基準・Evidence chainを確認します。</p>
+          <p>リンク先の案件詳細で、仕様、質問回答・訂正後の要件、評価基準、根拠資料との対応を確認します。</p>
         </div>
         <div>
           <h3>3. 文言ではなく役割を移す</h3>
@@ -234,7 +234,7 @@
 
   <footer class="site-footer">
     <div class="shell">
-      <p>Evidence-backed prompts for specification design. The linked Claims and primary sources define the factual scope.</p>
+      <p>これは仕様を検討するための問いです。事例の適用範囲は、リンク先の調査記録と公式資料で確認してください。</p>
     </div>
   <nav class="site-footer-links shell" aria-label="関連ページ">
   <a href="./index.html">サイトトップ</a>

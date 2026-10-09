@@ -380,6 +380,7 @@ code { font-size: 0.9em; }
   .results .case-table tbody td:last-child { border-bottom: 0; }
   .results .case-table tbody td[colspan] { display: block; }
   .results .case-table tbody td[colspan]::before { content: none; }
+  .results .case-table .badge { white-space: normal; overflow-wrap: anywhere; max-width: 100%; }
   .results .case-table .source-link { white-space: normal; }
   .results .case-table .source-actions { min-width: 0; }
   .results .case-table .compare-check { width: 24px; height: 24px; }

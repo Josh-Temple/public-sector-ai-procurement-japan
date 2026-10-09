@@ -68,6 +68,7 @@ assert.match(appSource, /const columns = \[selectTd, titleTd, yearTd, methodTd, 
 assert.match(appSource, /columns\.forEach\(\(cell, index\) => \{ cell\.dataset\.label = labels\[index\]; \}\)/);
 assert.match(css, /@media \(max-width: 767px\)/);
 assert.match(css, /content:\s*attr\(data-label\)/);
+assert.match(css, /\.results \.case-table \.badge\s*\{[^}]*white-space:\s*normal/);
 assert.match(css, /\.results \.case-table tbody td\[colspan\]/);
 assert.equal(changeTypeLabel("relaxed"), "緩和");
 assert.equal(changeTypeLabel("unknown_value"), "変更種別は未登録");

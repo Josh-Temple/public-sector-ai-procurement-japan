@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="自治体AI調達データベースの収集範囲、Evidenceの読み方、鮮度ルール、構造化CSVの使い方を説明します。">
+  <meta name="description" content="自治体AI調達データベースの収集範囲、根拠資料の確認方法、情報の更新に関する注意、構造化CSVの使い方を説明します。">
   <meta property="og:title" content="資料の確認範囲と調査方法 | Public Sector AI Procurement Japan">
-  <meta property="og:description" content="公式一次資料から構造化データ、Evidence chain、Claimへつなぐ方法と、公開CSVの利用方法。">
+  <meta property="og:description" content="公式一次資料から構造化データ、根拠の対応関係、調査記録へつなぐ方法と、公開CSVの利用方法。">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Public Sector AI Procurement Japan">
   <meta property="og:url" content="https://josh-temple.github.io/public-sector-ai-procurement-japan/methodology.html">
@@ -52,8 +52,8 @@
       </div>
       <div class="reading-grid">
         <div><h3>1. 公式一次資料</h3><p>自治体の案件ページ、仕様書、質問回答、評価基準、選定結果などを優先します。取得できない資料は取得済みとして扱いません。</p></div>
-        <div><h3>2. 構造化データ</h3><p>案件、横断要件、質疑反映後の有効要件、評価、Evidence確認状態などを用途別CSVへ分けて保持します。</p></div>
-        <div><h3>3. Source / Claim</h3><p>繰り返し使う価値がある主張は、適用範囲と根拠を持つClaimとして整理し、必要な一次資料へ追跡できる形にします。</p></div>
+        <div><h3>2. 構造化データ</h3><p>案件、横断要件、質疑反映後の有効要件、評価、根拠資料の確認状況などを用途別CSVへ分けて保持します。</p></div>
+        <div><h3>3. 資料情報と調査記録</h3><p>繰り返し使う価値がある主張は、適用範囲と根拠を持つ調査記録として整理し、必要な一次資料へ追跡できる形にします。</p></div>
       </div>
     </section>
 
@@ -66,12 +66,12 @@
         <a class="theme-link" href="./data/cases.csv"><span>01</span><strong>案件台帳</strong><small>自治体・案件名・方式・事業者・期間など / cases.csv</small></a>
         <a class="theme-link" href="./data/requirements.csv"><span>02</span><strong>横断要件</strong><small>RAG・LGWAN・学習利用・利用規模など / requirements.csv</small></a>
         <a class="theme-link" href="./data/effective_requirements.csv"><span>03</span><strong>質疑反映後の有効要件</strong><small>仕様書の後に変更された条件を分離 / effective_requirements.csv</small></a>
-        <a class="theme-link" href="./data/case_evidence_summary.csv"><span>04</span><strong>案件別Evidence確認範囲</strong><small>仕様・質疑・評価・結果・契約等の確認状態 / case_evidence_summary.csv</small></a>
+        <a class="theme-link" href="./data/case_evidence_summary.csv"><span>04</span><strong>案件別の資料確認範囲</strong><small>仕様・質疑・評価・結果・契約等の確認状態 / case_evidence_summary.csv</small></a>
         <a class="theme-link" href="./data/evaluation_criteria.csv"><span>05</span><strong>評価基準</strong><small>公開された評価項目と配点 / evaluation_criteria.csv</small></a>
         <a class="theme-link" href="./data/specialized_requirements.csv"><span>06</span><strong>業務特化型AI要件</strong><small>用途固有の細粒度要件 / specialized_requirements.csv</small></a>
         <a class="theme-link" href="./data/source_documents.csv"><span>07</span><strong>一次資料レジストリ</strong><small>Source ID・資料種別・URL・取得状態 / source_documents.csv</small></a>
       </div>
-      <p class="scope-note">CSVの列定義や関係はRepositoryの <a href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan/blob/main/docs/DATA_MODEL.md">DATA_MODEL.md ↗</a> を参照してください。</p>
+      <p class="scope-note">CSVの列定義や関係は公開リポジトリの <a href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan/blob/main/docs/DATA_MODEL.md">DATA_MODEL.md ↗</a> を参照してください。</p>
     </section>
 
     <section class="reading shell" aria-labelledby="read-heading">
@@ -92,20 +92,20 @@
         <p class="section-lead">「公開資料でどこまで追えるか」と「調達の良し悪し」は別の軸です。</p>
       </div>
       <div class="reading-grid">
-        <div><h3>reviewed</h3><p>対象roleについて、登録した一次資料を確認済みです。現在性が重要な問いでは原典のfresh readが別途必要です。</p></div>
-        <div><h3>publicly_bounded</h3><p>公開資料だけでは契約最終状態などを完全に再構成できない境界があります。調達品質の否定ではありません。</p></div>
-        <div><h3>not_assessed</h3><p>まだ標準化した監査をしていない状態です。「資料がない」「その状態ではない」という判定ではありません。</p></div>
+        <div><h3>根拠と対象範囲を確認済み</h3><p><code>reviewed</code>は、対象の資料区分について登録した一次資料を確認した状態です。現在性が重要な場合には、公式資料を改めて確認する必要があります。</p></div>
+        <div><h3>公開資料だけでは確認しきれない範囲あり</h3><p><code>publicly_bounded</code>は、契約最終状態などを公開資料だけでは完全に確認できない状態です。調達品質の否定ではありません。</p></div>
+        <div><h3>確認範囲は未評価</h3><p><code>not_assessed</code>は、まだ標準化した監査をしていない状態です。「資料がない」「その状態ではない」という判定ではありません。</p></div>
       </div>
     </section>
 
     <section class="reading shell" aria-labelledby="freshness-heading">
       <div class="section-heading split-heading">
         <div><h2 id="freshness-heading">現在性と再利用</h2></div>
-        <p class="section-lead">Repositoryは調査の起点として使い、変化する事実を永久に固定するものではありません。</p>
+        <p class="section-lead">公開リポジトリは調査の起点として使い、変化する事実を永久に固定するものではありません。</p>
       </div>
       <p>
         現在募集中か、最新年度の仕様、現在の選定・契約状況、価格、製品・モデル仕様などは変化します。
-        これらを意思決定に使う場合は、保存済みSourceやClaimから公式一次資料へ戻り、必要な範囲を再確認してください。
+        これらを意思決定に使う場合は、保存済みの資料情報や調査記録から公式一次資料へ戻り、必要な範囲を再確認してください。
       </p>
       <p>
         案件間の比較は「他自治体がどのような条件を書いたか」を確認するための材料です。
@@ -114,12 +114,12 @@
       <p class="case-dialog-actions">
         <a class="text-button" href="./index.html">案件を検索・比較する →</a>
         <a class="text-button" href="./checklist.html">仕様検討の8つの問い →</a>
-        <a class="text-button" href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan/blob/main/docs/KNOWLEDGE_MODEL.md">Source / Claimモデルを見る ↗</a>
+        <a class="text-button" href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan/blob/main/docs/KNOWLEDGE_MODEL.md">資料情報と調査記録のモデルを見る ↗</a>
       </p>
     </section>
   </main>
 
-  <footer class="site-footer"><div class="shell"><p>Source-first public research. Public pages are downstream of the repository data and evidence model.</p></div><nav class="site-footer-links shell" aria-label="関連ページ">
+  <footer class="site-footer"><div class="shell"><p>このサイトは公式資料に基づく調査データを表示しています。データの定義と根拠の確認方法はGitHubで公開しています。</p></div><nav class="site-footer-links shell" aria-label="関連ページ">
   <a href="./index.html">サイトトップ</a>
   <a href="./checklist.html">仕様検討のチェックリスト</a>
   <a href="./case-study.html">個人研究の事例</a>

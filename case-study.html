@@ -14,7 +14,7 @@
           <a href="./methodology.html">資料の確認方法</a>
         </nav></div></header>
 <main id="main"><section class="hero shell"><p class="hero-copy">自治体のAI調達を比較するとき、仕様書の記載だけを集めると、後続の公式質疑による変更を取り落とします。この個人プロジェクトでは、元の要件、変更後の条件、根拠箇所、確認できる範囲を分けて記録しました。</p>
-<p class="scope-note">公開一次資料とRepositoryから確認できる設計・実装の紹介です。調達支援の受託実績、所属組織の公式事業、組織導入による効果を示すものではありません。以下は特定の公募資料の事例で、全国的傾向や現在の契約条件へ一般化しません。</p></section>
+<p class="scope-note">公開された一次資料と、このプロジェクトの公開リポジトリから確認できる設計・実装を紹介します。調達支援の受託実績、所属組織の公式事業、組織導入による効果を示すものではありません。以下は特定の公募資料の事例で、全国的傾向や現在の契約条件へ一般化しません。</p></section>
 <section class="shell"><h2>1. 問題設定：何を比較値にするか</h2><p>対象は製品の紹介ではなく、自治体が何をどの条件で求めているかです。同じ機能でも、必須、任意、望ましい、実装予定でも可という条件は異なります。変更後の数値だけに上書きすると、判断の根拠や経緯も失われます。</p>
 <h2>2. 一次資料の実例：おうみ共同調達</h2><p>おうみ自治体クラウド協議会の公募時仕様と公式質問回答を照合しました。2026年10月4日に公開PDFを再取得し、次の3例を確認しています。</p>
 <table><thead><tr><th>項目</th><th>元仕様</th><th>公式回答後の条件</th><th>根拠</th></tr></thead><tbody>
@@ -23,19 +23,19 @@
 <tr><td>Deep Research</td><td>利用できること</td><td>利用可能、または実装予定。予定の場合は日程を提示</td><td>質問回答No.5</td></tr>
 </tbody></table><p><a href="https://www.city.omihachiman.lg.jp/material/files/group/115/AI_Shiyousyo2.pdf">公式仕様書</a> ／ <a href="https://www.city.omihachiman.lg.jp/material/files/group/115/AI_kaitou.pdf">公式質問回答</a></p>
 <h2>3. 設計判断：変更の種類を分ける</h2><p>この3例を一律の「要件緩和」にまとめず、数値の変更、任意化、実装予定の許容として別々に記録します。Deep Researchを単純に「任意」とすると、実装予定と日程提示という条件が落ちるためです。</p>
-<p>Repositoryでは、元の条件と変更後の条件に加え、元資料・後続資料のID、該当箇所、適用範囲、留保、検証状態を保持しています。横断比較の表はこの詳細記録へ戻れる構成です。</p>
+<p>公開リポジトリでは、元の条件と変更後の条件に加え、元資料・後続資料のID、該当箇所、適用範囲、留保、検証状態を保持しています。横断比較の表はこの詳細記録へ戻れる構成です。</p>
 <p><a href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan/blob/main/data/effective_requirements.csv">有効要件データ</a>の EFF-oumi-template-count、EFF-oumi-agent、EFF-oumi-deep-research と、<a href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan/blob/main/docs/DATA_MODEL.md">データモデル</a>を確認できます。</p>
-<h2>4. 実装・AI活用・検証の分担</h2><p>公開されている成果は、案件・文書・要件を接続するデータ、質問に応じた索引、静的比較サイト、整合性検証スクリプトです。AIが調査・更新する際の手順もAGENTS.mdで定め、事実・解釈・提案、検証状態と鮮度を分けています。</p>
-<p>検証スクリプトは重複ID、参照先、Claimの根拠、生成表との整合を確認します。一方、構造的なチェックだけで原典の読み取りが正しいとは保証できないため、この事例の内容は公式回答の項番まで戻って照合しています。</p>
+<h2>4. 実装・AI活用・検証の分担</h2><p>公開されている成果は、案件・文書・要件を接続するデータ、質問に応じた索引、静的比較サイト、整合性検証スクリプトです。AIが調査・更新するときの手順はAGENTS.mdに定め、事実・解釈・提案、検証状態と鮮度を分けています。</p>
+<p>検証スクリプトは重複ID、参照先、調査記録と根拠資料の対応、生成表との整合を確認します。一方、構造的なチェックだけで原典の読み取りが正しいとは保証できないため、この事例の内容は公式回答の項番まで戻って照合しています。</p>
 <ul><li><a href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan/blob/main/AGENTS.md">AIへの参照・更新指示</a></li>
-<li><a href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan/blob/main/scripts/validate_repository.py">Repository整合性の検証器</a></li>
+<li><a href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan/blob/main/scripts/validate_repository.py">リポジトリの整合性検証プログラム</a></li>
 <li><a href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan/tree/main/tests">回帰テスト</a></li></ul>
-<p>これらは作業と品質管理の仕組みを示します。AIへの個別指示や各Agentの担当履歴すべてが公開されているわけではなく、コード行ごとの本人・AIの寄与率や並列運用の効果は、このページだけでは証明しません。</p>
+<p>これらは作業と品質管理の仕組みを示します。AIへの個別指示や各AIエージェントの担当履歴すべてが公開されているわけではなく、コード行ごとの本人・AIの寄与率や並列運用の効果は、このページだけでは証明しません。</p>
 <h2>5. 成果と限界：何を示せるか</h2><p>この事例で示せるのは、要件の変更を出典付きで構造化し、比較値から詳細条件へ戻れる設計です。自治体の調達成果、費用削減、回答の正確性向上を実証したという意味ではありません。</p>
-<p>公募時の有効要件と契約後の最終仕様も別です。実施要領・結果資料に基づくRepositoryの整理では、選定後の仕様協議と市別利用契約を扱い、確認した公開資料だけで契約最終要件を再構成できるとはしていません。未取得・非公開・未確認は、存在しないという結論へ置き換えません。</p>
+<p>公募時の有効要件と契約後の最終仕様も別です。実施要領・結果資料に基づく公開リポジトリに保存した調査記録では、選定後の仕様協議と市別利用契約を扱い、確認した公開資料だけで契約最終要件を再構成できるとはしていません。未取得・非公開・未確認は、存在しないという結論へ置き換えません。</p>
 <p><a href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan/blob/main/data/review_coverage.csv">文書の確認範囲</a> ／ <a href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan/blob/main/sources/SRC-oumi-2026-guide.md">実施要領の根拠記録</a></p>
 <h2>この個人研究で取り組んだこと</h2><p>「なぜ仕様書だけでは足りないか」「なぜ任意と実装予定を分けるか」「機械検証が何を保証し、何を保証しないか」を、原典とデータを並べて説明できる事例です。行政の制度・文書を扱う経験と、情報設計・AIを使った実装を接続する題材として提示しています。</p>
-<p><a href="./index.html?case=oumi-2026-joint-genai">比較サイトで案件を見る</a> ／ <a href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan">Repository</a> ／ <a href="https://ai-business-transformation-nine.vercel.app/">Portfolio</a> ／ <a href="https://www.linkedin.com/in/yoshitaka-terada-a4b917145/">LinkedIn</a></p></section></main><footer class="site-footer"><nav class="site-footer-links shell" aria-label="関連ページ">
+<p><a href="./index.html?case=oumi-2026-joint-genai">比較サイトで案件を見る</a> ／ <a href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan">公開リポジトリ（GitHub）</a> ／ <a href="https://ai-business-transformation-nine.vercel.app/">Portfolio</a> ／ <a href="https://www.linkedin.com/in/yoshitaka-terada-a4b917145/">LinkedIn</a></p></section></main><footer class="site-footer"><nav class="site-footer-links shell" aria-label="関連ページ">
   <a href="./index.html">サイトトップ</a>
   <a href="./checklist.html">仕様検討のチェックリスト</a>
   <a href="./case-study.html" aria-current="page">個人研究の事例</a>

@@ -116,6 +116,12 @@ jobs:
             --output-dir evaluation-browser-qa
       - name: Verify all effective requirements at desktop and mobile widths
         run: python3 scripts/browser_qa_effective_requirements.py --output-dir evaluation-browser-qa
+      - name: Verify production comparison, focus, shared URL history and real Markdown downloads
+        run: |
+          python3 scripts/browser_qa_keyboard_journey.py \
+            --url https://josh-temple.github.io/public-sector-ai-procurement-japan/ \
+            --production-safe \
+            --output-dir evaluation-browser-qa/keyboard-journey
       - name: Preserve browser report and screenshots
         if: always()
         uses: actions/upload-artifact@v4

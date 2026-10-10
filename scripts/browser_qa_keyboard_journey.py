@@ -20,8 +20,14 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--url", default="http://127.0.0.1:8765/")
     parser.add_argument("--output-dir", default="keyboard-journey-pr-qa")
+    parser.add_argument("--production-safe", action="store_true", help="Allow read-only tests on the exact public Pages URL")
     args = parser.parse_args()
-    assert args.url.startswith(("http://127.0.0.1:", "http://localhost:")), "PR-only localhost suite"
+    if args.production_safe:
+        assert args.url.rstrip("/") == (
+            "https://josh-temple.github.io/public-sector-ai-procurement-japan"
+        ), "production acceptance URL must match the exact Pages address"
+    else:
+        assert args.url.startswith(("http://127.0.0.1:", "http://localhost:")), "PR localhost only"
     base = args.url.rstrip("/") + "/"
     dest = Path(args.output_dir)
     dest.mkdir(parents=True, exist_ok=True)
@@ -168,7 +174,7 @@ def main():
     summary = {"PASS": sum(x["status"] == "PASS" for x in findings),
                "FAIL": sum(x["status"] == "FAIL" for x in findings)}
     (dest / "acceptance.json").write_text(json.dumps(
-        {"target": base, "scope": "PR localhost Chromium only; not Android, native zoom, AT or human",
+        {"target": base, "scope": ("LIVE_PRODUCTION Chromium normal journeys" if args.production_safe else "PR localhost Chromium normal journeys") + "; not Android, native zoom, AT or human",
          "summary": summary, "findings": findings}, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps(summary))
     return int(summary["FAIL"] > 0)

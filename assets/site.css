@@ -300,6 +300,9 @@ code { font-size: 0.9em; }
 .evaluation-case-header h3 { margin: 0 0 8px; }
 /* Unknown recorded selection codes must wrap without widening a 320px page. */
 .evaluation-case-header .evaluation-score { overflow-wrap: anywhere; min-width: 0; }
+.evaluation-export-actions #evaluation-memo-download {
+  max-width: 100%; min-width: 0; white-space: normal; overflow-wrap: anywhere; text-align: left;
+}
 .evaluation-selection-raw, .evaluation-selection-raw p, .evaluation-selection-raw summary {
   max-width: 100%; min-width: 0; overflow-wrap: anywhere;
 }

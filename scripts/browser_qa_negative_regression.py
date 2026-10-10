@@ -167,6 +167,15 @@ def main():
                     "() => ({viewport: document.documentElement.clientWidth, "
                     "scroll: document.documentElement.scrollWidth})")
                 page.screenshot(path=str(dest / "evaluation-matsue-320.png"), full_page=True)
+                if dims["scroll"] > dims["viewport"] + 2:
+                    dims["offenders"] = page.evaluate("""() => [...document.querySelectorAll('body *')]
+                      .map(el => ({name: el.tagName.toLowerCase(),
+                        cls: String(el.className || '').slice(0, 80),
+                        id: el.id || '', text: (el.innerText || '').slice(0, 90),
+                        right: Math.round(el.getBoundingClientRect().right),
+                        width: Math.round(el.getBoundingClientRect().width)}))
+                      .filter(x => x.right > document.documentElement.clientWidth + 2)
+                      .sort((a,b) => b.right - a.right).slice(0, 14)""")
                 assert dims["scroll"] <= dims["viewport"] + 2, repr(dims)
                 assert not errors, str(errors)
             finally:

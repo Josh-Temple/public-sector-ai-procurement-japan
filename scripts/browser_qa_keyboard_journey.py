@@ -104,7 +104,7 @@ def main():
                 assert "case=matsue-2026-genai-support" in href
                 assert "リンクを開く" in link.inner_text()
                 assert page.locator(".evaluation-selection-raw summary").count() == 1, "unknown selection code is not in accessible details"
-                assert "highest_combined_evaluation_to_first_priority_negotiator" not in page.locator(".evaluation-score").inner_text()
+                assert "highest_combined_evaluation_to_first_priority_negotiator" not in page.locator(".evaluation-case-header .evaluation-score").inner_text()
                 raw = page.locator(".evaluation-selection-raw")
                 raw.locator("summary").click()
                 assert "highest_combined_evaluation_to_first_priority_negotiator" in raw.inner_text()

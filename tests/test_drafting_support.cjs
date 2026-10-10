@@ -10,6 +10,10 @@ const {
   parseDraftingCSV,
   effectiveSourceId,
   valueForEffective,
+  draftingStatusLabel,
+  draftingStageLabel,
+  draftingChangeLabel,
+  draftingOfficialUrl,
   caseBoundaryText
 } = require("../assets/drafting.js");
 
@@ -94,4 +98,10 @@ assert.ok(bounded);
 assert.match(caseBoundaryText(bounded), /契約後の最終仕様/);
 assert.doesNotMatch(caseBoundaryText(bounded), /契約最終要件まで.*再構成可能/);
 
+assert.match(draftingStatusLabel("required_or_in_progress"), /対応中を許容/);
+assert.match(draftingStageLabel("procurement_effective"), /公募時/);
+assert.equal(draftingChangeLabel("threshold_relaxed"), "閾値緩和");
+assert.match(draftingChangeLabel("invalid_type"), /未整理/);
+assert.equal(draftingOfficialUrl("javascript:alert(1)"), "");
+assert.match(valueForEffective({ original_value: ">=200", effective_value: "" }), /未登録/);
 console.log("drafting support regression: " + DRAFTING_DECISIONS.length + " decisions, canonical references resolved");

@@ -1,7 +1,7 @@
 "use strict";
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
-const {changeTypeLabel, requirementSourcePresentation, sourceDateText} = require("../assets/app.js");
+const {changeTypeLabel, categoryLabel, safeOfficialUrl, parseCSV: parsePublicCSV, requirementStatusLabel, requirementSourcePresentation, sourceDateText} = require("../assets/app.js");
 function parseCSV(text) {
   const out = [];
   let row = [];
@@ -90,7 +90,19 @@ const missingUrl=requirementSourcePresentation({title,url:"",published_at:"",ret
 assert.equal(missingUrl.url,"");
 assert.match(missingUrl.detail,/公式URL未登録/);
 assert.doesNotMatch(sourceDateText({retrieved_at:"2026-10-01"}),/公表日/);
-assert.equal(changeTypeLabel("unexpected_enum"),"変更種別は未登録");
+assert.match(changeTypeLabel("unexpected_enum"),/未整理.*unexpected_enum/);
 assert.equal(changeTypeLabel(""),"変更種別は未登録");
+assert.equal(safeOfficialUrl("javascript:alert(1)"),"");
+assert.equal(safeOfficialUrl("data:text/html,hi"),"");
+assert.equal(safeOfficialUrl("https://example.org/a"),"https://example.org/a");
+assert.equal(requirementSourcePresentation({title:"不正URL",url:"javascript:alert(1)"}, "", "変更根拠").url,"");
+assert.match(requirementStatusLabel("required_or_planned"),/実装予定を許容/);
+assert.doesNotMatch(requirementStatusLabel("required_or_planned"),/必須/);
+assert.match(categoryLabel("genai_pilot_rag_governance"),/実証/);
+assert.match(categoryLabel("not_known"),/未整理.*not_known/);
+assert.equal(new Set(cases.map(r=>r.category)).size,20);
+for(const name of new Set(cases.map(r=>r.category))) assert.doesNotMatch(categoryLabel(name),/未整理/,name);
+assert.throws(()=>parsePublicCSV(["id,value", 'a,"unclosed'].join(String.fromCharCode(10))),/引用符/);
+assert.throws(()=>parsePublicCSV(["id,value", "a,1,2"].join(String.fromCharCode(10))),/列構造/);
 assert.ok(!rows.some(r => !r.base_source_id),"base Source must not be inferred");
 console.log("effective requirements canonical/source integrity PASS: "+rows.length+" rows; "+changed+" changed-source, "+noChanged+" without changed-source");

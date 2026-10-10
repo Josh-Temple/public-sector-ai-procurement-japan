@@ -71,7 +71,7 @@ assert.match(css, /content:\s*attr\(data-label\)/);
 assert.match(css, /\.results \.case-table \.badge\s*\{[^}]*white-space:\s*normal/);
 assert.match(css, /\.results \.case-table tbody td\[colspan\]/);
 assert.equal(changeTypeLabel("relaxed"), "緩和");
-assert.equal(changeTypeLabel("unknown_value"), "変更種別は未登録");
+assert.match(changeTypeLabel("unknown_value"), /未整理.*unknown_value/);
 assert.equal(changeTypeLabel(""), "変更種別は未登録");
 for (const page of ["index.html", "insights.html", "checklist.html", "drafting.html", "evaluation.html", "methodology.html"]) {
   assert.doesNotMatch(fs.readFileSync(page, "utf8"), /Source-first public research|Observed procurement choices|Observed scoring choices|Evidence-backed prompts/);

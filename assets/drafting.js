@@ -200,7 +200,7 @@ function effectiveSourceId(row) {
 }
 
 function sourceLabel(source) {
-  if (!source) return "公式資料";
+  if (!source) return "資料参照先が未登録";
   const labels = {
     official_qa_amendment: "Q&A・訂正",
     official_specification: "仕様書",
@@ -224,7 +224,60 @@ function caseBoundaryText(evidence) {
 }
 
 function valueForEffective(row) {
-  return row.effective_value || row.original_value || "—";
+  return row.effective_value || "反映後の記載は未登録（当初の記載と区別してください）";
+}
+
+function draftingStatusLabel(value) {
+  const known = {
+    required:"必須", desirable:"望ましい", optional:"任意", not_applicable:"適用対象外",
+    context:"定義・前提", proposal_item:"提案時の記載項目", unspecified:"区分の指定なし",
+    implied:"文脈から読み取れる条件", prohibited:"禁止",
+    required_alternative:"所定の代替条件を含む必須要件",
+    capability_wording:"提供可能な機能の記載",
+    required_or_planned:"利用可能または実装予定を許容（条件は本文を確認）",
+    required_or_in_progress:"対応済みまたは対応中を許容（条件は本文を確認）",
+    allowed_alternative:"代替方法を許容", optional_disclosure:"任意の開示",
+    removed:"要件から削除", not_qualification:"参加資格には該当しない",
+    defined:"内容を定義", prohibited_persistent_only:"継続的な保存を禁止",
+    evaluation_context:"評価の前提", required_delivery:"納品が必要"
+  };
+  return Object.prototype.hasOwnProperty.call(known,value) ? known[value] :
+    value ? `区分の表示名は未整理（登録値：${value}）` : "区分の記録なし";
+}
+function draftingStageLabel(value) {
+  const known = {
+    procurement_baseline:"当初の公募条件",
+    procurement_effective:"質問回答等を反映した公募時の条件",
+    contracting_rule:"契約時の決定・文書優先の規則"
+  };
+  return Object.prototype.hasOwnProperty.call(known,value) ? known[value] :
+    value ? `適用段階の表示名は未整理（登録値：${value}）` : "適用段階の記録なし";
+}
+function draftingChangeLabel(value) {
+  const known = {
+    relaxed:"緩和", clarified_scope:"範囲明確化",
+    allowed_interpretation:"解釈明確化", allowed_alternative:"代替許容",
+    threshold_defined:"数値具体化", quantified:"数値具体化",
+    clarified_quantification:"数値明確化", clarified_strict:"厳格化",
+    clarified_feasibility:"実現可能範囲", clarified_definition:"定義明確化",
+    clarified_evaluation_boundary:"評価範囲明確化",
+    broadened_alternative:"選択肢拡大", broadened_interpretation:"解釈範囲拡大",
+    threshold_relaxed:"閾値緩和", threshold_removed:"閾値削除",
+    conditional_exception:"条件付き例外",
+    contract_priority_rule:"契約上の優先関係", evidence_boundary:"確認範囲明確化",
+    none_public_baseline:"公開当初値なし", obligation_clarified:"義務内容明確化",
+    qualification_requirement:"資格要件", scope_boundary:"対象範囲明確化",
+    removed:"削除", context:"前提情報", evaluation_context:"評価上の補足"
+  };
+  return Object.prototype.hasOwnProperty.call(known,value) ? known[value] :
+    value ? `変更分類の表示名は未整理（登録値：${value}）` : "変更分類の登録なし";
+}
+function draftingOfficialUrl(value) {
+  if (!value || typeof value !== "string" || [...value].some(ch => ch.charCodeAt(0) < 32 || ch.charCodeAt(0) === 127)) return "";
+  try {
+    const parsed = new URL(value);
+    return (["http:", "https:"].includes(parsed.protocol) && parsed.hostname) ? value : "";
+  } catch (_) { return ""; }
 }
 
 function appendText(parent, tag, text, className) {
@@ -245,14 +298,18 @@ function appendEvidenceLinks(parent, row, data, sourceId) {
   links.appendChild(caseAnchor);
 
   const source = data.sourceById.get(sourceId);
-  if (source && source.url) {
+  const url = draftingOfficialUrl(source?.url);
+  if (url) {
     const sourceAnchor = document.createElement("a");
-    sourceAnchor.href = source.url;
+    sourceAnchor.href = url;
     sourceAnchor.target = "_blank";
     sourceAnchor.rel = "noreferrer";
-    sourceAnchor.textContent = sourceLabel(source) + " ↗";
+    sourceAnchor.textContent = (source.title || sourceLabel(source)) + " ↗";
     links.appendChild(sourceAnchor);
+  } else {
+    appendText(links, "span", source ? "資料の公式URLは未登録です" : "資料の参照先は未登録です");
   }
+  if (source) appendText(links, "small", [source.published_at && "公表日：" + source.published_at, source.retrieved_at && "資料取得日：" + source.retrieved_at].filter(Boolean).join(" / "));
   parent.appendChild(links);
 }
 
@@ -262,12 +319,12 @@ function evidenceCardForEffective(row, data) {
   const itemCase = data.caseById.get(row.case_id) || {};
   appendText(card, "p", itemCase.government_name || row.case_id, "drafting-evidence-case");
   appendText(card, "h3", valueForEffective(row));
-  appendText(card, "p", "位置づけ: " + (row.effective_status || row.original_status || "—") + " / 適用段階: " + (row.applicability_stage || "—"), "drafting-evidence-meta");
+  appendText(card, "p", "条件の区分：" + draftingStatusLabel(row.effective_status) + " / 適用段階：" + draftingStageLabel(row.applicability_stage), "drafting-evidence-meta");
   if (row.changed_by_source_id) {
-    appendText(card, "p", "後続資料反映: " + (row.change_type || "変更あり") + " / " + (row.change_locator || "該当箇所は未登録"), "drafting-evidence-change");
+    appendText(card, "p", "変更・補足：" + draftingChangeLabel(row.change_type) + " / " + (row.change_locator || "該当箇所は未登録"), "drafting-evidence-change");
   }
   if (row.scope) appendText(card, "p", "適用範囲：" + row.scope, "drafting-evidence-meta");
-  if (row.condition) appendText(card, "p", "条件: " + row.condition, "drafting-evidence-meta");
+  if (row.condition) appendText(card, "p", "この案件で指定された条件：" + row.condition, "drafting-evidence-meta");
   appendText(card, "p", caseBoundaryText(data.evidenceByCase.get(row.case_id)), "drafting-evidence-boundary");
   appendEvidenceLinks(card, row, data, effectiveSourceId(row));
   return card;
@@ -505,6 +562,10 @@ if (typeof module !== "undefined") {
     parseDraftingCSV,
     effectiveSourceId,
     valueForEffective,
+    draftingStatusLabel,
+    draftingStageLabel,
+    draftingChangeLabel,
+    draftingOfficialUrl,
     caseBoundaryText
   };
 }

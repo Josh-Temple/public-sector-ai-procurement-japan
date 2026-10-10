@@ -22,6 +22,7 @@ on:
       - "tests/test_effective_requirements_semantics.cjs"
       - "scripts/browser_qa_effective_requirements.py"
       - "scripts/browser_qa_negative_regression.py"
+      - "scripts/browser_qa_keyboard_journey.py"
       - "scripts/browser_qa_evaluation.py"
       - ".github/workflows/pages.yml"
       - ".github/workflows/public-site-check.yml"
@@ -65,6 +66,11 @@ jobs:
           python3 scripts/browser_qa_negative_regression.py \
             --url http://127.0.0.1:8765/ \
             --output-dir negative-requirements-pr-qa
+      - name: Verify comparison, focus, shared history and downloaded Markdown in Chromium
+        run: |
+          python3 scripts/browser_qa_keyboard_journey.py \
+            --url http://127.0.0.1:8765/ \
+            --output-dir keyboard-journey-pr-qa
       - name: Preserve PR requirement browser audit
         if: always()
         uses: actions/upload-artifact@v4
@@ -73,5 +79,6 @@ jobs:
           path: |
             effective-requirements-pr-qa/
             negative-requirements-pr-qa/
+            keyboard-journey-pr-qa/
           retention-days: 30
           if-no-files-found: warn

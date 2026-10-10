@@ -61,6 +61,7 @@ jobs:
           node tests/test_drafting_support.cjs
           node tests/test_evaluation_support.cjs
           node tests/test_first_time_ui_contract.cjs
+          node tests/test_effective_requirements_semantics.cjs
       - name: Prepare static site
         run: |
           mkdir -p _site
@@ -113,6 +114,8 @@ jobs:
             --expected-drafting-js-blob-sha "$(git hash-object assets/drafting.js)" \
             --expected-css-blob-sha "$(git hash-object assets/site.css)" \
             --output-dir evaluation-browser-qa
+      - name: Verify all effective requirements at desktop and mobile widths
+        run: python3 scripts/browser_qa_effective_requirements.py --output-dir evaluation-browser-qa
       - name: Preserve browser report and screenshots
         if: always()
         uses: actions/upload-artifact@v4

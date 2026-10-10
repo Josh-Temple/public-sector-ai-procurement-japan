@@ -205,14 +205,14 @@ function effectiveValue(row) {
   return row.effective_value || "反映後の記載は未登録（当初値と区別してください）";
 }
 function evaluationOfficialUrl(value) {
-  if (!value || typeof value !== "string" || /[\\u0000-\\u001f\\u007f]/.test(value)) return "";
+  if (!value || typeof value !== "string" || [...value].some(ch => ch.charCodeAt(0) < 32 || ch.charCodeAt(0) === 127)) return "";
   try {
     const url = new URL(value);
     return (["http:", "https:"].includes(url.protocol) && url.hostname) ? value : "";
   } catch (_) { return ""; }
 }
 function markdownSourceLink(source) {
-  const title = (source.title || sourceLabel(source)).replace(/([\\\\[\\]])/g,"\\\\$1");
+  const title = (source.title || sourceLabel(source)).replaceAll("[", "&#91;").replaceAll("]", "&#93;");
   const url = evaluationOfficialUrl(source.url);
   return url ? "[" + title + "](" + url.split("(").join("%28").split(")").join("%29") + ")" :
     title + "（公式URL未登録・または形式不正）";

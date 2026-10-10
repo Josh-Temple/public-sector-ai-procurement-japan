@@ -158,8 +158,10 @@ function parseEvaluationCSV(text) {
     else if (ch === "\n") { row.push(field.replace(/\r$/, "")); out.push(row); row = []; field = ""; }
     else field += ch;
   }
+  if (quoted) throw new Error("CSVの引用符が閉じられていません");
   if (field.length || row.length) { row.push(field.replace(/\r$/, "")); out.push(row); }
   const header = out.shift() || [];
+  if (!header.length || !header[0] || out.some(values => values.length !== header.length)) throw new Error("CSVの列構造を確認できません");
   return out
     .filter(function (values) { return values.some(function (value) { return value !== ""; }); })
     .map(function (values) {
@@ -179,7 +181,9 @@ function byKey(rows, key) {
 
 function roleForEffective(row) {
   const status = row.effective_status || row.original_status || "";
-  if (status.startsWith("required")) return "最低条件";
+  if (status === "required" || status === "required_delivery" || status === "required_alternative") return "最低条件";
+  if (status === "required_or_planned") return "利用可能または実装予定を許容（条件は本文を確認）";
+  if (status === "required_or_in_progress") return "対応済みまたは対応中を許容（条件は本文を確認）";
   const labels = {
     desirable: "望ましい条件",
     optional: "任意条件",
@@ -198,7 +202,20 @@ function roleForEffective(row) {
 }
 
 function effectiveValue(row) {
-  return row.effective_value || row.original_value || "—";
+  return row.effective_value || "反映後の記載は未登録（当初値と区別してください）";
+}
+function evaluationOfficialUrl(value) {
+  if (!value || typeof value !== "string" || /[\\u0000-\\u001f\\u007f]/.test(value)) return "";
+  try {
+    const url = new URL(value);
+    return (["http:", "https:"].includes(url.protocol) && url.hostname) ? value : "";
+  } catch (_) { return ""; }
+}
+function markdownSourceLink(source) {
+  const title = (source.title || sourceLabel(source)).replace(/([\\\\[\\]])/g,"\\\\$1");
+  const url = evaluationOfficialUrl(source.url);
+  return url ? "[" + title + "](" + url.replace(/\\(/g,"%28").replace(/\\)/g,"%29") + ")" :
+    title + "（公式URL未登録・または形式不正）";
 }
 
 function effectiveSourceId(row) {
@@ -266,7 +283,7 @@ function buildEvaluationMemo(caseId, topic, data, baseUrl) {
   function evidenceLine(sourceId, locator, label) {
     const source = data.sourceById.get(sourceId);
     const title = source ? source.title || sourceLabel(source) : "資料の参照先が未登録";
-    const citation = source && source.url ? "[" + title + "](" + source.url + ")" : title + "（公式URL未登録）";
+    const citation = source ? markdownSourceLink(source) : title + "（公式URL未登録）";
     return "  - " + label + "：" + citation +
       (locator ? " — 該当箇所：" + locator : "") +
       (source && source.published_at ? " ／ 公表日：" + source.published_at : "") +
@@ -332,6 +349,9 @@ function appendText(parent, tag, value, className) {
 }
 
 function appendLink(parent, href, label, external) {
+  if (external && !evaluationOfficialUrl(href)) {
+    return appendText(parent, "span", label.replace(/ ↗$/, "") + "（公式URLは利用できません）");
+  }
   const a = document.createElement("a");
   a.href = href;
   a.textContent = label;
@@ -605,7 +625,8 @@ function awardBasisLabel(value) {
     best_overall_proposal: "総合的に最も優れた提案を選定",
     lowest_valid_bid_within_planned_price: "予定価格内の最低有効価格で落札"
   };
-  return labels[value] || value || "未登録";
+  return Object.prototype.hasOwnProperty.call(labels,value) ? labels[value] :
+    (value ? `選定方法の表示名は未整理（登録値：${value}）` : "選定方法の登録値なし");
 }
 
 function renderStageGroups(root, rows) {
@@ -875,6 +896,8 @@ if (typeof module !== "undefined") {
     parseEvaluationCSV,
     roleForEffective,
     effectiveValue,
+    evaluationOfficialUrl,
+    markdownSourceLink,
     effectiveSourceId,
     ruleTypeLabel,
     ruleSummary,

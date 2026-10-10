@@ -15,6 +15,8 @@ const {
   parseEvaluationCSV,
   roleForEffective,
   effectiveValue,
+  evaluationOfficialUrl,
+  markdownSourceLink,
   effectiveSourceId,
   ruleTypeLabel,
   ruleSummary,
@@ -404,6 +406,14 @@ assert.match(sourceText, /資料取得日：/);
 assert.match(sourceText, /データ収集日：/);
 assert.doesNotMatch(sourceText, /一次資料をfresh確認済み/);
 
+assert.match(roleForEffective({effective_status:"required_or_planned"}), /実装予定を許容/);
+assert.notEqual(roleForEffective({effective_status:"required_or_planned"}), "最低条件");
+assert.match(effectiveValue({original_value:">=200",effective_value:""}),/未登録/);
+assert.match(awardBasisLabel("future_method"),/未整理.*future_method/);
+assert.equal(awardBasisLabel(""),"選定方法の登録値なし");
+assert.equal(evaluationOfficialUrl("javascript:alert(1)"),"");
+assert.match(markdownSourceLink({title:"架空",url:"javascript:alert(1)"}),/公式URL未登録/);
+assert.match(markdownSourceLink({title:"資料",url:"https://example.org/a(b).pdf"}),/%28b%29/);
 console.log("evaluation support regression: " + EVALUATION_TOPICS.length + " topics, canonical references and role boundaries resolved");
 
 

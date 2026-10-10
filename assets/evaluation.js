@@ -214,7 +214,7 @@ function evaluationOfficialUrl(value) {
 function markdownSourceLink(source) {
   const title = (source.title || sourceLabel(source)).replace(/([\\\\[\\]])/g,"\\\\$1");
   const url = evaluationOfficialUrl(source.url);
-  return url ? "[" + title + "](" + url.replace(/\\(/g,"%28").replace(/\\)/g,"%29") + ")" :
+  return url ? "[" + title + "](" + url.split("(").join("%28").split(")").join("%29") + ")" :
     title + "（公式URL未登録・または形式不正）";
 }
 

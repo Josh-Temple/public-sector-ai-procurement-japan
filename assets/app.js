@@ -937,7 +937,7 @@ function requirementSourcePresentation(source, locator, label) {
       source?.title || (source ? "資料名未登録" : "資料参照先未登録"),
       locator && `該当箇所: ${locator}`,
       sourceDateText(source),
-      !source?.url && "公式URL未登録",
+      !safeOfficialUrl(source?.url) && "公式URL未登録（またはURL形式不正）",
     ].filter(Boolean).join(" / "),
   };
 }

@@ -55,7 +55,7 @@ def main():
                 boxes.nth(2).check()
                 assert page.locator("#compare-table thead th").count() == 4, "3-case headers wrong"
                 page.once("dialog", lambda dialog: dialog.accept())
-                boxes.nth(3).check()
+                boxes.nth(3).click()
                 assert page.locator("#compare-table thead th").count() == 4, "4th case changed compare matrix"
                 assert not boxes.nth(3).is_checked(), "4th case remained selected"
                 wrap = page.locator("#compare-table").locator("xpath=..")

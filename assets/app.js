@@ -98,6 +98,15 @@ async function loadCSV(url) {
   return parseCSV(await response.text());
 }
 
+function assertUniqueRegisteredIds(rows, key) {
+  const seen = new Set();
+  rows.forEach(row => {
+    const id = row[key];
+    if (!id || seen.has(id)) throw new Error("登録データのIDが欠落または重複しています: " + key);
+    seen.add(id);
+  });
+}
+
 function mapByCase(rows) {
   return new Map(rows.map(row => [row.case_id, row]));
 }
@@ -1750,6 +1759,9 @@ async function init() {
     const [cases, requirements, structures, evidence, sources, evaluations, effective, specialized, vendorScores, bids, timelines] = await Promise.all(
       Object.values(DATA_FILES).map(loadCSV)
     );
+    assertUniqueRegisteredIds(cases, "case_id");
+    assertUniqueRegisteredIds(sources, "source_id");
+    assertUniqueRegisteredIds(effective, "effective_requirement_id");
     state.sourceById = new Map(sources.map(source => [source.source_id, source]));
     state.caseById = new Map(cases.map(row => [row.case_id, row]));
     state.evidenceByCase = new Map(evidence.map(row => [row.case_id, row]));

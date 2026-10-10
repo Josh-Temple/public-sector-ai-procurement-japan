@@ -172,6 +172,87 @@ def main():
             finally:
                 context.close()
 
+        def duplicate_effective_id_fail_closed():
+            effective = [dict(r) for r in original_effective]
+            effective.append(dict(effective[0]))
+            context, page, errors = page_for("duplicate_effective_id", effective=to_csv(effective))
+            try:
+                page.wait_for_function("() => document.querySelector('#requirement-result-count')?.textContent?.includes('読み込みに失敗')", timeout=20000)
+                assert page.locator("#requirement-rows tr[data-effective-id]").count() == 0
+                assert not page.locator("#requirement-empty").is_visible(), "duplicate mistaken for no result"
+            finally:
+                context.close()
+
+        def missing_both_source_dates_are_not_invented():
+            sources = [dict(r) for r in original_sources]
+            qa = next(r for r in sources if r["source_id"] == "SRC-oumi-2026-qa")
+            qa["published_at"] = ""
+            qa["retrieved_at"] = ""
+            context, page, errors = page_for("missing_qa_dates", sources=to_csv(sources))
+            try:
+                entry = page.locator('#requirement-rows tr[data-effective-id="EFF-oumi-template-count"]')
+                entry.wait_for(timeout=20000)
+                qa_meta = entry.locator('[data-source-role="changed"]').evaluate("(el) => el.nextElementSibling.textContent")
+                assert "Q&A No.8" in qa_meta
+                assert "公表日：" not in qa_meta and "資料取得日：" not in qa_meta
+                assert not errors, str(errors)
+            finally:
+                context.close()
+
+        def multiline_quoted_csv_and_xss_are_data():
+            effective = [dict(r) for r in original_effective]
+            row = next(r for r in effective if r["effective_requirement_id"] == "EFF-oumi-template-count")
+            row["scope"] = '引用符 " とカンマ, とセル内\n改行 <img src=x onerror=window.__xssTriggered=true>'
+            context, page, errors = page_for("multiline_quoted_csv", effective=to_csv(effective))
+            try:
+                entry = page.locator('#requirement-rows tr[data-effective-id="EFF-oumi-template-count"]')
+                entry.wait_for(timeout=20000)
+                assert '引用符 " とカンマ,' in entry.inner_text()
+                assert "改行 <img src=x" in entry.inner_text()
+                assert entry.locator("img").count() == 0
+                assert page.evaluate("() => window.__xssTriggered === undefined")
+                assert not errors, str(errors)
+            finally:
+                context.close()
+
+        def network_abort_is_not_zero_results():
+            context = browser.new_context(viewport={"width": 360, "height": 800}, locale="ja-JP")
+            page = context.new_page()
+            page.route("**/data/effective_requirements.csv", lambda route: route.abort("failed"))
+            try:
+                page.goto(args.url, wait_until="domcontentloaded", timeout=45000)
+                page.wait_for_function("() => document.querySelector('#requirement-result-count')?.textContent?.includes('読み込みに失敗')", timeout=20000)
+                assert not page.locator("#requirement-empty").is_visible()
+                assert page.locator("#requirement-rows tr[data-effective-id]").count() == 0
+            finally:
+                context.close()
+
+        def reversed_roles_detected_against_separate_canonical_baseline():
+            effective = [dict(r) for r in original_effective]
+            baseline = next(r for r in original_effective if r["effective_requirement_id"] == "EFF-oumi-template-count")
+            row = next(r for r in effective if r["effective_requirement_id"] == "EFF-oumi-template-count")
+            row["base_source_id"], row["changed_by_source_id"] = row["changed_by_source_id"], row["base_source_id"]
+            context, page, errors = page_for("reversed_source_roles", effective=to_csv(effective))
+            try:
+                entry = page.locator('#requirement-rows tr[data-effective-id="EFF-oumi-template-count"]')
+                entry.wait_for(timeout=20000)
+                observed_base = entry.locator('[data-source-role="base"]').get_attribute("data-source-id")
+                observed_changed = entry.locator('[data-source-role="changed"]').get_attribute("data-source-id")
+                assert observed_base == row["base_source_id"] and observed_changed == row["changed_by_source_id"]
+                assert (observed_base != baseline["base_source_id"] and
+                        observed_changed != baseline["changed_by_source_id"]), "mutation was not detected"
+                # PASS here means the independent canonical oracle caught the swap.
+                # The live browser does NOT itself infer the correct legal role from corrupted CSV.
+                assert not errors, str(errors)
+            finally:
+                context.close()
+
+        report("duplicate_effective_id_fail_closed", duplicate_effective_id_fail_closed)
+        report("missing_source_dates_not_invented", missing_both_source_dates_are_not_invented)
+        report("multiline_quoted_csv_xss", multiline_quoted_csv_and_xss_are_data)
+        report("network_abort_not_zero_results", network_abort_is_not_zero_results)
+        report("source_role_swap_detected_by_external_canonical_oracle_only",
+               reversed_roles_detected_against_separate_canonical_baseline)
         report("unsafe_source_enum_xss_empty_effective", unsafe_source_enum_and_xss)
         report("unknown_source_id", missing_source_id)
         report("http_404_not_zero_results", lambda: csv_failure(404))

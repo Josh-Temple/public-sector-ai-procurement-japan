@@ -140,13 +140,46 @@ def main():
             finally:
                 context.close()
 
+        def evaluation_matsue_320_no_overflow():
+            context = browser.new_context(viewport={"width": 320, "height": 640},
+                is_mobile=True, has_touch=True, device_scale_factor=2, locale="ja-JP")
+            page = context.new_page()
+            errors = []
+            page.on("pageerror", lambda exc: errors.append(str(exc)))
+            try:
+                response = page.goto(args.url.rstrip("/") + "/evaluation.html",
+                    wait_until="domcontentloaded", timeout=30000)
+                assert response is not None and response.status == 200
+                page.wait_for_function(
+                    "() => document.querySelectorAll('#evaluation-case-select option').length >= 6",
+                    timeout=30000)
+                page.locator("#evaluation-case-select").select_option("matsue-2026-genai-support")
+                page.wait_for_function(
+                    "() => document.querySelector('#evaluation-case-header') !== null || "
+                    "document.querySelector('.evaluation-case-header')?.textContent.includes('松江市')",
+                    timeout=10000)
+                label = page.locator(".evaluation-case-header .evaluation-score").inner_text()
+                assert "未整理" in label, label
+                first_stage = page.locator("#evaluation-case-detail .evaluation-stage").first
+                if first_stage.count():
+                    first_stage.locator("summary").click()
+                dims = page.evaluate(
+                    "() => ({viewport: document.documentElement.clientWidth, "
+                    "scroll: document.documentElement.scrollWidth})")
+                page.screenshot(path=str(dest / "evaluation-matsue-320.png"), full_page=True)
+                assert dims["scroll"] <= dims["viewport"] + 2, repr(dims)
+                assert not errors, str(errors)
+            finally:
+                context.close()
+
         report("unsafe_source_enum_xss_empty_effective", unsafe_source_enum_and_xss)
         report("unknown_source_id", missing_source_id)
         report("http_404_not_zero_results", lambda: csv_failure(404))
         report("http_500_not_zero_results", lambda: csv_failure(500))
         report("malformed_csv_not_zero_results", malformed_csv)
+        report("evaluation_matsue_320_mobile_no_overflow", evaluation_matsue_320_no_overflow)
         browser.close()
-    result = {"url": args.url, "browser": "headless Chromium CSS 360px, not Android or AT",
+    result = {"url": args.url, "browser": "headless Chromium CSS 360/320px, not Android or AT",
               "summary": {s: sum(x["status"] == s for x in findings) for s in ("PASS", "FAIL")},
               "findings": findings}
     (dest / "negative-regression.json").write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")

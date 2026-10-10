@@ -125,7 +125,7 @@ def main():
         def csv_failure(code):
             context, page, errors = page_for("http_" + str(code), effective="", status=code)
             try:
-                page.locator("#requirement-result-count").get_by_text("要件データの読み込みに失敗しました。").wait_for(timeout=20000)
+                page.wait_for_function("() => document.querySelector('#requirement-result-count')?.textContent?.includes('要件データの読み込みに失敗しました。')", timeout=20000)
                 assert page.locator('#requirement-rows tr[data-effective-id]').count() == 0
                 assert not page.locator("#requirement-empty").is_visible()
             finally:
@@ -134,7 +134,7 @@ def main():
         def malformed_csv():
             context, page, errors = page_for("malformed_csv", effective='case_id,value\n"x,malformed')
             try:
-                page.locator("#requirement-result-count").get_by_text("要件データの読み込みに失敗しました。").wait_for(timeout=20000)
+                page.wait_for_function("() => document.querySelector('#requirement-result-count')?.textContent?.includes('要件データの読み込みに失敗しました。')", timeout=20000)
                 assert page.locator('#requirement-rows tr[data-effective-id]').count() == 0
                 assert not page.locator("#requirement-empty").is_visible()
             finally:

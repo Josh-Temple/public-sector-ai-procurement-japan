@@ -913,6 +913,8 @@ function appendRequirementSourceLink(container, sourceId, label, locator) {
   const presentation = requirementSourcePresentation(source, locator, label);
   const element = document.createElement(presentation.url ? "a" : "span");
   element.className = "inline-source";
+  element.dataset.sourceRole = label === "当初根拠" ? "base" : "changed";
+  element.dataset.sourceId = sourceId || "";
   if (presentation.url) {
     element.href = presentation.url;
     element.target = "_blank";
@@ -1061,6 +1063,48 @@ function populateRequirementChangeTypes(rows) {
     });
 }
 
+function requirementStatusLabel(value) {
+  const labels = {
+    required:"必須",desirable:"望ましい",optional:"任意",not_applicable:"適用対象外",
+    context:"定義・前提",proposal_item:"提案時の記載項目",unspecified:"区分の指定なし",
+    implied:"文脈から読み取れる条件",prohibited:"禁止",
+    required_alternative:"指定された代替条件を含む必須要件",
+    capability_wording:"提供可能な機能の記載",required_or_planned:"必須（実装予定を含む）",
+    required_or_in_progress:"必須（対応中を含む）",allowed_alternative:"代替方法を許容",
+    optional_disclosure:"任意の開示",removed:"要件から削除",
+    not_qualification:"参加資格には該当しない",defined:"内容を定義",
+    prohibited_persistent_only:"継続的な保存を禁止",
+    evaluation_context:"評価の前提",required_delivery:"納品が必要",
+  };
+  return labels[value] || (value ? `区分の表示名は未整理（登録値：${value}）` : "区分の記録なし");
+}
+function requirementStageLabel(value) {
+  return {
+    procurement_effective:"質問回答等を反映した公募時の条件",
+    procurement_baseline:"当初の公募条件",
+    contracting_rule:"契約時の決定・文書優先の規則",
+    contract_final:"原典で確認した契約最終条件",
+  }[value] || (value ? `適用段階の表示名は未整理（登録値：${value}）` : "適用段階の記録なし");
+}
+function requirementAreaLabel(value) {
+  const labels = {
+    model:"AIモデル",research:"調査機能",ux:"画面・利用機能",image:"画像生成",
+    agent:"AIエージェント",adoption:"導入・定着支援",security:"セキュリティ",
+    network:"通信・ネットワーク",commercial:"料金・商用条件",
+    rag:"文書検索・参照（RAG）",data_location:"データ保存先",usage:"利用量",
+    specialized_use_case:"業務特化の用途",administration:"管理",cost:"費用",
+    model_control:"モデルの設定・制御",functionality:"機能",evidence:"根拠の提示",
+    answer_policy:"回答方針",interaction:"対話",routing:"振り分け",
+    contracting:"契約条件",data_governance:"データの管理",support:"支援",
+    service_scope:"サービス対象範囲",outcome:"成果・結果",chat:"チャット",
+    lifecycle:"導入・運用段階",identity:"認証・利用者識別",logging:"ログ",
+    deliverable:"納品物",scope:"対象範囲",integration:"システム連携",
+    knowledge:"ナレッジ",grounding:"根拠の参照",web:"Web参照",
+    architecture:"システム構成",evaluation:"評価",scale:"利用規模",
+    contract:"契約",service:"サービス",safety:"安全対策",
+  };
+  return labels[value] || (value ? `分類：${value}` : "要件分類の記録なし");
+}
 function renderRequirementExplorer() {
   const tbody = document.getElementById("requirement-rows");
   const topicSelect = document.getElementById("requirement-topic");
@@ -1072,11 +1116,9 @@ function renderRequirementExplorer() {
     changeType: document.getElementById("requirement-change")?.value || "",
   };
   const rows = state.effectiveRows
-    .filter(row => {
-      const caseRow = state.caseById.get(row.case_id) || {};
-      const changedSource = row.changed_by_source_id ? state.sourceById.get(row.changed_by_source_id) : null;
-      return requirementMatchesExplorerFilters(row, filters, caseRow, changedSource);
-    })
+    .filter(row => requirementMatchesExplorerFilters(
+      row, filters, state.caseById.get(row.case_id) || {},
+      row.changed_by_source_id ? state.sourceById.get(row.changed_by_source_id) : null))
     .slice()
     .sort((a, b) => {
       const ca = state.caseById.get(a.case_id);
@@ -1092,7 +1134,9 @@ function renderRequirementExplorer() {
     const caseRow = state.caseById.get(row.case_id);
     if (!caseRow) return;
     const tr = document.createElement("tr");
-
+    tr.dataset.effectiveId = row.effective_requirement_id;
+    tr.dataset.caseId = row.case_id;
+    tr.setAttribute("role", "row");
     const caseTd = document.createElement("td");
     const caseLink = document.createElement("a");
     caseLink.className = "case-title-button";
@@ -1106,15 +1150,33 @@ function renderRequirementExplorer() {
     const keyTd = document.createElement("td");
     const area = document.createElement("span");
     area.className = "case-sub";
-    area.textContent = row.requirement_area || "要件";
+    area.textContent = requirementAreaLabel(row.requirement_area);
     const key = document.createElement("strong");
-    key.textContent = row.requirement_key || "—";
-    keyTd.append(key, area);
+    key.textContent = row.scope || (row.requirement_key ? `登録項目：${row.requirement_key}` : "要件項目は未登録");
+    const canonicalKey = document.createElement("small");
+    canonicalKey.className = "cell-detail";
+    canonicalKey.textContent = row.requirement_key ? `データ上の項目名：${row.requirement_key}` : "データ上の項目名は未登録";
+    keyTd.append(area, key, canonicalKey);
 
     const originalTd = document.createElement("td");
-    originalTd.textContent = row.original_value || "—";
+    originalTd.dataset.status = row.original_status || "";
+    const originalValue = document.createElement("span");
+    originalValue.className = "requirement-value";
+    originalValue.textContent = row.original_value || "当初記載は未登録";
+    const originalStatus = document.createElement("small");
+    originalStatus.className = "cell-detail";
+    originalStatus.textContent = `当初の区分：${requirementStatusLabel(row.original_status)}`;
+    originalTd.append(originalValue, originalStatus);
+
     const effectiveTd = document.createElement("td");
-    effectiveTd.textContent = row.effective_value || row.original_value || "—";
+    effectiveTd.dataset.status = row.effective_status || "";
+    const effectiveValue = document.createElement("span");
+    effectiveValue.className = "requirement-value";
+    effectiveValue.textContent = row.effective_value || "反映後の記載は未登録";
+    const effectiveStatus = document.createElement("small");
+    effectiveStatus.className = "cell-detail";
+    effectiveStatus.textContent = `反映後の区分：${requirementStatusLabel(row.effective_status)}`;
+    effectiveTd.append(effectiveValue, effectiveStatus);
     if (row.scope || row.condition) {
       const detail = document.createElement("small");
       detail.className = "cell-detail";
@@ -1128,17 +1190,40 @@ function renderRequirementExplorer() {
     const evidenceTd = document.createElement("td");
     evidenceTd.className = "requirement-source-links";
     appendRequirementSourceLink(evidenceTd, row.base_source_id, "当初根拠", row.base_locator);
-    if (row.changed_by_source_id) appendRequirementSourceLink(evidenceTd, row.changed_by_source_id, "変更根拠", row.change_locator);
+    if (row.changed_by_source_id) {
+      appendRequirementSourceLink(evidenceTd, row.changed_by_source_id, "変更根拠", row.change_locator);
+    } else {
+      const note = document.createElement("small");
+      note.className = "cell-detail";
+      note.textContent = "後続資料の参照先は未登録です。変更がなかったことを意味しません。";
+      evidenceTd.append(note);
+    }
 
     const boundaryTd = document.createElement("td");
     const requirementBoundary = document.createElement("p");
-    requirementBoundary.textContent = `応募時の有効要件: ${requirementBoundaryText(row)}`;
+    requirementBoundary.textContent = `適用段階：${requirementStageLabel(row.applicability_stage)}。 ${requirementBoundaryText(row)}`;
     const caseBoundary = document.createElement("small");
     caseBoundary.className = "cell-detail";
     caseBoundary.textContent = `契約最終状態: ${caseBoundaryText(state.evidenceByCase.get(row.case_id))}`;
-    boundaryTd.append(requirementBoundary, caseBoundary);
+    const review = document.createElement("small");
+    review.className = "cell-detail";
+    review.textContent = `調査記録：${row.review_status === "reviewed" ? "根拠と適用範囲を確認" : "確認状況は未整理"}${row.last_verified ? "（記録上の最終確認日：" + row.last_verified + "）" : ""}`;
+    boundaryTd.append(requirementBoundary, caseBoundary, review);
 
-    tr.append(caseTd, keyTd, originalTd, effectiveTd, changeTd, evidenceTd, boundaryTd);
+    const columns = [caseTd, keyTd, originalTd, effectiveTd, changeTd, evidenceTd, boundaryTd];
+    const fields = ["case", "topic", "original", "effective", "change", "sources", "boundary"];
+    const labels = ["自治体・案件", "要件の項目", "当初の記載", "公募時に反映した記載", "変更・補足の種類", "根拠資料", "公開資料で確認できる範囲"];
+    columns.forEach((cell, index) => {
+      cell.dataset.field = fields[index];
+      cell.setAttribute("headers", `requirement-heading-${index}`);
+      cell.setAttribute("role", "cell");
+      const label = document.createElement("span");
+      label.className = "requirement-cell-label";
+      label.setAttribute("aria-hidden", "true");
+      label.textContent = labels[index];
+      cell.prepend(label);
+    });
+    tr.append(...columns);
     fragment.append(tr);
   });
   tbody.append(fragment);

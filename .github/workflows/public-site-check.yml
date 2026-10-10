@@ -19,6 +19,8 @@ on:
       - "tests/test_drafting_support.cjs"
       - "tests/test_evaluation_support.cjs"
       - "tests/test_first_time_ui_contract.cjs"
+      - "tests/test_effective_requirements_semantics.cjs"
+      - "scripts/browser_qa_effective_requirements.py"
       - ".github/workflows/pages.yml"
       - ".github/workflows/public-site-check.yml"
   workflow_dispatch:
@@ -45,3 +47,22 @@ jobs:
           node tests/test_drafting_support.cjs
           node tests/test_evaluation_support.cjs
           node tests/test_first_time_ui_contract.cjs
+          node tests/test_effective_requirements_semantics.cjs
+      - name: Install Playwright Chromium for exact PR browser validation
+        run: |
+          python3 -m pip install --user "playwright==1.56.0"
+          python3 -m playwright install --with-deps chromium
+      - name: Verify canonical requirement DOM at four CSS widths before merge
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 > /tmp/effective-requirement-preview-server.log 2>&1 &
+          python3 scripts/browser_qa_effective_requirements.py \
+            --url http://127.0.0.1:8765/ \
+            --output-dir effective-requirements-pr-qa
+      - name: Preserve PR requirement browser audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: effective-requirements-pr-qa
+          path: effective-requirements-pr-qa/
+          retention-days: 30
+          if-no-files-found: warn

@@ -215,7 +215,7 @@ function caseBoundaryText(evidence) {
     return "公開資料で確認できる範囲です。選定結果から契約後の最終仕様・実稼働を推測しません。";
   }
   if (evidence.public_reconstructability === "publicly_reconstructable") {
-    return "Repositoryでは契約最終要件まで公開資料から再構成可能と評価しています。";
+    return "公開資料から契約最終要件まで再構成できると、この調査では評価しています。";
   }
   return "公開資料の確認範囲を案件詳細で確認してください。";
 }
@@ -277,7 +277,7 @@ function buildEvaluationMemo(caseId, topic, data, baseUrl) {
     lines.push("- " + row.criterion_summary + "：" + scoreContext(row));
     const source = sourceForEvaluation(row, data);
     if (source) lines.push(evidenceLine(source.source_id, row.locator || "", "根拠"));
-    else lines.push("  - 根拠：Source参照未登録");
+    else lines.push("  - 根拠：公式資料への参照先が登録されていません");
   });
   lines.push("", "## 参加資格（評価点とは別）", "");
   if (!gates.length) lines.push("参加資格の構造化行は未登録です。");
@@ -643,7 +643,7 @@ function renderVendorResults(root, rows) {
   section.className = "evaluation-case-block";
   appendText(section, "h3", "公開された結果");
   if (!rows.length) {
-    appendText(section, "p", "現在のvendor_scores.csvには公開得点行がありません。選定済みという事実から項目別得点を推測しません。", "scope-note");
+    appendText(section, "p", "この案件について、公開得点として整理したデータは登録されていません。選定結果から評価項目別の得点は推測しません。", "scope-note");
     root.appendChild(section);
     return;
   }
@@ -679,7 +679,7 @@ function renderCase(caseId, data) {
   const header = document.createElement("div");
   header.className = "evaluation-case-header";
   appendText(header, "h3", caseRow.government_name + " / " + (caseRow.procurement_title || caseId));
-  appendText(header, "p", procurement ? awardBasisLabel(procurement.award_basis) : "調達構造は現在のprocurement_structure.csvでは未登録です。", "evaluation-score");
+  appendText(header, "p", procurement ? awardBasisLabel(procurement.award_basis) : "この案件の調達方式・選定方法について、表示できる収録データがありません。公式資料に記載がないことを意味しません。", "evaluation-score");
   appendText(header, "p", caseBoundaryText(evidence), "scope-note");
   const links = document.createElement("p");
   links.className = "case-dialog-actions";

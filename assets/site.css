@@ -385,3 +385,32 @@ code { font-size: 0.9em; }
   .results .case-table .source-actions { min-width: 0; }
   .results .case-table .compare-check { width: 24px; height: 24px; }
 }
+
+/* Keep the seven original requirement cells and their focus targets at every width. */
+.requirement-explorer .requirement-cell-label { display: none; }
+.requirement-explorer .requirement-value { display: block; white-space: pre-wrap; overflow-wrap: anywhere; }
+.requirement-explorer .requirement-table td { overflow-wrap: anywhere; }
+.requirement-explorer .requirement-source-links .inline-source { white-space: normal; overflow-wrap: anywhere; }
+@media (max-width: 767px) {
+  .requirement-explorer .table-wrap { overflow-x: visible; border-top: 0; }
+  .requirement-explorer .requirement-table,
+  .requirement-explorer .requirement-table tbody { display: block; width: 100%; min-width: 0; }
+  .requirement-explorer .requirement-table thead {
+    position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+    overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+  }
+  .requirement-explorer .requirement-table tbody tr {
+    display: block; min-width: 0; padding: 8px 14px; margin: 0 0 16px;
+    border: 1px solid var(--line); overflow-wrap: anywhere;
+  }
+  .requirement-explorer .requirement-table tbody td {
+    display: block; width: 100%; padding: 10px 0; min-width: 0;
+    border-bottom: 1px solid var(--line); white-space: normal;
+  }
+  .requirement-explorer .requirement-table tbody td:last-child { border-bottom: 0; }
+  .requirement-explorer .requirement-cell-label {
+    display: block; margin-bottom: 5px; color: var(--muted);
+    font-size: .74rem; font-weight: 650;
+  }
+  .requirement-explorer .requirement-table a { overflow-wrap: anywhere; }
+}

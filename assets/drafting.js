@@ -35,9 +35,9 @@ const DRAFTING_DECISIONS = [
     id: "rag-files",
     label: "RAG容量・ファイル条件",
     question: "容量、文書数、ファイルサイズ、形式をどのscopeで保証させるか。",
-    variables: ["tenant / group / file の単位", "対象文書数と更新量", "1ファイル上限", "対応形式", "権限分離"],
+    variables: ["テナント・グループ・ファイルのどの単位で条件を定めるか", "対象文書数と更新量", "1ファイル上限", "対応形式", "権限分離"],
     placement: "必要最小容量は最低条件候補。余裕度・検索性能・運用性を比較したい場合は評価候補。",
-    boundary: "他団体のGB・文書数・MBを推奨値としてコピーしない。単位とscopeを必ず保持する。",
+    boundary: "他団体のGB・文書数・MBを推奨値としてコピーしない。容量・文書数の単位と適用範囲を省かずに確認する。",
     effective: ["EFF-fukushima-2026-rag-data-volume", "EFF-matsue-rag-documents-per-group", "EFF-minoh-rag-file-size"],
     evaluations: ["MATSUE-DOC-03"]
   },
@@ -46,7 +46,7 @@ const DRAFTING_DECISIONS = [
     label: "根拠表示・回答できない場合の対応・Web参照",
     question: "回答根拠を何で示し、根拠がないときにどう振る舞わせるか。",
     variables: ["根拠表示対象（RAG / Web）", "表示粒度（文書 / URL / 該当箇所）", "根拠なし時の動作", "一般知識を許す条件", "Web検索範囲と管理者制御"],
-    placement: "根拠・fallbackが安全上不可欠なら最低条件候補。表示方法や運用品質の差は評価候補になり得る。",
+    placement: "根拠の提示と、根拠がない場合の応答が安全上欠かせないと判断する場合は、最低条件の候補です。表示方法や運用品質の違いは評価項目の候補になり得ます。",
     boundary: "RAG導入だけで正確性やハルシネーション防止を保証したと扱わない。",
     effective: ["EFF-sendai-source-link", "EFF-saitama-citizen_grounding", "EFF-yaizu-rag-grounding"]
   },
@@ -218,7 +218,7 @@ function caseBoundaryText(evidence) {
     return "公開資料で確認できる範囲の例です。契約後の最終仕様までは公開資料だけで確認できません。";
   }
   if (evidence.public_reconstructability === "publicly_reconstructable") {
-    return "Repositoryでは契約最終要件まで公開資料から再構成可能と評価しています。";
+    return "公開資料から契約最終要件まで再構成できると、この調査では評価しています。";
   }
   return "公開資料の確認範囲を案件詳細で確認してください。";
 }
@@ -266,7 +266,7 @@ function evidenceCardForEffective(row, data) {
   if (row.changed_by_source_id) {
     appendText(card, "p", "後続資料反映: " + (row.change_type || "変更あり") + " / " + (row.change_locator || "該当箇所は未登録"), "drafting-evidence-change");
   }
-  if (row.scope) appendText(card, "p", "scope: " + row.scope, "drafting-evidence-meta");
+  if (row.scope) appendText(card, "p", "適用範囲：" + row.scope, "drafting-evidence-meta");
   if (row.condition) appendText(card, "p", "条件: " + row.condition, "drafting-evidence-meta");
   appendText(card, "p", caseBoundaryText(data.evidenceByCase.get(row.case_id)), "drafting-evidence-boundary");
   appendEvidenceLinks(card, row, data, effectiveSourceId(row));
@@ -397,7 +397,7 @@ function renderDecision(decision, data, index) {
     if (row) evidenceList.appendChild(evidenceCardForSpecialized(row, data));
   });
 
-  if (!evidenceList.children.length) appendText(evidenceList, "p", "現在の構造化データから表示できる例がありません。", "scope-note");
+  if (!evidenceList.children.length) appendText(evidenceList, "p", "この論点について、収録データから表示できる事例はありません。公式資料に該当例が存在しないことを意味しません。", "scope-note");
   section.appendChild(evidenceList);
 
   const evaluationTopic = EVALUATION_TOPIC_BY_DECISION[decision.id];

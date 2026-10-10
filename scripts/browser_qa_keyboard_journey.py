@@ -97,7 +97,7 @@ def main():
             try:
                 page.goto(base + "evaluation.html", wait_until="domcontentloaded")
                 selector = page.locator("#evaluation-case-select")
-                selector.locator("option").nth(5).wait_for(timeout=30000)
+                page.wait_for_function("() => document.querySelectorAll('#evaluation-case-select option').length >= 6", timeout=30000)
                 selector.select_option("matsue-2026-genai-support")
                 link = page.locator("#evaluation-share-link")
                 href = link.get_attribute("href")
@@ -110,14 +110,14 @@ def main():
                 assert "highest_combined_evaluation_to_first_priority_negotiator" in raw.inner_text()
                 second = context.new_page()
                 second.goto(href, wait_until="domcontentloaded")
-                second.locator("#evaluation-case-select option").nth(5).wait_for(timeout=30000)
+                second.wait_for_function("() => document.querySelectorAll('#evaluation-case-select option').length >= 6", timeout=30000)
                 assert second.locator("#evaluation-case-select").input_value() == "matsue-2026-genai-support"
                 second.reload(wait_until="domcontentloaded")
-                second.locator("#evaluation-case-select option").nth(5).wait_for(timeout=30000)
+                second.wait_for_function("() => document.querySelectorAll('#evaluation-case-select option').length >= 6", timeout=30000)
                 assert second.locator("#evaluation-case-select").input_value() == "matsue-2026-genai-support"
                 second.goto(base + "methodology.html")
                 second.go_back(wait_until="domcontentloaded")
-                second.locator("#evaluation-case-select option").nth(5).wait_for(timeout=30000)
+                second.wait_for_function("() => document.querySelectorAll('#evaluation-case-select option').length >= 6", timeout=30000)
                 assert second.locator("#evaluation-case-select").input_value() == "matsue-2026-genai-support"
                 second.go_forward(wait_until="domcontentloaded")
                 assert "methodology.html" in second.url
@@ -132,7 +132,7 @@ def main():
             try:
                 page.goto(base + "evaluation.html?topic=usage-pricing&case=" + quote(case_id), wait_until="domcontentloaded")
                 select = page.locator("#evaluation-case-select")
-                select.locator("option").nth(5).wait_for(timeout=30000)
+                page.wait_for_function("() => document.querySelectorAll('#evaluation-case-select option').length >= 6", timeout=30000)
                 assert select.input_value() == case_id
                 with page.expect_download(timeout=20000) as info:
                     page.locator("#evaluation-memo-download").click()

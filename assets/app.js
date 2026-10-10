@@ -78,11 +78,15 @@ function parseCSV(text) {
       field += ch;
     }
   }
+  if (quoted) throw new Error("CSVの引用符が閉じられていません");
   if (field.length || row.length) {
     row.push(field.replace(/\r$/, ""));
     out.push(row);
   }
   const header = out.shift() || [];
+  if (!header.length || !header[0] || out.some(r => r.length !== header.length)) {
+    throw new Error("CSVの列構造を確認できません");
+  }
   return out
     .filter(r => r.some(v => v !== ""))
     .map(r => Object.fromEntries(header.map((key, idx) => [key, r[idx] ?? ""])));
@@ -137,11 +141,40 @@ function evidenceClass(row) {
 }
 
 function categoryLabel(value) {
-  return (value || "")
-    .replaceAll("_", " ")
-    .replace("general genai", "汎用生成AI")
-    .replace("shared municipal", "共同調達")
-    .replace("genai", "生成AI");
+  const labels = {
+    general_genai_pilot_rag_training: "生成AI実証（RAG・研修）",
+    general_genai_rag_internal_operations: "庁内向け生成AI（RAG・運用業務）",
+    general_genai_service: "生成AIサービス",
+    general_purpose_genai: "汎用生成AI",
+    genai_specification_authoring: "仕様書作成支援AI",
+    citizen_application_consultation_support: "住民向け申請・相談支援",
+    shared_municipal_genai_service: "自治体の共同調達（生成AI）",
+    genai_platform_rag_workflow_agent: "生成AI基盤（RAG・ワークフロー・エージェント）",
+    genai_voicebot_tax_inquiries: "税務問合せ向けAI音声応答",
+    general_genai_service_training: "生成AIサービス・研修",
+    general_genai_rag_migration: "生成AIサービス（RAG・移行）",
+    municipal_genai_service: "自治体向け生成AIサービス",
+    general_genai_rag_deep_research_support: "生成AIサービス（RAG・調査支援）",
+    general_genai_service_rag_dashboard: "生成AIサービス（RAG・ダッシュボード）",
+    genai_pilot_rag_adoption: "生成AI実証（RAG・導入支援）",
+    genai_pilot_rag_governance: "生成AI実証（RAG・ガバナンス）",
+    general_genai_rag_lgwan: "生成AIサービス（RAG・LGWAN）",
+    genai_rag_pilot_evaluation: "生成AI・RAGの実証・評価",
+    genai_rag_production: "生成AI・RAG（本格導入の分類）",
+    citizen_genai_chatbot: "住民向け生成AIチャットボット"
+  };
+  return Object.prototype.hasOwnProperty.call(labels, value) ? labels[value]
+    : (value ? `案件分類の表示名は未整理（登録値：${value}）` : "案件分類の登録なし");
+}
+
+function safeOfficialUrl(value) {
+  if (!value || typeof value !== "string" || /[\\u0000-\\u001f\\u007f]/.test(value)) return "";
+  try {
+    const parsed = new URL(value);
+    return (["http:", "https:"].includes(parsed.protocol) && parsed.hostname) ? value : "";
+  } catch (_) {
+    return "";
+  }
 }
 
 function safeText(value) {
@@ -801,7 +834,8 @@ function changeTypeLabel(value) {
     context: "前提情報",
     evaluation_context: "評価上の補足",
   };
-  return labels[value] || "変更種別は未登録";
+  return Object.prototype.hasOwnProperty.call(labels, value) ? labels[value]
+    : (value ? `変更種別の表示名は未整理（登録値：${value}）` : "変更種別は未登録");
 }
 
 function specializedValue(row) {
@@ -846,7 +880,7 @@ function specializedAreaLabel(value) {
 
 function appendInlineSource(element, sourceId, fallbackUrl, label = "根拠") {
   const source = sourceId ? state.sourceById.get(sourceId) : null;
-  const url = source?.url || fallbackUrl;
+  const url = safeOfficialUrl(source ? source.url : fallbackUrl);
   if (!url) return;
   element.append(document.createTextNode(" "));
   const link = document.createElement("a");
@@ -898,7 +932,7 @@ function renderExpandableRows(container, rows, renderRow, noun = "件", initialL
 function requirementSourcePresentation(source, locator, label) {
   return {
     name: `${label}｜${source ? sourceDocumentRoleLabel(source.document_type) : "資料参照先未登録"}`,
-    url: source?.url || "",
+    url: safeOfficialUrl(source?.url),
     detail: [
       source?.title || (source ? "資料名未登録" : "資料参照先未登録"),
       locator && `該当箇所: ${locator}`,
@@ -934,7 +968,7 @@ function renderEffectiveRequirements(caseId) {
     container.replaceChildren();
     const empty = document.createElement("p");
     empty.className = "empty-detail";
-    empty.textContent = "構造化された有効要件は未登録です。";
+    empty.textContent = "この案件には表示できる要件データが登録されていません。公式資料に要件がないことは意味しません。";
     container.append(empty);
     return;
   }
@@ -947,8 +981,8 @@ function renderEffectiveRequirements(caseId) {
 
     const values = document.createElement("div");
     values.className = "effective-values";
-    const original = row.original_value || "—";
-    const effective = row.effective_value || row.original_value || "—";
+    const original = row.original_value || "当初記載は未登録";
+    const effective = row.effective_value || "反映後の記載は未登録";
     if (original !== effective) {
       const before = document.createElement("p");
       before.innerHTML = "<b>当初</b> ";
@@ -1069,8 +1103,8 @@ function requirementStatusLabel(value) {
     context:"定義・前提",proposal_item:"提案時の記載項目",unspecified:"区分の指定なし",
     implied:"文脈から読み取れる条件",prohibited:"禁止",
     required_alternative:"指定された代替条件を含む必須要件",
-    capability_wording:"提供可能な機能の記載",required_or_planned:"必須（実装予定を含む）",
-    required_or_in_progress:"必須（対応中を含む）",allowed_alternative:"代替方法を許容",
+    capability_wording:"提供可能な機能の記載",required_or_planned:"利用可能または実装予定を許容（条件は本文を確認）",
+    required_or_in_progress:"対応済みまたは対応中を許容（条件は本文を確認）",allowed_alternative:"代替方法を許容",
     optional_disclosure:"任意の開示",removed:"要件から削除",
     not_qualification:"参加資格には該当しない",defined:"内容を定義",
     prohibited_persistent_only:"継続的な保存を禁止",
@@ -1152,10 +1186,10 @@ function renderRequirementExplorer() {
     area.className = "case-sub";
     area.textContent = requirementAreaLabel(row.requirement_area);
     const key = document.createElement("strong");
-    key.textContent = row.scope || (row.requirement_key ? `登録項目：${row.requirement_key}` : "要件項目は未登録");
+    key.textContent = row.scope ? `適用範囲：${row.scope}` : "適用範囲は未登録";
     const canonicalKey = document.createElement("small");
     canonicalKey.className = "cell-detail";
-    canonicalKey.textContent = row.requirement_key ? `データ上の項目名：${row.requirement_key}` : "データ上の項目名は未登録";
+    canonicalKey.textContent = row.requirement_key ? `登録項目キー：${row.requirement_key}` : "登録項目キーは未登録";
     keyTd.append(area, key, canonicalKey);
 
     const originalTd = document.createElement("td");
@@ -1204,7 +1238,7 @@ function renderRequirementExplorer() {
     requirementBoundary.textContent = `適用段階：${requirementStageLabel(row.applicability_stage)}。 ${requirementBoundaryText(row)}`;
     const caseBoundary = document.createElement("small");
     caseBoundary.className = "cell-detail";
-    caseBoundary.textContent = `契約最終状態: ${caseBoundaryText(state.evidenceByCase.get(row.case_id))}`;
+    caseBoundary.textContent = `案件全体の契約条件について、公開資料で確認できる範囲：${caseBoundaryText(state.evidenceByCase.get(row.case_id))}`;
     const review = document.createElement("small");
     review.className = "cell-detail";
     review.textContent = `調査記録：${row.review_status === "reviewed" ? "根拠と適用範囲を確認" : "確認状況は未整理"}${row.last_verified ? "（記録上の最終確認日：" + row.last_verified + "）" : ""}`;
@@ -1797,6 +1831,7 @@ async function init() {
       state.selected.clear();
       renderCompare();
       renderRows();
+      (document.querySelector("#case-rows input[type=checkbox]") || document.getElementById("search")).focus();
     });
     document.getElementById("close-case").addEventListener("click", closeCaseDialog);
     document.getElementById("case-dialog").addEventListener("click", event => {
@@ -1844,6 +1879,10 @@ async function init() {
 if (typeof module !== "undefined" && module.exports) {
   module.exports = {
     changeTypeLabel,
+    categoryLabel,
+    safeOfficialUrl,
+    parseCSV,
+    requirementStatusLabel,
     requirementTopicMatches,
     requirementKeywordMatches,
     requirementChangeSourceKind,

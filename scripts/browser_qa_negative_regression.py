@@ -61,7 +61,7 @@ def main():
             fn()
             findings.append({"fixture": name, "status": "PASS"})
         except Exception as exc:
-            findings.append({"fixture": name, "status": "FAIL", "reason": str(exc).splitlines()[0]})
+            findings.append({"fixture": name, "status": "FAIL", "reason": (str(exc).splitlines() or [repr(exc)])[0]})
 
     with sync_playwright() as engine:
         browser = engine.chromium.launch(headless=True, args=["--no-sandbox"])

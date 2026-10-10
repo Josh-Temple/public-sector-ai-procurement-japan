@@ -31,7 +31,7 @@ def exercise(page, base_url, name, effective=None, sources=None, cases=None, sta
         if body is None and code == 200:
             continue
 
-        def responder(route, content=body or "", status_code=code):
+        def responder(route, request=None, *, content=body or "", status_code=code):
             route.fulfill(status=status_code, content_type="text/csv; charset=utf-8", body=content)
 
         page.route("**/data/" + filename, responder)

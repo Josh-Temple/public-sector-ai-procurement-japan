@@ -289,7 +289,7 @@ function buildEvaluationMemo(caseId, topic, data, baseUrl) {
       (source && source.published_at ? " ／ 公表日：" + source.published_at : "") +
       (source && source.retrieved_at ? " ／ 資料取得日：" + source.retrieved_at : "");
   }
-  if (!rows.length) lines.push("構造化された配点行は未登録です。");
+  if (!rows.length) lines.push("この案件について、表示できる評価項目別配点の登録がありません。公式資料に配点がないことを意味しません。");
   rows.forEach(function (row) {
     lines.push("- " + row.criterion_summary + "：" + scoreContext(row));
     const source = sourceForEvaluation(row, data);
@@ -700,7 +700,21 @@ function renderCase(caseId, data) {
   const header = document.createElement("div");
   header.className = "evaluation-case-header";
   appendText(header, "h3", caseRow.government_name + " / " + (caseRow.procurement_title || caseId));
-  appendText(header, "p", procurement ? awardBasisLabel(procurement.award_basis) : "この案件の調達方式・選定方法について、表示できる収録データがありません。公式資料に記載がないことを意味しません。", "evaluation-score");
+  const selectionLabel = procurement ? awardBasisLabel(procurement.award_basis) : "この案件の調達方式・選定方法について、表示できる収録データがありません。公式資料に記載がないことを意味しません。";
+  const unknownSelection = procurement && procurement.award_basis &&
+    selectionLabel.startsWith("選定方法の表示名は未整理");
+  if (unknownSelection) {
+    appendText(header, "p", "選定方法：表示名は未整理です。公式資料で確認してください。", "evaluation-score");
+    const details = document.createElement("details");
+    details.className = "evaluation-selection-raw";
+    const summary = document.createElement("summary");
+    summary.textContent = "登録された選定方法の値を見る";
+    details.appendChild(summary);
+    appendText(details, "p", "登録値：" + procurement.award_basis, "scope-note");
+    header.appendChild(details);
+  } else {
+    appendText(header, "p", selectionLabel, "evaluation-score");
+  }
   appendText(header, "p", caseBoundaryText(evidence), "scope-note");
   const links = document.createElement("p");
   links.className = "case-dialog-actions";

@@ -298,6 +298,9 @@ code { font-size: 0.9em; }
 .evaluation-evidence-links a { display: inline-flex; align-items: center; min-height: 44px; padding: 4px 0; color: var(--accent); border-bottom: 1px solid currentColor; text-decoration: none; font-size: .72rem; }
 .evaluation-case-header { padding: 20px 0 26px; border-bottom: 1px solid var(--line); }
 .evaluation-case-header h3 { margin: 0 0 8px; }
+/* Unknown recorded selection codes must wrap without widening a 320px page. */
+.evaluation-case-header .evaluation-score { overflow-wrap: anywhere; min-width: 0; }
+.evaluation-case-block .evaluation-stage-rows, .evaluation-case-block .evaluation-result-list { overflow-wrap: anywhere; min-width: 0; }
 .evaluation-case-block { padding: 24px 0; border-bottom: 1px solid var(--line); }
 .evaluation-case-block h3 { margin: 0 0 12px; }
 .evaluation-stage { border-top: 1px solid var(--line); }

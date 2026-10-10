@@ -21,6 +21,8 @@ on:
       - "tests/test_first_time_ui_contract.cjs"
       - "tests/test_effective_requirements_semantics.cjs"
       - "scripts/browser_qa_effective_requirements.py"
+      - "scripts/browser_qa_negative_regression.py"
+      - "scripts/browser_qa_evaluation.py"
       - ".github/workflows/pages.yml"
       - ".github/workflows/public-site-check.yml"
   workflow_dispatch:
@@ -58,11 +60,18 @@ jobs:
           python3 scripts/browser_qa_effective_requirements.py \
             --url http://127.0.0.1:8765/ \
             --output-dir effective-requirements-pr-qa
+      - name: Verify negative Source, enum, XSS, and CSV failure cases in the PR preview
+        run: |
+          python3 scripts/browser_qa_negative_regression.py \
+            --url http://127.0.0.1:8765/ \
+            --output-dir negative-requirements-pr-qa
       - name: Preserve PR requirement browser audit
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: effective-requirements-pr-qa
-          path: effective-requirements-pr-qa/
+          path: |
+            effective-requirements-pr-qa/
+            negative-requirements-pr-qa/
           retention-days: 30
           if-no-files-found: warn

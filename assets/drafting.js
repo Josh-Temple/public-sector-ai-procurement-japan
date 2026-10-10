@@ -273,7 +273,7 @@ function draftingChangeLabel(value) {
     value ? `変更分類の表示名は未整理（登録値：${value}）` : "変更分類の登録なし";
 }
 function draftingOfficialUrl(value) {
-  if (!value || typeof value !== "string" || /[\\u0000-\\u001f\\u007f]/.test(value)) return "";
+  if (!value || typeof value !== "string" || [...value].some(ch => ch.charCodeAt(0) < 32 || ch.charCodeAt(0) === 127)) return "";
   try {
     const parsed = new URL(value);
     return (["http:", "https:"].includes(parsed.protocol) && parsed.hostname) ? value : "";

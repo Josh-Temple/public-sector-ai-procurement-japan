@@ -1152,8 +1152,11 @@ function renderRequirementExplorer() {
     area.className = "case-sub";
     area.textContent = requirementAreaLabel(row.requirement_area);
     const key = document.createElement("strong");
-    key.textContent = row.requirement_key ? `登録項目：${row.requirement_key}` : "要件項目は未登録";
-    keyTd.append(area, key);
+    key.textContent = row.scope || (row.requirement_key ? `登録項目：${row.requirement_key}` : "要件項目は未登録");
+    const canonicalKey = document.createElement("small");
+    canonicalKey.className = "cell-detail";
+    canonicalKey.textContent = row.requirement_key ? `データ上の項目名：${row.requirement_key}` : "データ上の項目名は未登録";
+    keyTd.append(area, key, canonicalKey);
 
     const originalTd = document.createElement("td");
     originalTd.dataset.status = row.original_status || "";

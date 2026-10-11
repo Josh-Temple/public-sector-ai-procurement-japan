@@ -176,7 +176,22 @@ async function loadEvaluationCSV(url) {
 }
 
 function byKey(rows, key) {
-  return new Map(rows.map(function (row) { return [row[key], row]; }));
+  const result = new Map();
+  rows.forEach(function (row) {
+    if (!row[key] || result.has(row[key])) throw new Error("登録データのIDが欠落または重複しています: " + key);
+    result.set(row[key], row);
+  });
+  return result;
+}
+
+function assertEvaluationSourceCases(evaluations, sources) {
+  const sourceByUrl = new Map(sources.filter(function (row) { return row.url; }).map(function (row) { return [row.url, row]; }));
+  evaluations.forEach(function (row) {
+    const source = row.source_url && sourceByUrl.get(row.source_url);
+    if (source && source.case_id && source.case_id !== row.case_id) {
+      throw new Error("評価項目と根拠資料の案件が一致しません: " + row.criterion_id);
+    }
+  });
 }
 
 function roleForEffective(row) {
@@ -223,7 +238,8 @@ function effectiveSourceId(row) {
 }
 
 function sourceForEvaluation(row, data) {
-  return data.sourceByUrl.get(row.source_url || "");
+  const source = data.sourceByUrl.get(row.source_url || "");
+  return source && (!source.case_id || source.case_id === row.case_id) ? source : null;
 }
 
 function caseBoundaryText(evidence) {
@@ -828,6 +844,7 @@ async function initEvaluationSupport() {
       sources: loaded[7],
       evidence: loaded[8]
     };
+    assertEvaluationSourceCases(data.evaluations, data.sources);
     data.caseById = byKey(data.cases, "case_id");
     data.effectiveById = byKey(data.effective, "effective_requirement_id");
     data.evaluationById = byKey(data.evaluations, "criterion_id");
@@ -911,6 +928,7 @@ if (typeof module !== "undefined") {
     roleForEffective,
     effectiveValue,
     evaluationOfficialUrl,
+    assertEvaluationSourceCases,
     markdownSourceLink,
     effectiveSourceId,
     ruleTypeLabel,

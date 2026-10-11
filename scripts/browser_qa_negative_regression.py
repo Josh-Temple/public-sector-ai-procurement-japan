@@ -99,7 +99,7 @@ def main():
                 changed = row_el.locator('[data-source-role="changed"]')
                 assert changed.count() == 1 and changed.evaluate("(el) => el.tagName") == "SPAN"
                 assert changed.get_attribute("href") is None
-                assert "公式URL未登録" in row_el.locator('[data-field="sources"]').inner_text()
+                assert "登録URLを安全なリンクとして表示できません" in row_el.locator('[data-field="sources"]').inner_text()
                 assert page.evaluate("() => window.__xssTriggered === undefined")
                 assert page.locator("#case-rows").inner_text().find("synthetic_category_unknown") >= 0
                 assert "未整理" in page.locator("#case-rows").inner_text()
@@ -256,6 +256,21 @@ def main():
             finally:
                 context.close()
 
+        def existing_source_from_different_case_is_rejected():
+            effective = [dict(r) for r in original_effective]
+            row = next(r for r in effective if r["effective_requirement_id"] == "EFF-oumi-template-count")
+            row["changed_by_source_id"] = "SRC-fukushima-2025-spec"
+            assert any(s["source_id"] == row["changed_by_source_id"] and
+                       s["case_id"] != row["case_id"] for s in original_sources)
+            context, page, errors = page_for("cross_case_source", effective=to_csv(effective))
+            try:
+                page.wait_for_function("() => document.querySelector('#requirement-result-count')?.textContent?.includes('読み込みに失敗しました。')", timeout=20000)
+                assert page.locator('#requirement-rows tr[data-effective-id]').count() == 0
+                assert not page.locator("#requirement-empty").is_visible()
+            finally:
+                context.close()
+
+        report("existing_source_from_different_case_rejected", existing_source_from_different_case_is_rejected)
         report("duplicate_effective_id_fail_closed", duplicate_effective_id_fail_closed)
         report("missing_source_dates_not_invented", missing_both_source_dates_are_not_invented)
         report("multiline_quoted_csv_xss", multiline_quoted_csv_and_xss_are_data)

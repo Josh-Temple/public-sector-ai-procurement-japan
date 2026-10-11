@@ -24,7 +24,7 @@
 </tbody></table><p><a href="https://www.city.omihachiman.lg.jp/material/files/group/115/AI_Shiyousyo2.pdf">公式仕様書</a> ／ <a href="https://www.city.omihachiman.lg.jp/material/files/group/115/AI_kaitou.pdf">公式質問回答</a></p>
 <h2>3. 設計判断：変更の種類を分ける</h2><p>この3例を一律の「要件緩和」にまとめず、数値の変更、任意化、実装予定の許容として別々に記録します。Deep Researchを単純に「任意」とすると、実装予定と日程提示という条件が落ちるためです。</p>
 <p>公開リポジトリでは、元の条件と変更後の条件に加え、元資料・後続資料のID、該当箇所、適用範囲、留保、検証状態を保持しています。横断比較の表はこの詳細記録へ戻れる構成です。</p>
-<p><a href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan/blob/main/data/effective_requirements.csv">有効要件データ</a>の EFF-oumi-template-count、EFF-oumi-agent、EFF-oumi-deep-research と、<a href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan/blob/main/docs/DATA_MODEL.md">データモデル</a>を確認できます。</p>
+<p><a href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan/blob/main/data/effective_requirements.csv">有効要件データ</a>の EFF-oumi-template-count、EFF-oumi-agent、EFF-oumi-deep-research と、<a href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan/blob/main/docs/DATA_MODEL.md">データモデル</a>を確認できます。このデータには公募時の条件のほか、契約段階の文書優先関係や公開資料での確認限界を整理した行も含まれます。適用段階は各行の記録で確認してください。</p>
 <h2>4. 実装・AI活用・検証の分担</h2><p>公開されている成果は、案件・文書・要件を接続するデータ、質問に応じた索引、静的比較サイト、整合性検証スクリプトです。AIが調査・更新するときの手順はAGENTS.mdに定め、事実・解釈・提案、検証状態と鮮度を分けています。</p>
 <p>検証スクリプトは重複ID、参照先、調査記録と根拠資料の対応、生成表との整合を確認します。一方、構造的なチェックだけで原典の読み取りが正しいとは保証できないため、この事例の内容は公式回答の項番まで戻って照合しています。</p>
 <ul><li><a href="https://github.com/Josh-Temple/public-sector-ai-procurement-japan/blob/main/AGENTS.md">AIへの参照・更新指示</a></li>

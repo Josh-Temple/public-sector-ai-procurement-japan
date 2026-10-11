@@ -1,21 +1,36 @@
 "use strict";
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
-const {sourceDateText, requirementSourcePresentation, evaluationPointsText, changeTypeLabel} = require("../assets/app.js");
-const {ruleSummary, parseEvaluationCSV} = require("../assets/evaluation.js");
+const {sourceDateText, requirementSourcePresentation, evaluationPointsText, changeTypeLabel, assertEffectiveSourceCases} = require("../assets/app.js");
+const {ruleSummary, parseEvaluationCSV, assertEvaluationSourceCases} = require("../assets/evaluation.js");
+const {specializedEnumLabel, SPECIALIZED_REQUIREDNESS_LABELS, SPECIALIZED_STAGE_LABELS} = require("../assets/drafting.js");
 
 const dated = {title:"公表資料", document_type:"official_qa", url:"", published_at:"2026-03-01", retrieved_at:"2026-04-01"};
 assert.equal(sourceDateText(dated), "公表日: 2026-03-01 / 資料取得日: 2026-04-01");
 assert.equal(sourceDateText({retrieved_at:"2026-04-01"}), "資料取得日: 2026-04-01");
 const missingUrl = requirementSourcePresentation(dated, "Q&A No.8", "変更根拠");
 assert.equal(missingUrl.url, "");
-assert.match(missingUrl.detail, /公表資料.*Q&A No\.8.*公表日.*資料取得日.*公式URL未登録/);
+assert.match(missingUrl.detail, /公表資料.*Q&A No\.8.*公表日.*資料取得日.*この資料のリンク先URLは登録されていません/);
 const missingSource = requirementSourcePresentation(null, "仕様書 No.7", "当初根拠");
 assert.equal(missingSource.url, "");
-assert.match(missingSource.detail, /資料参照先未登録.*仕様書 No\.7.*公式URL未登録/);
+assert.match(missingSource.detail, /資料参照先未登録.*仕様書 No\.7.*資料ID未登録/);
 const linked = requirementSourcePresentation({...dated, url:"https://example.org/official"}, "Q&A No.8", "変更根拠");
 assert.equal(linked.url, "https://example.org/official");
 assert.doesNotMatch(linked.detail, /URL未登録/);
+
+const invalidLink = requirementSourcePresentation({...dated, url:"javascript:alert(1)"}, "Q&A No.8", "変更根拠", "SRC-synthetic");
+assert.equal(invalidLink.url, "");
+assert.match(invalidLink.detail, /SRC-synthetic.*登録URLを安全なリンクとして表示できません/);
+assert.match(requirementSourcePresentation(null, "No.8", "変更根拠", "SRC-unknown").detail, /SRC-unknown/);
+assert.equal(specializedEnumLabel("desirable", SPECIALIZED_REQUIREDNESS_LABELS), "望ましい");
+assert.match(specializedEnumLabel("procurement_minimum", SPECIALIZED_STAGE_LABELS), /必須性は別欄を確認/);
+assert.match(specializedEnumLabel("unknown", SPECIALIZED_REQUIREDNESS_LABELS), /登録値：unknown/);
+assert.throws(() => assertEffectiveSourceCases(
+  [{case_id:"one", effective_requirement_id:"EFF-synthetic", changed_by_source_id:"SRC-other"}],
+  [{case_id:"two", source_id:"SRC-other"}]), /案件が一致/);
+assert.throws(() => assertEvaluationSourceCases(
+  [{case_id:"one", criterion_id:"C-synthetic", source_url:"https:\/\/example.org\/evidence"}],
+  [{case_id:"two", url:"https:\/\/example.org\/evidence"}]), /案件が一致/);
 
 const rows = parseEvaluationCSV(fs.readFileSync("data/evaluation_criteria.csv", "utf8"));
 function criterion(id) {

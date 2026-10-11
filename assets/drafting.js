@@ -343,9 +343,9 @@ function evidenceCardForEvaluation(row, data) {
   caseAnchor.href = caseLink(row.case_id);
   caseAnchor.textContent = "案件詳細";
   links.appendChild(caseAnchor);
-  if (row.source_url) {
+  if (draftingOfficialUrl(row.source_url)) {
     const sourceAnchor = document.createElement("a");
-    sourceAnchor.href = row.source_url;
+    sourceAnchor.href = draftingOfficialUrl(row.source_url);
     sourceAnchor.target = "_blank";
     sourceAnchor.rel = "noreferrer";
     sourceAnchor.textContent = "評価資料 ↗";
@@ -361,13 +361,41 @@ function specializedMatch(data, selector) {
   });
 }
 
+const SPECIALIZED_REQUIREDNESS_LABELS = {
+  required: "必須",
+  conditional: "条件付き（具体的な条件は元資料を確認）",
+  desirable: "望ましい",
+  evaluated: "評価対象（必須・加点とは限りません）",
+  context: "条件の背景・前提",
+};
+const SPECIALIZED_STAGE_LABELS = {
+  procurement_minimum: "公募仕様上の条件・前提（必須性は別欄を確認）",
+  procurement_effective: "後続資料を踏まえた公募時の記載",
+  procurement_public_baseline: "公募時に公開された当初の記載",
+  evaluation_public_baseline: "公開評価資料に記載された内容",
+};
+const SPECIALIZED_AREA_LABELS = {
+  answer_policy: "回答方針",
+  document_review: "文書の点検",
+  interaction: "対話",
+  network: "ネットワーク",
+  grounding: "回答根拠",
+};
+function specializedEnumLabel(value, labels) {
+  if (!value) return "登録値なし";
+  return Object.prototype.hasOwnProperty.call(labels, value)
+    ? labels[value]
+    : "表示名未整理（登録値：" + value + "）";
+}
+
 function evidenceCardForSpecialized(row, data) {
   const card = document.createElement("article");
   card.className = "drafting-evidence";
   const itemCase = data.caseById.get(row.case_id) || {};
   appendText(card, "p", itemCase.government_name || row.case_id, "drafting-evidence-case");
-  appendText(card, "h3", row.requirement_area + " / " + row.requirement_key + ": " + (row.value || "—"));
-  appendText(card, "p", "位置づけ: " + (row.requiredness || "—") + " / 適用段階: " + (row.applicability_stage || "—"), "drafting-evidence-meta");
+  appendText(card, "h3", specializedEnumLabel(row.requirement_area, SPECIALIZED_AREA_LABELS) + "：" + (row.value || "登録値なし"));
+  appendText(card, "p", "条件の区分：" + specializedEnumLabel(row.requiredness, SPECIALIZED_REQUIREDNESS_LABELS) + " / 記録上の段階：" + specializedEnumLabel(row.applicability_stage, SPECIALIZED_STAGE_LABELS), "drafting-evidence-meta");
+  appendText(card, "p", "登録値：分野 " + (row.requirement_area || "未登録") + " / 要件キー " + (row.requirement_key || "未登録") + " / 区分 " + (row.requiredness || "未登録") + " / 段階 " + (row.applicability_stage || "未登録"), "drafting-evidence-meta");
   appendText(card, "p", caseBoundaryText(data.evidenceByCase.get(row.case_id)), "drafting-evidence-boundary");
   const links = document.createElement("div");
   links.className = "drafting-evidence-links";
@@ -375,9 +403,9 @@ function evidenceCardForSpecialized(row, data) {
   caseAnchor.href = caseLink(row.case_id);
   caseAnchor.textContent = "案件詳細";
   links.appendChild(caseAnchor);
-  if (row.source_url) {
+  if (draftingOfficialUrl(row.source_url)) {
     const sourceAnchor = document.createElement("a");
-    sourceAnchor.href = row.source_url;
+    sourceAnchor.href = draftingOfficialUrl(row.source_url);
     sourceAnchor.target = "_blank";
     sourceAnchor.rel = "noreferrer";
     sourceAnchor.textContent = "公式資料 ↗";
@@ -566,6 +594,9 @@ if (typeof module !== "undefined") {
     draftingStageLabel,
     draftingChangeLabel,
     draftingOfficialUrl,
+    specializedEnumLabel,
+    SPECIALIZED_REQUIREDNESS_LABELS,
+    SPECIALIZED_STAGE_LABELS,
     caseBoundaryText
   };
 }

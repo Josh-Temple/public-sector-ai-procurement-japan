@@ -88,7 +88,7 @@ assert.equal(oumi.change_locator,"Q&A No.8");
 const title="公式テスト資料";
 const missingUrl=requirementSourcePresentation({title,url:"",published_at:"",retrieved_at:"2026-10-01"}, "節 No.8","変更根拠");
 assert.equal(missingUrl.url,"");
-assert.match(missingUrl.detail,/公式URL未登録/);
+assert.match(missingUrl.detail,/この資料のリンク先URLは登録されていません/);
 assert.doesNotMatch(sourceDateText({retrieved_at:"2026-10-01"}),/公表日/);
 assert.match(changeTypeLabel("unexpected_enum"),/未整理.*unexpected_enum/);
 assert.equal(changeTypeLabel(""),"変更種別は未登録");

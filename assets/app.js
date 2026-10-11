@@ -107,6 +107,21 @@ function assertUniqueRegisteredIds(rows, key) {
   });
 }
 
+// A registered source that belongs to another case must not be presented as
+// an ordinary base or later source. Missing source IDs remain row-level notices.
+function assertEffectiveSourceCases(rows, sources) {
+  const byId = new Map(sources.map(source => [source.source_id, source]));
+  rows.forEach(row => {
+    ["base_source_id", "changed_by_source_id"].forEach(key => {
+      const id = row[key];
+      const source = id && byId.get(id);
+      if (source && source.case_id && source.case_id !== row.case_id) {
+        throw new Error("要件と根拠資料の案件が一致しません: " + row.effective_requirement_id + " / " + key);
+      }
+    });
+  });
+}
+
 function mapByCase(rows) {
   return new Map(rows.map(row => [row.case_id, row]));
 }
@@ -273,30 +288,31 @@ function sourceDocumentRoleLabel(value) {
 
 function appendEvidenceSource(container, sourceId) {
   if (!sourceId) {
-    container.textContent = "対応する公開資料は登録されていません。";
+    container.textContent = "対応する資料IDは登録されていません。資料が存在しないことは意味しません。";
     return;
   }
   const source = state.sourceById.get(sourceId);
   if (!source) {
-    container.textContent = "登録された根拠資料を表示できません。";
+    container.textContent = "根拠資料の参照先を確認できません（登録ID：" + sourceId + "）。";
     return;
   }
-  if (source.url) {
-    const link = document.createElement("a");
-    link.href = source.url;
-    link.target = "_blank";
-    link.rel = "noreferrer";
-    link.textContent = source.title || "公式資料";
-    container.append(link);
-  } else {
-    const title = document.createElement("span");
-    title.textContent = source.title || "公式資料";
-    container.append(title);
+  const url = safeOfficialUrl(source.url);
+  const title = document.createElement(url ? "a" : "span");
+  if (url) {
+    title.href = url;
+    title.target = "_blank";
+    title.rel = "noreferrer";
   }
-  const dateText = sourceDateText(source);
-  if (dateText) {
+  title.textContent = source.title || "資料名未登録";
+  container.append(title);
+  const details = [
+    "資料ID：" + sourceId,
+    !url && (source.url ? "登録URLを安全なリンクとして表示できません" : "この資料のリンク先URLは登録されていません"),
+    sourceDateText(source),
+  ].filter(Boolean);
+  if (details.length) {
     const meta = document.createElement("small");
-    meta.textContent = dateText;
+    meta.textContent = details.join(" / ");
     container.append(meta);
   }
 }
@@ -938,22 +954,27 @@ function renderExpandableRows(container, rows, renderRow, noun = "件", initialL
   return true;
 }
 
-function requirementSourcePresentation(source, locator, label) {
+function requirementSourcePresentation(source, locator, label, sourceId = "") {
+  const url = safeOfficialUrl(source?.url);
+  const missing = !source
+    ? (sourceId ? "資料参照先未登録：根拠資料の参照先を確認できません（登録ID：" + sourceId + "）" : "資料ID未登録")
+    : !url && (source.url ? "登録URLを安全なリンクとして表示できません" : "この資料のリンク先URLは登録されていません");
   return {
     name: `${label}｜${source ? sourceDocumentRoleLabel(source.document_type) : "資料参照先未登録"}`,
-    url: safeOfficialUrl(source?.url),
+    url,
     detail: [
       source?.title || (source ? "資料名未登録" : "資料参照先未登録"),
-      locator && `該当箇所: ${locator}`,
+      sourceId && "資料ID：" + sourceId,
+      locator && "該当箇所: " + locator,
       sourceDateText(source),
-      !safeOfficialUrl(source?.url) && "公式URL未登録（またはURL形式不正）",
+      missing,
     ].filter(Boolean).join(" / "),
   };
 }
 
 function appendRequirementSourceLink(container, sourceId, label, locator) {
   const source = sourceId ? state.sourceById.get(sourceId) : null;
-  const presentation = requirementSourcePresentation(source, locator, label);
+  const presentation = requirementSourcePresentation(source, locator, label, sourceId);
   const element = document.createElement(presentation.url ? "a" : "span");
   element.className = "inline-source";
   element.dataset.sourceRole = label === "当初根拠" ? "base" : "changed";
@@ -1480,8 +1501,8 @@ function openCaseDialog(row, updateUrl = true) {
   renderTimeline(row.case_id);
 
   const source = document.getElementById("case-dialog-source");
-  if (row.source_url) {
-    source.href = row.source_url;
+  if (safeOfficialUrl(row.source_url)) {
+    source.href = safeOfficialUrl(row.source_url);
     source.hidden = false;
   } else {
     source.hidden = true;
@@ -1632,10 +1653,10 @@ function renderRows() {
     const sourceTd = document.createElement("td");
     const sourceActions = document.createElement("div");
     sourceActions.className = "source-actions";
-    if (row.source_url) {
+    if (safeOfficialUrl(row.source_url)) {
       const a = document.createElement("a");
       a.className = "source-link";
-      a.href = row.source_url;
+      a.href = safeOfficialUrl(row.source_url);
       a.target = "_blank";
       a.rel = "noreferrer";
       a.textContent = "代表資料 ↗";
@@ -1762,6 +1783,7 @@ async function init() {
     assertUniqueRegisteredIds(cases, "case_id");
     assertUniqueRegisteredIds(sources, "source_id");
     assertUniqueRegisteredIds(effective, "effective_requirement_id");
+    assertEffectiveSourceCases(effective, sources);
     state.sourceById = new Map(sources.map(source => [source.source_id, source]));
     state.caseById = new Map(cases.map(row => [row.case_id, row]));
     state.evidenceByCase = new Map(evidence.map(row => [row.case_id, row]));
@@ -1902,6 +1924,7 @@ if (typeof module !== "undefined" && module.exports) {
     sourceDocumentRoleLabel,
     sourceDateText,
     requirementSourcePresentation,
+    assertEffectiveSourceCases,
     evaluationPointsText,
   };
 }

@@ -270,7 +270,28 @@ def main():
             finally:
                 context.close()
 
+        def evaluation_cross_case_source_is_rejected():
+            evaluations = read_csv("data/evaluation_criteria.csv")
+            changed = [dict(row) for row in evaluations]
+            row = next(r for r in changed if r["criterion_id"] == "YAI-10")
+            other = next(r for r in original_sources if r["source_id"] == "SRC-oumi-2026-spec")
+            assert row["case_id"] != other["case_id"]
+            row["source_url"] = other["url"]
+            context = browser.new_context(viewport={"width": 360, "height": 800}, locale="ja-JP")
+            page = context.new_page()
+            page.route("**/data/evaluation_criteria.csv",
+                lambda route: route.fulfill(status=200, content_type="text/csv; charset=utf-8",
+                                           body=to_csv(changed)))
+            try:
+                response = page.goto(args.url.rstrip("/") + "/evaluation.html", wait_until="domcontentloaded", timeout=45000)
+                assert response is not None and response.status == 200
+                page.wait_for_function("() => document.querySelector('#evaluation-update-status')?.textContent?.includes('読み込めませんでした')", timeout=20000)
+                assert page.locator(".evaluation-stage-rows").count() == 0
+            finally:
+                context.close()
+
         report("existing_source_from_different_case_rejected", existing_source_from_different_case_is_rejected)
+        report("evaluation_cross_case_source_rejected", evaluation_cross_case_source_is_rejected)
         report("duplicate_effective_id_fail_closed", duplicate_effective_id_fail_closed)
         report("missing_source_dates_not_invented", missing_both_source_dates_are_not_invented)
         report("multiline_quoted_csv_xss", multiline_quoted_csv_and_xss_are_data)

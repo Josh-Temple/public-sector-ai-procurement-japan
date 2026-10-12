@@ -156,6 +156,11 @@ def main():
                     assert criterion["criterion_summary"] in content, "criterion missing: " + criterion["criterion_id"]
                     if criterion["points"] and criterion["total_points"]:
                         assert (criterion["points"] + " / " + criterion["total_points"] + "点") in content, "score denominator missing"
+                    if criterion.get("source_id") and criterion.get("locator"):
+                        assert criterion["locator"] in content, "verified criterion locator missing: " + criterion["criterion_id"]
+                        assert criterion["source_id"] in content, "criterion Source ID missing: " + criterion["criterion_id"]
+                    else:
+                        assert "根拠箇所はこのデータに未登録です" in content, "unregistered source must be scoped"
                 registered_urls = {row["source_url"] for row in expected_criteria if row["source_url"]}
                 listed = [row for row in source_rows if row["url"] in registered_urls and row["url"]]
                 if listed:
@@ -166,7 +171,7 @@ def main():
             finally:
                 context.close()
 
-        for case_id in ("matsue-2026-genai-support", "oumi-2026-joint-genai", "sendai-2026-genai-service"):
+        for case_id in ("yaizu-2025-genai-service", "matsue-2026-genai-support", "gosen-2026-genai-service", "oumi-2026-joint-genai", "sendai-2026-genai-service"):
             report("real_markdown_" + case_id, lambda case_id=case_id: real_markdown(case_id))
 
         browser.close()

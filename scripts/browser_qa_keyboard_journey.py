@@ -157,8 +157,10 @@ def main():
                     if criterion["points"] and criterion["total_points"]:
                         assert (criterion["points"] + " / " + criterion["total_points"] + "点") in content, "score denominator missing"
                     if criterion.get("source_id") and criterion.get("locator"):
-                        assert criterion["locator"] in content, "verified criterion locator missing: " + criterion["criterion_id"]
-                        assert criterion["source_id"] in content, "criterion Source ID missing: " + criterion["criterion_id"]
+                        # Markdown inline escaping does not change the human-readable value.
+                        rendered_text = content.replace("\\\\", "")
+                        assert criterion["locator"] in rendered_text, "verified criterion locator missing: " + criterion["criterion_id"]
+                        assert criterion["source_id"] in rendered_text, "criterion Source ID missing: " + criterion["criterion_id"]
                     else:
                         assert "根拠箇所はこのデータに未登録です" in content, "unregistered source must be scoped"
                 registered_urls = {row["source_url"] for row in expected_criteria if row["source_url"]}

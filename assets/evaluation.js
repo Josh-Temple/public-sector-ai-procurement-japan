@@ -245,7 +245,8 @@ function markdownLiteral(value) {
 function markdownSourceLink(source) {
   const title = markdownLiteral(source.title || sourceLabel(source));
   const url = evaluationOfficialUrl(source.url);
-  const target = url.replace(/[()[\]<>\\\s]/g, function (char) { return encodeURIComponent(char); });
+  const target = url.replaceAll("(", "%28").replaceAll(")", "%29")
+    .replaceAll("[", "%5B").replaceAll("]", "%5D").replaceAll(" ", "%20");
   return url ? "[" + title + "](" + target + ")" : title + "（公式URL未登録・または形式不正）";
 }
 

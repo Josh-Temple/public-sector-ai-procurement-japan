@@ -330,6 +330,28 @@ function evidenceCardForEffective(row, data) {
   return card;
 }
 
+function assertDraftingEvaluationSources(rows, sources) {
+  const byId = new Map(), byUrl = new Map(), ids = new Set();
+  sources.forEach(source => {
+    if (!source.source_id || byId.has(source.source_id)) throw new Error("Source IDが重複しています");
+    byId.set(source.source_id, source);
+    if (source.url) {
+      if (byUrl.has(source.url)) throw new Error("Source URLが重複しています");
+      byUrl.set(source.url, source);
+    }
+  });
+  rows.forEach(row => {
+    if (!row.criterion_id || ids.has(row.criterion_id)) throw new Error("評価項目IDが重複しています");
+    ids.add(row.criterion_id);
+    if (row.locator && !row.source_id) throw new Error("根拠箇所にSource IDがありません");
+    if (row.source_url && !draftingOfficialUrl(row.source_url)) throw new Error("評価資料URLの形式が不正です");
+    const source = row.source_id ? byId.get(row.source_id) : null;
+    const linked = row.source_url ? byUrl.get(row.source_url) : null;
+    if ((row.source_id && !source) || (source && (source.case_id !== row.case_id || (row.source_url && source.url !== row.source_url))) || (linked && linked.case_id && linked.case_id !== row.case_id)) {
+      throw new Error("評価項目と根拠資料の案件・URLが一致しません");
+    }
+  });
+}
 function evidenceCardForEvaluation(row, data) {
   const card = document.createElement("article");
   card.className = "drafting-evidence";
@@ -343,6 +365,11 @@ function evidenceCardForEvaluation(row, data) {
   caseAnchor.href = caseLink(row.case_id);
   caseAnchor.textContent = "案件詳細";
   links.appendChild(caseAnchor);
+  const source = row.source_id ? data.sourceById.get(row.source_id) : null;
+  if (source) appendText(card, "p", "根拠資料：" + (source.title || sourceLabel(source)) + "（" + source.source_id + "）", "drafting-evidence-meta");
+  appendText(card, "p", row.source_id && row.locator
+    ? "登録された根拠箇所：" + row.locator
+    : "根拠箇所はこのデータに未登録です。原典をご確認ください。", "drafting-evidence-boundary");
   if (draftingOfficialUrl(row.source_url)) {
     const sourceAnchor = document.createElement("a");
     sourceAnchor.href = draftingOfficialUrl(row.source_url);
@@ -557,6 +584,7 @@ async function initDraftingSupport() {
       sources: loaded[4],
       evidence: loaded[5]
     };
+    assertDraftingEvaluationSources(data.evaluations, data.sources);
     data.caseById = byKey(data.cases, "case_id");
     data.effectiveById = byKey(data.effective, "effective_requirement_id");
     data.evaluationById = byKey(data.evaluations, "criterion_id");
@@ -594,6 +622,7 @@ if (typeof module !== "undefined") {
     draftingStageLabel,
     draftingChangeLabel,
     draftingOfficialUrl,
+    assertDraftingEvaluationSources,
     specializedEnumLabel,
     SPECIALIZED_REQUIREDNESS_LABELS,
     SPECIALIZED_STAGE_LABELS,

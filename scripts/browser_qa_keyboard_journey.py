@@ -156,23 +156,32 @@ def main():
                     assert criterion["criterion_summary"] in content, "criterion missing: " + criterion["criterion_id"]
                     if criterion["points"] and criterion["total_points"]:
                         assert (criterion["points"] + " / " + criterion["total_points"] + "点") in content, "score denominator missing"
+                    if criterion.get("source_id") and criterion.get("locator"):
+                        # Markdown inline escaping does not change the human-readable value.
+                        rendered_text = content.replace(chr(92), "")
+                        assert criterion["locator"] in rendered_text, "verified criterion locator missing: " + criterion["criterion_id"]
+                        assert criterion["source_id"] in rendered_text, "criterion Source ID missing: " + criterion["criterion_id"]
+                    else:
+                        assert "根拠箇所はこのデータに未登録です" in content, "unregistered source must be scoped"
                 registered_urls = {row["source_url"] for row in expected_criteria if row["source_url"]}
                 listed = [row for row in source_rows if row["url"] in registered_urls and row["url"]]
                 if listed:
-                    assert any(row["title"] in content for row in listed), "registered source title missing"
+                    assert any(row["title"] in content.replace(chr(92), "") for row in listed), "registered source title missing"
                 assert "undefined" not in content and "javascript:alert" not in content
                 return {"case_id": case_id, "file": str(target), "bytes": target.stat().st_size,
                         "criteria_checked": len(expected_criteria), "registered_sources": len(listed)}
             finally:
                 context.close()
 
-        for case_id in ("matsue-2026-genai-support", "oumi-2026-joint-genai", "sendai-2026-genai-service"):
+        for case_id in ("yaizu-2025-genai-service", "matsue-2026-genai-support", "gosen-2026-genai-service", "oumi-2026-joint-genai", "sendai-2026-genai-service"):
             report("real_markdown_" + case_id, lambda case_id=case_id: real_markdown(case_id))
 
         browser.close()
 
     summary = {"PASS": sum(x["status"] == "PASS" for x in findings),
                "FAIL": sum(x["status"] == "FAIL" for x in findings)}
+    if summary["FAIL"]:
+        print(json.dumps([item for item in findings if item["status"] == "FAIL"], ensure_ascii=False))
     (dest / "acceptance.json").write_text(json.dumps(
         {"target": base, "scope": ("LIVE_PRODUCTION Chromium normal journeys" if args.production_safe else "PR localhost Chromium normal journeys") + "; not Android, native zoom, AT or human",
          "summary": summary, "findings": findings}, ensure_ascii=False, indent=2), encoding="utf-8")

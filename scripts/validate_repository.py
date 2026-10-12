@@ -68,7 +68,7 @@ REQUIRED_COLUMNS = {
     "case_evidence_summary.csv": {"case_id", "public_reconstructability"},
     "requirements.csv": {"case_id"},
     "requirement_facts.csv": {"case_id", "requirement_no", "requirement_key"},
-    "evaluation_criteria.csv": {"case_id", "criterion_id"},
+    "evaluation_criteria.csv": {"case_id", "criterion_id", "source_id", "locator", "source_url"},
     "qualification_gates.csv": {
         "gate_id", "case_id", "topic", "applies_to", "condition_summary",
         "applies_at_stage", "base_source_id", "base_locator", "review_status",
@@ -98,7 +98,7 @@ UNIQUE_KEYS = {
     "case_evidence_summary.csv": [("case_id",)],
     "requirements.csv": [("case_id",)],
     "requirement_facts.csv": [("case_id", "requirement_no", "requirement_key")],
-    "evaluation_criteria.csv": [("case_id", "criterion_id")],
+    "evaluation_criteria.csv": [("case_id", "criterion_id"), ("criterion_id",)],
     "qualification_gates.csv": [("gate_id",)],
     "evaluation_rules.csv": [("rule_id",)],
     "vendor_scores.csv": [("case_id", "vendor_label")],
@@ -110,6 +110,7 @@ UNIQUE_KEYS = {
 }
 
 SOURCE_REF_COLUMNS = {
+    "evaluation_criteria.csv": ["source_id"],
     "case_timeline.csv": ["source_id"],
     "effective_requirements.csv": ["base_source_id", "changed_by_source_id"],
     "qualification_gates.csv": ["base_source_id", "changed_by_source_id"],
@@ -336,6 +337,25 @@ def main() -> int:
                 source = sources_by_id.get(source_id)
                 if source and source.get("case_id") and source["case_id"] != row.get("case_id"):
                     errors.append(f"data/{name}: {column} belongs to a different case")
+
+    from urllib.parse import urlsplit
+    source_by_url = {source.get("url"): source for source in tables["source_documents.csv"] if source.get("url")}
+    for row in tables["evaluation_criteria.csv"]:
+        source_id = (row.get("source_id") or "").strip()
+        source_url = (row.get("source_url") or "").strip()
+        locator = (row.get("locator") or "").strip()
+        if locator and not source_id:
+            errors.append("data/evaluation_criteria.csv: locator without source_id")
+        if source_url:
+            parsed = urlsplit(source_url)
+            if parsed.scheme not in {"http", "https"} or not parsed.netloc or any(ord(ch) < 32 or ord(ch) == 127 for ch in source_url):
+                errors.append("data/evaluation_criteria.csv: invalid source URL")
+            source = source_by_url.get(source_url)
+            if source and source.get("case_id") and source["case_id"] != row.get("case_id"):
+                errors.append("data/evaluation_criteria.csv: cross-case URL")
+        source = sources_by_id.get(source_id)
+        if source_id and source and source_url and source.get("url") != source_url:
+            errors.append("data/evaluation_criteria.csv: source_id/source_url mismatch")
 
     for row in tables["review_coverage.csv"]:
         state = (row.get("review_state") or "").strip()

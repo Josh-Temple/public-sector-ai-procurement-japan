@@ -16,6 +16,7 @@ const {
   roleForEffective,
   effectiveValue,
   evaluationOfficialUrl,
+  assertEvaluationSourceCases,
   markdownSourceLink,
   effectiveSourceId,
   ruleTypeLabel,
@@ -48,6 +49,25 @@ const gateById = new Map(gates.map(function (row) { return [row.gate_id, row]; }
 const ruleById = new Map(rules.map(function (row) { return [row.rule_id, row]; }));
 const procurementByCase = new Map(procurement.map(function (row) { return [row.case_id, row]; }));
 const sourceById = new Map(sources.map(function (row) { return [row.source_id, row]; }));
+assertEvaluationSourceCases(evaluations, sources);
+assert.equal(evaluations.length, 156);
+assert.equal(evaluations.filter(row => row.source_id || row.locator).length, 3);
+for (const [id, sourceId, piece] of [
+  ["YAI-10", "SRC-yaizu-2025-evaluation", "PDF 1/1ページ"],
+  ["MATSUE-DOC-04", "SRC-matsue-2026-evaluation", "PDF 4/5ページ"],
+  ["GOS-05", "SRC-gosen-2026-evaluation", "PDF 2/2ページ"]
+]) {
+  const row = evaluations.find(item => item.criterion_id === id);
+  assert.equal(row.source_id, sourceId);
+  assert.ok(row.locator.includes(piece));
+}
+const yaizuRow = evaluations.find(row => row.criterion_id === "YAI-10");
+const altered = patch => evaluations.map(row => row.criterion_id === "YAI-10" ? {...row, ...patch} : row);
+assert.throws(() => assertEvaluationSourceCases(altered({source_id:"SRC-oumi-2026-spec"}), sources), /一致/);
+assert.throws(() => assertEvaluationSourceCases(altered({source_id:"SRC-UNKNOWN"}), sources), /未知/);
+assert.throws(() => assertEvaluationSourceCases(altered({source_url:"javascript:alert(1)"}), sources), /不正/);
+assert.throws(() => assertEvaluationSourceCases(altered({source_id:"", locator:yaizuRow.locator}), sources), /Source ID/);
+assert.throws(() => assertEvaluationSourceCases([...evaluations, yaizuRow], sources), /重複/);
 const sourceByUrl = new Map(sources.filter(function (row) { return row.url; }).map(function (row) { return [row.url, row]; }));
 const evidenceByCase = new Map(evidence.map(function (row) { return [row.case_id, row]; }));
 

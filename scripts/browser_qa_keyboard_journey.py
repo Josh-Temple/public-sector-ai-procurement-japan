@@ -158,7 +158,7 @@ def main():
                         assert (criterion["points"] + " / " + criterion["total_points"] + "点") in content, "score denominator missing"
                     if criterion.get("source_id") and criterion.get("locator"):
                         # Markdown inline escaping does not change the human-readable value.
-                        rendered_text = content.replace("\\\\", "")
+                        rendered_text = content.replace(chr(92), "")
                         assert criterion["locator"] in rendered_text, "verified criterion locator missing: " + criterion["criterion_id"]
                         assert criterion["source_id"] in rendered_text, "criterion Source ID missing: " + criterion["criterion_id"]
                     else:

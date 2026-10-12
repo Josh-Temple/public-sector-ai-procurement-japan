@@ -240,17 +240,12 @@ function evaluationOfficialUrl(value) {
   } catch (_) { return ""; }
 }
 function markdownLiteral(value) {
-  return String(value ?? "").replace(/[\\`*_{}\[\]()#+.!|>~-]/g, "\\function markdownSourceLink(source) {
-  const title = (source.title || sourceLabel(source)).replaceAll("[", "&#91;").replaceAll("]", "&#93;");
-  const url = evaluationOfficialUrl(source.url);
-  return url ? "[" + title + "](" + url.split("(").join("%28").split(")").join("%29") + ")" :
-    title + "（公式URL未登録・または形式不正）";
-}").replace(/\r?\n/g, " ");
+  return String(value ?? "").replace(/\r?\n/g, " ").replace(/[\\`*_{}\[\]()#+.!|>~-]/g, function (char) { return "\\" + char; });
 }
 function markdownSourceLink(source) {
   const title = markdownLiteral(source.title || sourceLabel(source));
   const url = evaluationOfficialUrl(source.url);
-  const target = url.replace(/[()[\]<>\\\s]/g, char => encodeURIComponent(char));
+  const target = url.replace(/[()[\]<>\\\s]/g, function (char) { return encodeURIComponent(char); });
   return url ? "[" + title + "](" + target + ")" : title + "（公式URL未登録・または形式不正）";
 }
 

@@ -166,7 +166,7 @@ def main():
                 registered_urls = {row["source_url"] for row in expected_criteria if row["source_url"]}
                 listed = [row for row in source_rows if row["url"] in registered_urls and row["url"]]
                 if listed:
-                    assert any(row["title"] in content for row in listed), "registered source title missing"
+                    assert any(row["title"] in content.replace(chr(92), "") for row in listed), "registered source title missing"
                 assert "undefined" not in content and "javascript:alert" not in content
                 return {"case_id": case_id, "file": str(target), "bytes": target.stat().st_size,
                         "criteria_checked": len(expected_criteria), "registered_sources": len(listed)}

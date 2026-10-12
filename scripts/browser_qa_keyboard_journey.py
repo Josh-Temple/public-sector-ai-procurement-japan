@@ -180,6 +180,8 @@ def main():
 
     summary = {"PASS": sum(x["status"] == "PASS" for x in findings),
                "FAIL": sum(x["status"] == "FAIL" for x in findings)}
+    if summary["FAIL"]:
+        print(json.dumps([item for item in findings if item["status"] == "FAIL"], ensure_ascii=False))
     (dest / "acceptance.json").write_text(json.dumps(
         {"target": base, "scope": ("LIVE_PRODUCTION Chromium normal journeys" if args.production_safe else "PR localhost Chromium normal journeys") + "; not Android, native zoom, AT or human",
          "summary": summary, "findings": findings}, ensure_ascii=False, indent=2), encoding="utf-8")

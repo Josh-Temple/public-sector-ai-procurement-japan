@@ -329,22 +329,21 @@ function buildEvaluationMemo(caseId, topic, data, baseUrl) {
     "## 評価項目（審査段階・当該段階の満点）",
     ""
   ];
-  function evidenceLine(sourceId, locator, label) {
+  function evidenceLine(sourceId, locator, label, escapeLocator = false) {
     const source = data.sourceById.get(sourceId);
     const title = source ? source.title || sourceLabel(source) : "資料の参照先が未登録";
     const citation = source ? markdownSourceLink(source) : title + "（公式URL未登録）";
-    return "  - " + markdownLiteral(label) + "：" + citation +
-      (source ? "（資料ID：" + markdownLiteral(source.source_id) + "）" : "") +
-      (locator ? " — 該当箇所：" + markdownLiteral(locator) : "") +
-      (source && source.published_at ? " ／ 公表日：" + markdownLiteral(source.published_at) : "") +
-      (source && source.retrieved_at ? " ／ 資料取得日：" + markdownLiteral(source.retrieved_at) : "");
+    return "  - " + label + "：" + citation +
+      (locator ? " — 該当箇所：" + (escapeLocator ? markdownLiteral(locator) : locator) : "") +
+      (source && source.published_at ? " ／ 公表日：" + source.published_at : "") +
+      (source && source.retrieved_at ? " ／ 資料取得日：" + source.retrieved_at : "");
   }
   if (!rows.length) lines.push("この案件について、表示できる評価項目別配点の登録がありません。公式資料に配点がないことを意味しません。");
   rows.forEach(function (row) {
     lines.push("- " + markdownLiteral(row.criterion_summary) + "：" + markdownLiteral(scoreContext(row)));
     const source = sourceForEvaluation(row, data);
     if (row.source_id && source) {
-      lines.push(evidenceLine(source.source_id, row.locator || "", "根拠"));
+      lines.push(evidenceLine(source.source_id, row.locator || "", "根拠", true));
     } else if (row.source_url && evaluationOfficialUrl(row.source_url)) {
       lines.push("  - 根拠：" + markdownSourceLink({title: "公式の評価資料", url: row.source_url}));
     }

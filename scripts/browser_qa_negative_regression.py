@@ -290,6 +290,48 @@ def main():
             finally:
                 context.close()
 
+        def drafting_cross_case_evaluation_url_rejected():
+            changed = [dict(row) for row in read_csv("data/evaluation_criteria.csv")]
+            row = next(r for r in changed if r["criterion_id"] == "YAI-10")
+            other = next(r for r in original_sources if r["source_id"] == "SRC-oumi-2026-spec")
+            assert other["case_id"] != row["case_id"]
+            row["source_url"] = other["url"]
+            context = browser.new_context(viewport={"width": 360, "height": 800}, locale="ja-JP")
+            page = context.new_page()
+            page.route("**/data/evaluation_criteria.csv", lambda route: route.fulfill(
+                status=200, content_type="text/csv; charset=utf-8", body=to_csv(changed)))
+            try:
+                response = page.goto(args.url.rstrip("/") + "/drafting.html", wait_until="domcontentloaded", timeout=45000)
+                assert response is not None and response.status == 200
+                page.wait_for_function(
+                    "() => document.querySelector('#drafting-load-status')?.textContent?.includes('読み込めませんでした')",
+                    timeout=20000)
+                assert page.locator(".drafting-evidence-links a[href='" + other["url"] + "']").count() == 0
+            finally:
+                context.close()
+
+        def unsafe_highlight_url_not_rendered():
+            sources = [dict(row) for row in original_sources]
+            bad = next(row for row in sources if row["source_id"] == "SRC-gunma-2026-joint-genai-guide")
+            bad["url"] = "javascript:alert(1)"
+            context, page, errors = page_for("unsafe_highlight_source", sources=to_csv(sources))
+            try:
+                highlight = page.locator("#research-highlights .highlight-item").filter(
+                    has_text="共同調達では")
+                highlight.first.wait_for(timeout=20000)
+                assert "共同調達" in highlight.first.inner_text()
+                assert highlight.first.locator('a[href^="javascript:"]').count() == 0
+                assert highlight.first.locator("a").count() >= 1, "case or claim link disappeared"
+                page.goto(args.url + "?case=gunma-2026-joint-genai", wait_until="domcontentloaded", timeout=45000)
+                page.wait_for_function("() => document.querySelector('#case-dialog')?.open", timeout=20000)
+                assert page.locator('#case-dialog-highlights a[href^="javascript:"]').count() == 0
+                assert page.evaluate("() => window.__xssTriggered === undefined")
+                assert not errors, str(errors)
+            finally:
+                context.close()
+
+        report("drafting_evaluation_cross_case_source_rejected", drafting_cross_case_evaluation_url_rejected)
+        report("unsafe_highlight_source_no_href", unsafe_highlight_url_not_rendered)
         report("existing_source_from_different_case_rejected", existing_source_from_different_case_is_rejected)
         report("evaluation_cross_case_source_rejected", evaluation_cross_case_source_is_rejected)
         report("duplicate_effective_id_fail_closed", duplicate_effective_id_fail_closed)

@@ -185,12 +185,25 @@ function byKey(rows, key) {
 }
 
 function assertEvaluationSourceCases(evaluations, sources) {
-  const sourceByUrl = new Map(sources.filter(function (row) { return row.url; }).map(function (row) { return [row.url, row]; }));
-  evaluations.forEach(function (row) {
-    const source = row.source_url && sourceByUrl.get(row.source_url);
-    if (source && source.case_id && source.case_id !== row.case_id) {
-      throw new Error("評価項目と根拠資料の案件が一致しません: " + row.criterion_id);
+  const byId = new Map(), byUrl = new Map(), criterionIds = new Set();
+  sources.forEach(function (source) {
+    if (!source.source_id || byId.has(source.source_id)) throw new Error("Source IDが重複または欠落しています");
+    byId.set(source.source_id, source);
+    if (source.url) {
+      if (byUrl.has(source.url)) throw new Error("Source URLが重複しています");
+      byUrl.set(source.url, source);
     }
+  });
+  evaluations.forEach(function (row) {
+    if (!row.criterion_id || criterionIds.has(row.criterion_id)) throw new Error("評価項目IDが重複または欠落しています");
+    criterionIds.add(row.criterion_id);
+    if (row.locator && !row.source_id) throw new Error("根拠箇所にSource IDがありません");
+    if (row.source_url && !evaluationOfficialUrl(row.source_url)) throw new Error("評価資料URLの形式が不正です");
+    const source = row.source_id ? byId.get(row.source_id) : null;
+    const byLink = row.source_url ? byUrl.get(row.source_url) : null;
+    if (row.source_id && !source) throw new Error("未知の評価資料Source ID");
+    if (source && (source.case_id !== row.case_id || (row.source_url && source.url !== row.source_url))) throw new Error("Source IDと案件・URLが一致しません");
+    if (byLink && byLink.case_id && byLink.case_id !== row.case_id) throw new Error("評価資料URLが別案件を指しています");
   });
 }
 
@@ -226,11 +239,19 @@ function evaluationOfficialUrl(value) {
     return (["http:", "https:"].includes(url.protocol) && url.hostname) ? value : "";
   } catch (_) { return ""; }
 }
-function markdownSourceLink(source) {
+function markdownLiteral(value) {
+  return String(value ?? "").replace(/[\\`*_{}\[\]()#+.!|>~-]/g, "\\function markdownSourceLink(source) {
   const title = (source.title || sourceLabel(source)).replaceAll("[", "&#91;").replaceAll("]", "&#93;");
   const url = evaluationOfficialUrl(source.url);
   return url ? "[" + title + "](" + url.split("(").join("%28").split(")").join("%29") + ")" :
     title + "（公式URL未登録・または形式不正）";
+}").replace(/\r?\n/g, " ");
+}
+function markdownSourceLink(source) {
+  const title = markdownLiteral(source.title || sourceLabel(source));
+  const url = evaluationOfficialUrl(source.url);
+  const target = url.replace(/[()[\]<>\\\s]/g, char => encodeURIComponent(char));
+  return url ? "[" + title + "](" + target + ")" : title + "（公式URL未登録・または形式不正）";
 }
 
 function effectiveSourceId(row) {
@@ -238,8 +259,24 @@ function effectiveSourceId(row) {
 }
 
 function sourceForEvaluation(row, data) {
-  const source = data.sourceByUrl.get(row.source_url || "");
-  return source && (!source.case_id || source.case_id === row.case_id) ? source : null;
+  const source = row.source_id ? data.sourceById.get(row.source_id) : data.sourceByUrl.get(row.source_url || "");
+  return source && (!source.case_id || source.case_id === row.case_id)
+    && (!row.source_id || !row.source_url || source.url === row.source_url) ? source : null;
+}
+function appendCriterionEvidence(parent, row, data) {
+  const source = sourceForEvaluation(row, data);
+  if (row.source_id && source) {
+    appendText(parent, "p", "根拠資料：" + (source.title || sourceLabel(source)) + "（" + source.source_id + "）", "scope-note");
+  }
+  if (row.source_url && evaluationOfficialUrl(row.source_url)) {
+    const links = document.createElement("p");
+    appendLink(links, row.source_url, "公式の評価資料 ↗", true);
+    parent.appendChild(links);
+  }
+  appendText(parent, "p", row.source_id && row.locator
+    ? "登録された根拠箇所：" + row.locator
+    : "根拠箇所はこのデータに未登録です。原典をご確認ください。", "scope-note");
+  if (!row.source_url) appendText(parent, "p", "評価行の公式URLは未登録です。", "scope-note");
 }
 
 function caseBoundaryText(evidence) {
@@ -300,17 +337,23 @@ function buildEvaluationMemo(caseId, topic, data, baseUrl) {
     const source = data.sourceById.get(sourceId);
     const title = source ? source.title || sourceLabel(source) : "資料の参照先が未登録";
     const citation = source ? markdownSourceLink(source) : title + "（公式URL未登録）";
-    return "  - " + label + "：" + citation +
-      (locator ? " — 該当箇所：" + locator : "") +
-      (source && source.published_at ? " ／ 公表日：" + source.published_at : "") +
-      (source && source.retrieved_at ? " ／ 資料取得日：" + source.retrieved_at : "");
+    return "  - " + markdownLiteral(label) + "：" + citation +
+      (source ? "（資料ID：" + markdownLiteral(source.source_id) + "）" : "") +
+      (locator ? " — 該当箇所：" + markdownLiteral(locator) : "") +
+      (source && source.published_at ? " ／ 公表日：" + markdownLiteral(source.published_at) : "") +
+      (source && source.retrieved_at ? " ／ 資料取得日：" + markdownLiteral(source.retrieved_at) : "");
   }
   if (!rows.length) lines.push("この案件について、表示できる評価項目別配点の登録がありません。公式資料に配点がないことを意味しません。");
   rows.forEach(function (row) {
-    lines.push("- " + row.criterion_summary + "：" + scoreContext(row));
+    lines.push("- " + markdownLiteral(row.criterion_summary) + "：" + markdownLiteral(scoreContext(row)));
     const source = sourceForEvaluation(row, data);
-    if (source) lines.push(evidenceLine(source.source_id, row.locator || "", "根拠"));
-    else lines.push("  - 根拠：公式資料への参照先が登録されていません");
+    if (row.source_id && source) {
+      lines.push(evidenceLine(source.source_id, row.locator || "", "根拠"));
+    } else if (row.source_url && evaluationOfficialUrl(row.source_url)) {
+      lines.push("  - 根拠：" + markdownSourceLink({title: "公式の評価資料", url: row.source_url}));
+    }
+    if (!row.source_id || !row.locator) lines.push("  - 根拠箇所はこのデータに未登録です。原典をご確認ください。");
+    if (!row.source_url) lines.push("  - この評価行の公式URLは未登録です。");
   });
   lines.push("", "## 参加資格（評価点とは別）", "");
   if (!gates.length) lines.push("参加資格の構造化行は未登録です。");
@@ -399,6 +442,7 @@ function evaluationCard(row, data) {
   appendText(card, "p", data.caseById.get(row.case_id)?.government_name || row.government_name || row.case_id, "evaluation-case");
   appendText(card, "p", scoreContext(row), "evaluation-score");
   appendText(card, "p", "当該案件内の配点。横断的な推奨値ではありません。", "evaluation-boundary");
+  appendCriterionEvidence(card, row, data);
   renderLinks(card, row.case_id, sourceForEvaluation(row, data));
   return card;
 }
@@ -645,7 +689,7 @@ function awardBasisLabel(value) {
     (value ? `選定方法の表示名は未整理（登録値：${value}）` : "選定方法の登録値なし");
 }
 
-function renderStageGroups(root, rows) {
+function renderStageGroups(root, rows, data) {
   if (!rows.length) {
     appendText(root, "p", "この案件には、提案評価の配点として整理したデータが登録されていません。価格競争や参加資格が中心の案件では、評価点が存在しない場合があります。", "scope-note");
     return;
@@ -669,6 +713,9 @@ function renderStageGroups(root, rows) {
       appendText(line, "strong", row.criterion_summary + " ");
       line.appendChild(document.createTextNode(row.points + " / " + row.total_points + "点"));
       body.appendChild(line);
+      const evidence = document.createElement("div");
+      appendCriterionEvidence(evidence, row, data);
+      body.appendChild(evidence);
     });
     details.appendChild(body);
     root.appendChild(details);
@@ -742,7 +789,7 @@ function renderCase(caseId, data) {
   const structure = document.createElement("div");
   structure.className = "evaluation-case-block";
   appendText(structure, "h3", "評価構造");
-  renderStageGroups(structure, evaluations);
+  renderStageGroups(structure, evaluations, data);
   renderStageRelations(structure, stageRelations, data);
   const evaluationSources = [];
   const seenEvaluationSources = new Set();

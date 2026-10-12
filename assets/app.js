@@ -492,9 +492,9 @@ function renderResearchHighlights() {
       caseLink.textContent = `${row.government_name}の案件を見る →`;
       links.append(caseLink);
     }
-    if (source?.url) {
+    if (safeOfficialUrl(source?.url)) {
       const official = document.createElement("a");
-      official.href = source.url;
+      official.href = safeOfficialUrl(source.url);
       official.target = "_blank";
       official.rel = "noreferrer";
       official.textContent = "公式一次資料 ↗";
@@ -636,9 +636,9 @@ function renderCaseHighlights(row) {
       actions.append(claim);
 
       const source = state.sourceById.get(item.sourceId);
-      if (source?.url) {
+      if (safeOfficialUrl(source?.url)) {
         const official = document.createElement("a");
-        official.href = source.url;
+        official.href = safeOfficialUrl(source.url);
         official.target = "_blank";
         official.rel = "noreferrer";
         official.textContent = "公式一次資料 ↗";
@@ -1416,6 +1416,27 @@ function renderTimeline(caseId) {
   });
 }
 
+function assertCaseEvaluationSources(rows, sources) {
+  const byId = new Map(sources.map(s => [s.source_id, s]));
+  const byUrl = new Map(), criterionIds = new Set();
+  sources.forEach(source => {
+    if (source.url) {
+      if (byUrl.has(source.url)) throw new Error("Source URLが重複しています");
+      byUrl.set(source.url, source);
+    }
+  });
+  rows.forEach(row => {
+    if (!row.criterion_id || criterionIds.has(row.criterion_id)) throw new Error("評価項目IDが重複しています");
+    criterionIds.add(row.criterion_id);
+    if (row.locator && !row.source_id) throw new Error("評価項目の根拠箇所にSource IDがありません");
+    if (row.source_url && !safeOfficialUrl(row.source_url)) throw new Error("評価資料URLの形式が不正です");
+    const source = row.source_id ? byId.get(row.source_id) : null;
+    const byLink = row.source_url ? byUrl.get(row.source_url) : null;
+    if ((row.source_id && !source)
+      || (source && (source.case_id !== row.case_id || (row.source_url && source.url !== row.source_url)))
+      || (byLink && byLink.case_id && byLink.case_id !== row.case_id)) throw new Error("評価項目と根拠資料が一致しません");
+  });
+}
 function evaluationPointsText(row) {
   if (!row.points) return "配点未登録";
   const points = row.total_points ? `${row.points} / ${row.total_points}点` : `${row.points}点（満点未登録）`;
@@ -1450,6 +1471,17 @@ function renderEvaluation(caseId) {
     points.textContent = evaluationPointsText(row);
 
     item.append(group, summary, points);
+    const source = row.source_id ? state.sourceById.get(row.source_id) : null;
+    if (source) {
+      const name = document.createElement("p");
+      name.textContent = "根拠資料：" + (source.title || source.source_id) + "（" + source.source_id + "）";
+      item.append(name);
+    }
+    const locator = document.createElement("p");
+    locator.textContent = row.source_id && row.locator
+      ? "登録された根拠箇所：" + row.locator
+      : "根拠箇所はこのデータに未登録です。原典をご確認ください。";
+    item.append(locator);
     return item;
   }, "項目");
 }
@@ -1784,6 +1816,7 @@ async function init() {
     assertUniqueRegisteredIds(sources, "source_id");
     assertUniqueRegisteredIds(effective, "effective_requirement_id");
     assertEffectiveSourceCases(effective, sources);
+    assertCaseEvaluationSources(evaluations, sources);
     state.sourceById = new Map(sources.map(source => [source.source_id, source]));
     state.caseById = new Map(cases.map(row => [row.case_id, row]));
     state.evidenceByCase = new Map(evidence.map(row => [row.case_id, row]));
@@ -1926,6 +1959,7 @@ if (typeof module !== "undefined" && module.exports) {
     requirementSourcePresentation,
     assertEffectiveSourceCases,
     evaluationPointsText,
+    assertCaseEvaluationSources,
   };
 }
 

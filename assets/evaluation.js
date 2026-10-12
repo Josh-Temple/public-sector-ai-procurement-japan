@@ -346,6 +346,10 @@ function buildEvaluationMemo(caseId, topic, data, baseUrl) {
     const source = sourceForEvaluation(row, data);
     if (row.source_id && source) {
       lines.push(evidenceLine(source.source_id, row.locator || "", "根拠", true));
+      lines.push("  - 根拠資料ID：" + markdownLiteral(source.source_id));
+    } else if (source) {
+      // Legacy URL-only rows retain the registered official document title without claiming a row-level locator.
+      lines.push("  - 根拠：" + markdownSourceLink(source));
     } else if (row.source_url && evaluationOfficialUrl(row.source_url)) {
       lines.push("  - 根拠：" + markdownSourceLink({title: "公式の評価資料", url: row.source_url}));
     }

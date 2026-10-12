@@ -187,8 +187,10 @@ function byKey(rows, key) {
 function assertEvaluationSourceCases(evaluations, sources) {
   const byId = new Map(), byUrl = new Map(), criterionIds = new Set();
   sources.forEach(function (source) {
-    if (!source.source_id || byId.has(source.source_id)) throw new Error("Source IDが重複または欠落しています");
-    byId.set(source.source_id, source);
+    if (source.source_id) {
+      if (byId.has(source.source_id)) throw new Error("Source IDが重複しています");
+      byId.set(source.source_id, source);
+    }
     if (source.url) {
       if (byUrl.has(source.url)) throw new Error("Source URLが重複しています");
       byUrl.set(source.url, source);
@@ -203,7 +205,7 @@ function assertEvaluationSourceCases(evaluations, sources) {
     const byLink = row.source_url ? byUrl.get(row.source_url) : null;
     if (row.source_id && !source) throw new Error("未知の評価資料Source ID");
     if (source && (source.case_id !== row.case_id || (row.source_url && source.url !== row.source_url))) throw new Error("Source IDと案件・URLが一致しません");
-    if (byLink && byLink.case_id && byLink.case_id !== row.case_id) throw new Error("評価資料URLが別案件を指しています");
+    if (byLink && byLink.case_id && byLink.case_id !== row.case_id) throw new Error("評価項目と根拠資料の案件が一致しません");
   });
 }
 

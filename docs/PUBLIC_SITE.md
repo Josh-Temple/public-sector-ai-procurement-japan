@@ -215,3 +215,9 @@ Supported public state includes:
 Theme links write their state into the URL. Manual search/filter changes also update the URL. Case-detail links preserve the current filter state, so a shared case URL can retain the context in which the case was discovered.
 
 The "この条件を共有" button copies an absolute URL for the current list filter. Search-state URLs are a presentation convenience; the canonical CSVs remain authoritative.
+
+## Procurement presentation copy
+
+`assets/procurement-copy.js` maps exact registered contract/price values to Japanese for the comparison table, evaluation price conditions and evaluation Markdown. Canonical CSVs are unchanged. Unknown values retain the registered text with an explicit untranslated label; blank values remain unregistered, not absent. Contract descriptions are plans/structures, not evidence of executed contracts.
+
+The change labels distinguish `threshold_defined` (数値・期限の具体化) and `quantified` (数量・応答時間等の具体化). The current rows overlap in numeric/time semantics: the labels are reading aids, not mutually exclusive definitions or a migration of the classifications. The unchanged canonical row IDs, wording, status and scope determine the meaning; `threshold_defined` has 2 rows and `quantified` has 5. Filter values and URL parameters retain these IDs.

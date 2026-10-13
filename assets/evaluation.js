@@ -1,5 +1,8 @@
 "use strict";
 
+const procurementCopy = typeof module !== "undefined"
+  ? require("./procurement-copy.js") : ProcurementCopy;
+
 const EVALUATION_DATA_FILES = {
   cases: "./data/cases.csv",
   effective: "./data/effective_requirements.csv",
@@ -375,7 +378,7 @@ function buildEvaluationMemo(caseId, topic, data, baseUrl) {
   const prices = rows.filter(isCasePriceCriterion);
   if (!prices.length) lines.push("価格に関連づけた構造化配点行は未登録です。");
   prices.forEach(function (row) { lines.push("- " + row.criterion_summary + "：" + scoreContext(row)); });
-  if (procurement && procurement.pricing_basis) lines.push("- 調達構造の価格条件：" + procurement.pricing_basis);
+  if (procurement && procurement.pricing_basis) lines.push("- 調達構造の価格条件：" + markdownLiteral(procurementCopy.pricingBasis(procurement.pricing_basis)).replace(/</g, "&lt;").replace(/>/g, "&gt;"));
   lines.push("", "## 確認上の制約", "",
     "評価項目・参加資格・選定下限・価格算式は異なる役割です。",
     "他案件の点数との単純比較、横断的な配点基準への変換、未確認の現行性・契約最終条件の断定は行いません。",
@@ -859,7 +862,7 @@ function renderCase(caseId, data) {
     appendText(price, "p", "価格に関連づけて表示できる構造化評価項目は未登録です。原資料に価格条件がないという意味ではありません。", "scope-note");
   }
   if (procurement && procurement.pricing_basis) {
-    appendText(price, "p", "価格条件：" + procurement.pricing_basis, "evaluation-boundary");
+    appendText(price, "p", "価格条件：" + procurementCopy.pricingBasis(procurement.pricing_basis), "evaluation-boundary");
   }
   appendText(price, "p", "価格条件と価格点は別表示です。契約金額はここから推定しません。", "scope-note");
   root.appendChild(price);

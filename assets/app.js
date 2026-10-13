@@ -1,5 +1,8 @@
 "use strict";
 
+const procurementCopy = typeof module !== "undefined"
+  ? require("./procurement-copy.js") : ProcurementCopy;
+
 const DATA_FILES = {
   cases: "./data/cases.csv",
   requirements: "./data/requirements.csv",
@@ -837,8 +840,8 @@ function changeTypeLabel(value) {
     clarified_scope: "範囲明確化",
     allowed_interpretation: "解釈明確化",
     allowed_alternative: "代替許容",
-    threshold_defined: "数値具体化",
-    quantified: "数値具体化",
+    threshold_defined: "数値・期限の具体化",
+    quantified: "数量・応答時間等の具体化",
     clarified_quantification: "数値明確化",
     clarified_strict: "厳格化",
     clarified_feasibility: "実現可能範囲",
@@ -1738,7 +1741,7 @@ function compareValue(row, key) {
     case "rag": return yn(row.req?.rag);
     case "lgwan": return yn(row.req?.lgwan_or_lgwan_asp);
     case "learning": return yn(row.req?.data_learning_prohibited);
-    case "structure": return safeText(row.structure?.contracting_model);
+    case "structure": return procurementCopy.contractingModel(row.structure?.contracting_model);
     case "evidence": return evidenceLabel(row.evidence);
     default: return "—";
   }

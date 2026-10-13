@@ -48,12 +48,12 @@ def main():
    page.locator('#case-rows tr').filter(has=page.locator(f'a[href*="case={case}"]')).locator('input.compare-check').check()
    if i>0: save(page,'compare_'+str(i+1))
   text=page.locator('#compare-table').inner_text()
-  for expected in ['協議会が基本契約','参加自治体ごとに別途サービス利用契約','第1優先交渉権者との契約協議を予定','単独団体による契約を想定']: assert expected in text
+  for expected in ['協議会会長（近江八幡市長）との基本契約','参加自治体ごとにサービス利用契約','第1優先交渉権者との契約協議を予定','単独団体による契約を想定']: assert expected in text
   for raw in ['council basic contract','negotiation_with_first_priority_negotiator','single_entity_contract']:assert raw not in text
   page.goto(base+'evaluation.html?topic=usage-pricing&case=oumi-2026-joint-genai');page.locator('#evaluation-case-detail').get_by_text('価格条件：',exact=False).wait_for()
-  price=page.locator('#evaluation-case-detail').get_by_text('価格条件：',exact=False).inner_text();assert '基本契約で共通のプラン・料金' in price and '自治体ごと' in price;assert 'common plan/pricing' not in price;save(page,'evaluation_oumi')
+  price=page.locator('#evaluation-case-detail').get_by_text('価格条件：',exact=False).inner_text();assert '基本契約で提案プランの利用金額等を定め、実際のサービス利用契約（利用申込み）は自治体ごとに締結する想定' in price;assert 'common plan/pricing' not in price;save(page,'evaluation_oumi')
   with page.expect_download() as info:page.locator('#evaluation-memo-download').click()
-  target=dest/'oumi-evaluation.md';info.value.save_as(str(target));memo=target.read_text();assert price.removeprefix('価格条件：') in memo
+  target=dest/'oumi-evaluation.md';info.value.save_as(str(target));memo=target.read_text();assert price.removeprefix('価格条件：') in memo;assert '基本契約で提案プランの利用金額等を定め、実際のサービス利用契約（利用申込み）は自治体ごとに締結する想定' in memo
   # Inject unknown future values in the presentation inputs only; never edit canonical data.
   original=Path('data/procurement_structure.csv').read_text()
   page.route('**/data/procurement_structure.csv',lambda route:route.fulfill(status=200,content_type='text/csv',body=original.replace('common plan/pricing set by basic contract; actual service application per municipality','<img src=x onerror=alert(1)>')))

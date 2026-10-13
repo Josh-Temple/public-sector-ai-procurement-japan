@@ -5,7 +5,7 @@ const ProcurementCopy = (() => {
   const contracts = {
     "single_entity_contract": "単独団体による契約を想定",
     "joint vendor selection + separate contract by each participating entity": "共同で事業者を選定し、参加団体ごとに個別契約を想定",
-    "council basic contract + separate service agreement with each participating municipality": "協議会が基本契約を締結し、参加自治体ごとに別途サービス利用契約を締結する想定",
+    "council basic contract + separate service agreement with each participating municipality": "協議会会長（近江八幡市長）との基本契約を前提に、参加自治体ごとにサービス利用契約を締結する想定",
     "single entity contract; final terms resolved by Q&A > specification > proposal, except superior proposal portions may prevail": "単独団体による契約。最終条件は質問回答、仕様書、提案書の順に優先。ただし、提案の優れた部分が優先される場合がある",
     "two contracts selected through one proposal: AI service + training": "1件の提案審査でAIサービスと研修の2契約を選定",
     "single_entity_contract_after_negotiation_with_preferred_proposer": "優先候補者との協議後に単独団体との契約を想定",
@@ -18,7 +18,7 @@ const ProcurementCopy = (() => {
     "entity-specific ceilings; initial/basic/maintenance + LGWAN/training options": "団体ごとの上限額。初期費用・基本費用・保守費用に加え、LGWAN・研修の選択肢",
     "fixed-fee service; approximately 200M tokens/month assumed": "定額サービス。月約2億トークンの利用を想定",
     "price competition; official bid amounts shown tax-exclusive": "価格競争。公式の入札額は税抜表示",
-    "common plan/pricing set by basic contract; actual service application per municipality": "基本契約で共通のプラン・料金を定め、実際のサービス利用申込みは自治体ごとに行う想定",
+    "common plan/pricing set by basic contract; actual service application per municipality": "基本契約で提案プランの利用金額等を定め、実際のサービス利用契約（利用申込み）は自治体ごとに締結する想定",
     "proposal ceiling 1,200,000 JPY including tax": "提案上限額1,200,000円（税込）",
     "proposal ceiling 1,340,000 JPY including tax; price contributes 200/1000": "提案上限額1,340,000円（税込）。価格の配点は200/1000",
     "proposal ceiling 6,600,000 JPY including tax; cost performance 35/100": "提案上限額6,600,000円（税込）。費用対効果の配点は35/100",

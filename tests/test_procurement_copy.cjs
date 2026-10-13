@@ -13,7 +13,11 @@ for (const row of rows) {
     assert.match(text,/[一-龠ぁ-んァ-ヶ]/);
   }
 }
-assert.match(copy.contractingModel(rows.find(r=>r.case_id==='oumi-2026-joint-genai').contracting_model),/協議会.*基本契約.*参加自治体ごと.*別途.*想定/);
+const oumi=rows.find(r=>r.case_id==='oumi-2026-joint-genai');
+assert.equal(copy.contractingModel(oumi.contracting_model),'協議会会長（近江八幡市長）との基本契約を前提に、参加自治体ごとにサービス利用契約を締結する想定');
+assert.equal(copy.pricingBasis(oumi.pricing_basis),'基本契約で提案プランの利用金額等を定め、実際のサービス利用契約（利用申込み）は自治体ごとに締結する想定');
+assert.ok(!copy.contractingModel(oumi.contracting_model).includes('協議会が基本契約を締結'));
+assert.ok(!copy.pricingBasis(oumi.pricing_basis).includes('共通のプラン・料金'));
 assert.match(copy.contractingModel('negotiation_with_first_priority_negotiator'),/第1優先交渉権者.*協議.*予定/);
 assert.match(copy.contractingModel('single_entity_contract'),/単独団体.*想定/);
 assert.match(copy.pricingBasis(rows.find(r=>r.case_id==='minoh-2026-genai-license').pricing_basis),/1,992,000円（税抜）.*定額.*超過課金.*追加料金なし.*制限/);
@@ -37,4 +41,6 @@ const topic=evaluation.EVALUATION_TOPICS.find(t=>t.id==='usage-pricing');
 const memo=evaluation.buildEvaluationMemo('oumi-2026-joint-genai',topic,data,'http://localhost/');
 assert.ok(memo.includes(copy.pricingBasis(rows.find(r=>r.case_id==='oumi-2026-joint-genai').pricing_basis)));
 assert.ok(!memo.includes('common plan/pricing'));
+assert.ok(memo.includes('調達構造の価格条件：'+copy.pricingBasis(oumi.pricing_basis)));
+assert.ok(!memo.includes('共通のプラン・料金'));
 console.log('procurement copy: all 16 rows, safe unknowns, exact 2/5 sets, shared Markdown PASS');

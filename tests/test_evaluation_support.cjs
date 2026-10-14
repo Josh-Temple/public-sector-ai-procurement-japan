@@ -51,7 +51,38 @@ const procurementByCase = new Map(procurement.map(function (row) { return [row.c
 const sourceById = new Map(sources.map(function (row) { return [row.source_id, row]; }));
 assertEvaluationSourceCases(evaluations, sources);
 assert.equal(evaluations.length, 156);
-assert.equal(evaluations.filter(row => row.source_id || row.locator).length, 3);
+assert.equal(evaluations.filter(row => row.source_id || row.locator).length, 19);
+const newlyVerified = {
+  "YAI-04": "SRC-yaizu-2025-evaluation",
+  "YAI-06": "SRC-yaizu-2025-evaluation",
+  "YAI-09": "SRC-yaizu-2025-evaluation",
+  "MATSUE-DOC-03": "SRC-matsue-2026-evaluation",
+  "MATSUE-FINAL-01": "SRC-matsue-2026-evaluation",
+  "MATSUE-FINAL-02": "SRC-matsue-2026-evaluation",
+  "GOS-01": "SRC-gosen-2026-evaluation",
+  "GOS-02": "SRC-gosen-2026-evaluation",
+  "GOS-03": "SRC-gosen-2026-evaluation",
+  "GOS-04": "SRC-gosen-2026-evaluation",
+  "OUM-07": "SRC-oumi-2026-evaluation",
+  "OUM-09": "SRC-oumi-2026-evaluation",
+  "OUM-13": "SRC-oumi-2026-evaluation",
+  "KOB-04": "SRC-kobe-2026-spec-authoring-evaluation",
+  "KOB-07": "SRC-kobe-2026-spec-authoring-evaluation",
+  "KVB-04": "SRC-kobe-2026-voicebot-guide"
+};
+for (const [id, sourceId] of Object.entries(newlyVerified)) {
+  const row = evaluationById.get(id);
+  assert.equal(row.source_id, sourceId, id + " wrong Source ID");
+  assert.match(row.locator, /PDF/, id + " missing precise PDF locator");
+  assert.equal(sourceById.get(sourceId).case_id, row.case_id, id + " source case mismatch");
+  assert.equal(sourceById.get(sourceId).url, row.source_url, id + " source URL mismatch");
+}
+for (const id of ["KYO-01", "KYO-02", "KYO-05", "KVB-05"]) {
+  const row = evaluationById.get(id);
+  assert.equal(row.source_id, "", id + " is not approved for registration");
+  assert.equal(row.locator, "", id + " locator must remain blank");
+}
+assert.equal(evaluations.filter(row => !row.source_id && !row.locator).length, 137);
 for (const [id, sourceId, piece] of [
   ["YAI-10", "SRC-yaizu-2025-evaluation", "PDF 1/1ページ"],
   ["MATSUE-DOC-04", "SRC-matsue-2026-evaluation", "PDF 4/5ページ"],
@@ -67,6 +98,7 @@ assert.throws(() => assertEvaluationSourceCases(altered({source_id:"SRC-oumi-202
 assert.throws(() => assertEvaluationSourceCases(altered({source_id:"SRC-UNKNOWN"}), sources), /未知/);
 assert.throws(() => assertEvaluationSourceCases(altered({source_url:"javascript:alert(1)"}), sources), /不正/);
 assert.throws(() => assertEvaluationSourceCases(altered({source_id:"", locator:yaizuRow.locator}), sources), /Source ID/);
+assert.throws(() => assertEvaluationSourceCases(altered({locator:""}), sources), /根拠箇所/);
 assert.throws(() => assertEvaluationSourceCases([...evaluations, yaizuRow], sources), /重複/);
 const sourceByUrl = new Map(sources.filter(function (row) { return row.url; }).map(function (row) { return [row.url, row]; }));
 const evidenceByCase = new Map(evidence.map(function (row) { return [row.case_id, row]; }));

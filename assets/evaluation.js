@@ -203,6 +203,7 @@ function assertEvaluationSourceCases(evaluations, sources) {
     if (!row.criterion_id || criterionIds.has(row.criterion_id)) throw new Error("評価項目IDが重複または欠落しています");
     criterionIds.add(row.criterion_id);
     if (row.locator && !row.source_id) throw new Error("根拠箇所にSource IDがありません");
+    if (row.source_id && !row.locator) throw new Error("Source IDに根拠箇所がありません");
     if (row.source_url && !evaluationOfficialUrl(row.source_url)) throw new Error("評価資料URLの形式が不正です");
     const source = row.source_id ? byId.get(row.source_id) : null;
     const byLink = row.source_url ? byUrl.get(row.source_url) : null;

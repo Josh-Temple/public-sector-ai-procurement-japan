@@ -346,6 +346,8 @@ def main() -> int:
         locator = (row.get("locator") or "").strip()
         if locator and not source_id:
             errors.append("data/evaluation_criteria.csv: locator without source_id")
+        if source_id and not locator:
+            errors.append("data/evaluation_criteria.csv: source_id without locator")
         if source_url:
             parsed = urlsplit(source_url)
             if parsed.scheme not in {"http", "https"} or not parsed.netloc or any(ord(ch) < 32 or ord(ch) == 127 for ch in source_url):

@@ -146,10 +146,10 @@ itoshima-2026-citizen-genai-chatbot,糸島市,ITOSHIMA-CHATBOT-01,機能要件,�
 itoshima-2026-citizen-genai-chatbot,糸島市,ITOSHIMA-CHATBOT-02,価格,令和8年度の提案価格,30,250,提案評価,https://www.city.itoshima.lg.jp/s007/050/030/aichat/04_criteria.pdf,2026-10-06,,
 matsue-2026-genai-support,松江市,MATSUE-DOC-01,受注実績,類似業務等の受注実績,10,80,書類審査,https://www.city.matsue.lg.jp/material/files/group/6/hyoukakijun.pdf,2026-10-06,,
 matsue-2026-genai-support,松江市,MATSUE-DOC-02,LLM,利用可能な大規模言語モデル等,15,80,書類審査,https://www.city.matsue.lg.jp/material/files/group/6/hyoukakijun.pdf,2026-10-06,,
-matsue-2026-genai-support,松江市,MATSUE-DOC-03,RAG,RAG機能・容量・利便性等,45,80,書類審査,https://www.city.matsue.lg.jp/material/files/group/6/hyoukakijun.pdf,2026-10-06,SRC-matsue-2026-evaluation,本文2頁（PDF 4/5頁）「4. 評価基準」→「1. 1次審査（書類審査）」表ID 3「検索拡張生成機能（RAG）」点欄45、同表合計80
+matsue-2026-genai-support,松江市,MATSUE-DOC-03,RAG,RAG機能・容量・利便性等,45,80,書類審査,https://www.city.matsue.lg.jp/material/files/group/6/hyoukakijun.pdf,2026-10-06,,
 matsue-2026-genai-support,松江市,MATSUE-DOC-04,価格,提案価格,10,80,書類審査,https://www.city.matsue.lg.jp/material/files/group/6/hyoukakijun.pdf,2026-10-06,SRC-matsue-2026-evaluation,本文2ページ（PDF 4/5ページ）「4. 評価基準」→「1. 1次審査（書類審査）」表ID 4「価格」；同ページ「2. 2次審査」表ID 1「書類審査」
-matsue-2026-genai-support,松江市,MATSUE-FINAL-01,書類審査,書類審査得点,80,200,最終審査,https://www.city.matsue.lg.jp/material/files/group/6/hyoukakijun.pdf,2026-10-06,SRC-matsue-2026-evaluation,本文2頁（PDF 4/5頁）「4. 評価基準」→「2. 2次審査（1次審査での書類審査＋プレゼンテーション審査）」表ID 1「書類審査」点欄80、同表合計200
-matsue-2026-genai-support,松江市,MATSUE-FINAL-02,操作性,サービスの操作性・利便性,70,200,最終審査,https://www.city.matsue.lg.jp/material/files/group/6/hyoukakijun.pdf,2026-10-06,SRC-matsue-2026-evaluation,本文2頁（PDF 4/5頁）「4. 評価基準」→「2. 2次審査（1次審査での書類審査＋プレゼンテーション審査）」表ID 2「操作性」点欄70、同表合計200
+matsue-2026-genai-support,松江市,MATSUE-FINAL-01,書類審査,書類審査得点,80,200,最終審査,https://www.city.matsue.lg.jp/material/files/group/6/hyoukakijun.pdf,2026-10-06,,
+matsue-2026-genai-support,松江市,MATSUE-FINAL-02,操作性,サービスの操作性・利便性,70,200,最終審査,https://www.city.matsue.lg.jp/material/files/group/6/hyoukakijun.pdf,2026-10-06,,
 matsue-2026-genai-support,松江市,MATSUE-FINAL-03,管理機能,管理機能,10,200,最終審査,https://www.city.matsue.lg.jp/material/files/group/6/hyoukakijun.pdf,2026-10-06,,
 matsue-2026-genai-support,松江市,MATSUE-FINAL-04,運用支援,運用支援体制・内容,30,200,最終審査,https://www.city.matsue.lg.jp/material/files/group/6/hyoukakijun.pdf,2026-10-06,,
 matsue-2026-genai-support,松江市,MATSUE-FINAL-05,独自提案,独自提案,10,200,最終審査,https://www.city.matsue.lg.jp/material/files/group/6/hyoukakijun.pdf,2026-10-06,,

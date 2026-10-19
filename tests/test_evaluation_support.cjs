@@ -51,7 +51,36 @@ const procurementByCase = new Map(procurement.map(function (row) { return [row.c
 const sourceById = new Map(sources.map(function (row) { return [row.source_id, row]; }));
 assertEvaluationSourceCases(evaluations, sources);
 assert.equal(evaluations.length, 156);
-assert.equal(evaluations.filter(row => row.source_id || row.locator).length, 3);
+assert.equal(evaluations.filter(row => row.source_id || row.locator).length, 16);
+const newlyVerified = {
+  "YAI-04": "SRC-yaizu-2025-evaluation",
+  "YAI-06": "SRC-yaizu-2025-evaluation",
+  "YAI-09": "SRC-yaizu-2025-evaluation",
+  "GOS-01": "SRC-gosen-2026-evaluation",
+  "GOS-02": "SRC-gosen-2026-evaluation",
+  "GOS-03": "SRC-gosen-2026-evaluation",
+  "GOS-04": "SRC-gosen-2026-evaluation",
+  "OUM-07": "SRC-oumi-2026-evaluation",
+  "OUM-09": "SRC-oumi-2026-evaluation",
+  "OUM-13": "SRC-oumi-2026-evaluation",
+  "KOB-04": "SRC-kobe-2026-spec-authoring-evaluation",
+  "KOB-07": "SRC-kobe-2026-spec-authoring-evaluation",
+  "KVB-04": "SRC-kobe-2026-voicebot-guide"
+};
+assert.equal(Object.keys(newlyVerified).length, 13, "exactly 13 new verified registrations");
+for (const [id, sourceId] of Object.entries(newlyVerified)) {
+  const row = evaluationById.get(id);
+  assert.equal(row.source_id, sourceId, id + " wrong Source ID");
+  assert.match(row.locator, /PDF/, id + " missing precise PDF locator");
+  assert.equal(sourceById.get(sourceId).case_id, row.case_id, id + " source case mismatch");
+  assert.equal(sourceById.get(sourceId).url, row.source_url, id + " source URL mismatch");
+}
+for (const id of ["MATSUE-DOC-03", "MATSUE-FINAL-01", "MATSUE-FINAL-02", "KYO-01", "KYO-02", "KYO-05", "KVB-05"]) {
+  const row = evaluationById.get(id);
+  assert.equal(row.source_id, "", id + " is not approved for registration");
+  assert.equal(row.locator, "", id + " locator must remain blank");
+}
+assert.equal(evaluations.filter(row => !row.source_id && !row.locator).length, 140);
 for (const [id, sourceId, piece] of [
   ["YAI-10", "SRC-yaizu-2025-evaluation", "PDF 1/1ページ"],
   ["MATSUE-DOC-04", "SRC-matsue-2026-evaluation", "PDF 4/5ページ"],
@@ -67,6 +96,7 @@ assert.throws(() => assertEvaluationSourceCases(altered({source_id:"SRC-oumi-202
 assert.throws(() => assertEvaluationSourceCases(altered({source_id:"SRC-UNKNOWN"}), sources), /未知/);
 assert.throws(() => assertEvaluationSourceCases(altered({source_url:"javascript:alert(1)"}), sources), /不正/);
 assert.throws(() => assertEvaluationSourceCases(altered({source_id:"", locator:yaizuRow.locator}), sources), /Source ID/);
+assert.throws(() => assertEvaluationSourceCases(altered({locator:""}), sources), /根拠箇所/);
 assert.throws(() => assertEvaluationSourceCases([...evaluations, yaizuRow], sources), /重複/);
 const sourceByUrl = new Map(sources.filter(function (row) { return row.url; }).map(function (row) { return [row.url, row]; }));
 const evidenceByCase = new Map(evidence.map(function (row) { return [row.case_id, row]; }));
@@ -444,6 +474,39 @@ const sharedState = evaluationStateUrl(
 assert.equal(sharedState, "https://josh-temple.github.io/public-sector-ai-procurement-japan/evaluation.html?topic=usage-pricing&case=matsue-2026-genai-support");
 const memoData = {caseById, evaluations, rules, gates, procurementByCase, evidenceByCase, sourceById, sourceByUrl};
 const priceTopic = EVALUATION_TOPICS.find(function (t) { return t.id === "usage-pricing"; });
+// Kobe specification-authoring must be reachable in the representative case selector,
+// accepted as a shareable deep link and included in the case-local Markdown memo.
+assert.ok(EVALUATION_CASE_IDS.includes("kobe-2026-spec-authoring-ai"), "Kobe spec authoring missing from evaluation selector");
+assert.ok(EVALUATION_CASE_IDS.includes("kobe-2026-tax-voicebot"), "existing Kobe voicebot selector regressed");
+const kobeSpecLink = evaluationStateUrl(sharedState, priceTopic.id, "kobe-2026-spec-authoring-ai");
+assert.equal(new URL(kobeSpecLink).searchParams.get("case"), "kobe-2026-spec-authoring-ai");
+const kobeSpecMemo = buildEvaluationMemo("kobe-2026-spec-authoring-ai", priceTopic, memoData, kobeSpecLink);
+for (const [id, points, detail] of [
+  ["KOB-04", "20", "項目4"],
+  ["KOB-07", "10", "項目7"]
+]) {
+  const row = evaluationById.get(id);
+  assert.equal(row.case_id, "kobe-2026-spec-authoring-ai", id + " case");
+  assert.equal(row.source_id, "SRC-kobe-2026-spec-authoring-evaluation", id + " source");
+  assert.equal(row.points, points, id + " points");
+  assert.equal(row.total_points, "100", id + " denominator");
+  assert.equal(row.assessment_stage, "提案評価", id + " stage");
+  assert.match(row.locator, new RegExp(detail), id + " locator");
+  assert.ok(kobeSpecMemo.includes(row.criterion_summary), id + " absent from Markdown");
+  assert.ok(kobeSpecMemo.includes(points + " / 100点"), id + " score absent from Markdown");
+  assert.ok(kobeSpecMemo.includes(detail), id + " locator absent from Markdown");
+}
+assert.match(kobeSpecMemo, /SRC.*kobe.*2026.*spec.*authoring.*evaluation/);
+assert.match(kobeSpecMemo, /https:\/\/www\.city\.kobe\.lg\.jp\/documents\/83634\/20260220103302\.pdf/);
+assert.match(kobeSpecMemo, /提案評価/);
+assert.match(kobeSpecMemo, /case=kobe-2026-spec-authoring-ai/);
+const kobeVoiceMemo = buildEvaluationMemo("kobe-2026-tax-voicebot", priceTopic, memoData, sharedState);
+assert.match(kobeVoiceMemo, /SRC.*kobe.*2026.*voicebot.*guide/);
+assert.match(kobeVoiceMemo, /50 \/ 100点/);
+assert.equal(evaluationById.get("KVB-04").assessment_stage, "書類審査+プレゼンテーション");
+assert.match(kobeVoiceMemo, /書類審査.*プレゼンテーション/);
+assert.match(kobeVoiceMemo, /https:\/\/www\.city\.kobe\.lg\.jp\/documents\/83354\/jisshiyoryo\.pdf/);
+
 const matsueMemo = buildEvaluationMemo("matsue-2026-genai-support", priceTopic, memoData, sharedState);
 assert.match(matsueMemo, /10 \/ 80点.*書類審査/);
 assert.match(matsueMemo, /各委員の合計得点.*60%/);

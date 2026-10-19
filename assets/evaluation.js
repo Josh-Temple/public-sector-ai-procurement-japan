@@ -123,6 +123,7 @@ const EVALUATION_CASE_IDS = [
   "oumi-2026-joint-genai",
   "gosen-2026-genai-service",
   "kobe-2025-dify-platform",
+  "kobe-2026-spec-authoring-ai",
   "kobe-2026-tax-voicebot",
   "minoh-2026-genai-license",
   "sendai-2025-genai-pilot",

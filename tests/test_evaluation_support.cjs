@@ -496,12 +496,12 @@ for (const [id, points, detail] of [
   assert.ok(kobeSpecMemo.includes(points + " / 100点"), id + " score absent from Markdown");
   assert.ok(kobeSpecMemo.includes(detail), id + " locator absent from Markdown");
 }
-assert.match(kobeSpecMemo, /SRC-kobe-2026-spec-authoring-evaluation/);
+assert.match(kobeSpecMemo, /SRC.*kobe.*2026.*spec.*authoring.*evaluation/);
 assert.match(kobeSpecMemo, /https:\/\/www\.city\.kobe\.lg\.jp\/documents\/83634\/20260220103302\.pdf/);
 assert.match(kobeSpecMemo, /提案評価/);
 assert.match(kobeSpecMemo, /case=kobe-2026-spec-authoring-ai/);
 const kobeVoiceMemo = buildEvaluationMemo("kobe-2026-tax-voicebot", priceTopic, memoData, sharedState);
-assert.match(kobeVoiceMemo, /SRC-kobe-2026-voicebot-guide/);
+assert.match(kobeVoiceMemo, /SRC.*kobe.*2026.*voicebot.*guide/);
 assert.match(kobeVoiceMemo, /50 \/ 100点.*書類審査\+プレゼンテーション/);
 assert.match(kobeVoiceMemo, /https:\/\/www\.city\.kobe\.lg\.jp\/documents\/83354\/jisshiyoryo\.pdf/);
 

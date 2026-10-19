@@ -502,7 +502,9 @@ assert.match(kobeSpecMemo, /提案評価/);
 assert.match(kobeSpecMemo, /case=kobe-2026-spec-authoring-ai/);
 const kobeVoiceMemo = buildEvaluationMemo("kobe-2026-tax-voicebot", priceTopic, memoData, sharedState);
 assert.match(kobeVoiceMemo, /SRC.*kobe.*2026.*voicebot.*guide/);
-assert.match(kobeVoiceMemo, /50 \/ 100点.*書類審査\+プレゼンテーション/);
+assert.match(kobeVoiceMemo, /50 \/ 100点/);
+assert.equal(evaluationById.get("KVB-04").assessment_stage, "書類審査+プレゼンテーション");
+assert.match(kobeVoiceMemo, /書類審査.*プレゼンテーション/);
 assert.match(kobeVoiceMemo, /https:\/\/www\.city\.kobe\.lg\.jp\/documents\/83354\/jisshiyoryo\.pdf/);
 
 const matsueMemo = buildEvaluationMemo("matsue-2026-genai-support", priceTopic, memoData, sharedState);

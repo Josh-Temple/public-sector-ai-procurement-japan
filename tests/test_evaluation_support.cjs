@@ -514,6 +514,16 @@ assert.match(matsueMemo, /200点/);
 assert.match(matsueMemo, /該当箇所/);
 assert.match(matsueMemo, /資料取得日/);
 assert.match(matsueMemo, /横断的な配点基準/);
+// The historical 404 disclosure is Matsue-only and does not convert legacy URL rows
+// into verified row-level Source/locator registrations.
+assert.match(matsueMemo, /2026年10月20日の確認時点で取得できませんでした/);
+assert.match(matsueMemo, /過去登録された松江市の評価基準書URL/);
+assert.match(matsueMemo, /hyoukakijun\.pdf/);
+assert.match(matsueMemo, /MATSUE/); // registered Matsue context
+assert.match(matsueMemo, /根拠資料ID：SRC\\-matsue\\-2026\\-evaluation/);
+assert.equal(matsueMemo.split("根拠箇所はこのデータに未登録です").length - 1, 8);
+assert.doesNotMatch(kobeSpecMemo, /松江市の評価基準書の登録済み公式URL/);
+assert.doesNotMatch(kobeVoiceMemo, /松江市の評価基準書の登録済み公式URL/);
 const oumiMemo = buildEvaluationMemo("oumi-2026-joint-genai", priceTopic, memoData, sharedState);
 assert.match(oumiMemo, /小計700点.*420点/);
 assert.match(oumiMemo, /どちらか一方/);

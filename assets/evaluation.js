@@ -264,7 +264,9 @@ function markdownLiteral(value) {
   return String(value ?? "").replace(/\r?\n/g, " ").replace(/[\\`*_{}\[\]()#+.!|>~-]/g, function (char) { return "\\" + char; });
 }
 function markdownSourceLink(source) {
-  const title = markdownLiteral(isMatsueEvaluationSource(source) ? "過去登録された松江市の評価基準書URL（2026年10月20日時点で取得不可）" : source.title || sourceLabel(source));
+  const title = markdownLiteral(isMatsueEvaluationSource(source)
+    ? (source.title || sourceLabel(source)) + "（過去登録された公式URL・2026年10月20日時点で取得不可）"
+    : source.title || sourceLabel(source));
   const url = evaluationOfficialUrl(source.url);
   const target = url.replaceAll("(", "%28").replaceAll(")", "%29")
     .replaceAll("[", "%5B").replaceAll("]", "%5D").replaceAll(" ", "%20");

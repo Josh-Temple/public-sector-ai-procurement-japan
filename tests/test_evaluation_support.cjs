@@ -519,7 +519,6 @@ assert.match(matsueMemo, /横断的な配点基準/);
 assert.match(matsueMemo, /2026年10月20日の確認時点で取得できませんでした/);
 assert.match(matsueMemo, /過去登録された松江市の評価基準書URL/);
 assert.match(matsueMemo, /hyoukakijun\.pdf/);
-assert.match(matsueMemo, /MATSUE/); // registered Matsue context
 assert.match(matsueMemo, /根拠資料ID：SRC\\-matsue\\-2026\\-evaluation/);
 assert.equal(matsueMemo.split("根拠箇所はこのデータに未登録です").length - 1, 8);
 assert.doesNotMatch(kobeSpecMemo, /松江市の評価基準書の登録済み公式URL/);

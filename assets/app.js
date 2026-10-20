@@ -289,6 +289,13 @@ function sourceDocumentRoleLabel(value) {
   return labels[value] || "公式資料";
 }
 
+// Historical Matsue URL observation; intentionally separate from Source access_state.
+const MATSUE_OLD_EVALUATION_URL = "https://www.city.matsue.lg.jp/material/files/group/6/hyoukakijun.pdf";
+const MATSUE_SOURCE_NOTICE = "松江市の評価基準書の登録済み公式URLは、2026年10月20日の確認時点で取得できませんでした。資料名・出典ID・根拠箇所は過去の確認記録です。現在の掲載・閲覧可能性を保証するものではありません。";
+function isMatsueOldEvaluation(caseId, url) {
+  return caseId === "matsue-2026-genai-support" && url === MATSUE_OLD_EVALUATION_URL;
+}
+
 function appendEvidenceSource(container, sourceId) {
   if (!sourceId) {
     container.textContent = "対応する資料IDは登録されていません。資料が存在しないことは意味しません。";
@@ -306,8 +313,15 @@ function appendEvidenceSource(container, sourceId) {
     title.target = "_blank";
     title.rel = "noreferrer";
   }
-  title.textContent = source.title || "資料名未登録";
+  const matsueOld = sourceId === "SRC-matsue-2026-evaluation" && isMatsueOldEvaluation(source.case_id, source.url);
+  title.textContent = matsueOld ? "過去登録された松江市評価基準書URL（2026年10月20日時点で取得不可）" : source.title || "資料名未登録";
   container.append(title);
+  if (matsueOld) {
+    const notice = document.createElement("p");
+    notice.className = "scope-note";
+    notice.textContent = MATSUE_SOURCE_NOTICE;
+    container.append(notice);
+  }
   const details = [
     "資料ID：" + sourceId,
     !url && (source.url ? "登録URLを安全なリンクとして表示できません" : "この資料のリンク先URLは登録されていません"),
@@ -1467,13 +1481,20 @@ function renderEvaluation(caseId) {
 
     const summary = document.createElement("p");
     summary.textContent = row.criterion_summary || "—";
-    appendInlineSource(summary, "", row.source_url, "評価表");
+    const matsueOld = isMatsueOldEvaluation(row.case_id, row.source_url);
+    appendInlineSource(summary, "", row.source_url, matsueOld ? "過去登録された評価基準書URL（2026年10月20日時点で取得不可）" : "評価表");
 
     const points = document.createElement("span");
     points.className = "points";
     points.textContent = evaluationPointsText(row);
 
     item.append(group, summary, points);
+    if (matsueOld) {
+      const notice = document.createElement("p");
+      notice.className = "scope-note";
+      notice.textContent = MATSUE_SOURCE_NOTICE;
+      item.append(notice);
+    }
     const source = row.source_id ? state.sourceById.get(row.source_id) : null;
     if (source) {
       const name = document.createElement("p");

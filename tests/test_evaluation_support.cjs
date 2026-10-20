@@ -517,7 +517,7 @@ assert.match(matsueMemo, /横断的な配点基準/);
 // The historical 404 disclosure is Matsue-only and does not convert legacy URL rows
 // into verified row-level Source/locator registrations.
 assert.match(matsueMemo, /2026年10月20日の確認時点で取得できませんでした/);
-assert.match(matsueMemo, /過去登録された松江市の評価基準書URL/);
+assert.match(matsueMemo, /過去登録された公式URL・2026年10月20日時点で取得不可/);
 assert.match(matsueMemo, /hyoukakijun\.pdf/);
 assert.match(matsueMemo, /根拠資料ID：SRC\\-matsue\\-2026\\-evaluation/);
 assert.equal(matsueMemo.split("根拠箇所はこのデータに未登録です").length - 1, 8);

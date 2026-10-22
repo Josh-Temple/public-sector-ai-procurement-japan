@@ -344,6 +344,7 @@ function assertDraftingEvaluationSources(rows, sources) {
     if (!row.criterion_id || ids.has(row.criterion_id)) throw new Error("評価項目IDが重複しています");
     ids.add(row.criterion_id);
     if (row.locator && !row.source_id) throw new Error("根拠箇所にSource IDがありません");
+    if (row.source_id && !row.locator) throw new Error("Source IDに根拠箇所がありません");
     if (row.source_url && !draftingOfficialUrl(row.source_url)) throw new Error("評価資料URLの形式が不正です");
     const source = row.source_id ? byId.get(row.source_id) : null;
     const linked = row.source_url ? byUrl.get(row.source_url) : null;

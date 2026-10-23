@@ -26,6 +26,7 @@ const {
   awardBasisLabel,
   draftingDecisionForTopic
 } = require("../assets/evaluation.js");
+const { assertDraftingEvaluationSources } = require("../assets/drafting.js");
 
 const root = path.resolve(__dirname, "..");
 const read = function (name) {
@@ -97,6 +98,9 @@ assert.throws(() => assertEvaluationSourceCases(altered({source_id:"SRC-UNKNOWN"
 assert.throws(() => assertEvaluationSourceCases(altered({source_url:"javascript:alert(1)"}), sources), /不正/);
 assert.throws(() => assertEvaluationSourceCases(altered({source_id:"", locator:yaizuRow.locator}), sources), /Source ID/);
 assert.throws(() => assertEvaluationSourceCases(altered({locator:""}), sources), /根拠箇所/);
+assertDraftingEvaluationSources(evaluations, sources);
+assert.throws(() => assertDraftingEvaluationSources(altered({locator:""}), sources), /根拠箇所/);
+assert.throws(() => assertDraftingEvaluationSources(altered({source_id:"", locator:yaizuRow.locator}), sources), /Source ID/);
 assert.throws(() => assertEvaluationSourceCases([...evaluations, yaizuRow], sources), /重複/);
 const sourceByUrl = new Map(sources.filter(function (row) { return row.url; }).map(function (row) { return [row.url, row]; }));
 const evidenceByCase = new Map(evidence.map(function (row) { return [row.case_id, row]; }));

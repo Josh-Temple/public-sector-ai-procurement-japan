@@ -344,6 +344,7 @@ function assertDraftingEvaluationSources(rows, sources) {
     if (!row.criterion_id || ids.has(row.criterion_id)) throw new Error("評価項目IDが重複しています");
     ids.add(row.criterion_id);
     if (row.locator && !row.source_id) throw new Error("根拠箇所にSource IDがありません");
+    if (row.source_id && !row.locator) throw new Error("Source IDに根拠箇所がありません");
     if (row.source_url && !draftingOfficialUrl(row.source_url)) throw new Error("評価資料URLの形式が不正です");
     const source = row.source_id ? byId.get(row.source_id) : null;
     const linked = row.source_url ? byUrl.get(row.source_url) : null;
@@ -352,6 +353,10 @@ function assertDraftingEvaluationSources(rows, sources) {
     }
   });
 }
+// Historical observation for one official evaluation URL; not a freshness claim.
+const MATSUE_EVALUATION_OLD_URL = "https://www.city.matsue.lg.jp/material/files/group/6/hyoukakijun.pdf";
+const MATSUE_EVALUATION_NOTICE = "松江市の評価基準書の登録済み公式URLは、2026年10月20日の確認時点で取得できませんでした。資料名・出典ID・根拠箇所は過去の確認記録です。現在の掲載・閲覧可能性を保証するものではありません。";
+
 function evidenceCardForEvaluation(row, data) {
   const card = document.createElement("article");
   card.className = "drafting-evidence";
@@ -370,12 +375,14 @@ function evidenceCardForEvaluation(row, data) {
   appendText(card, "p", row.source_id && row.locator
     ? "登録された根拠箇所：" + row.locator
     : "根拠箇所はこのデータに未登録です。原典をご確認ください。", "drafting-evidence-boundary");
+  const matsueOld = row.case_id === "matsue-2026-genai-support" && row.source_url === MATSUE_EVALUATION_OLD_URL;
+  if (matsueOld) appendText(card, "p", MATSUE_EVALUATION_NOTICE, "drafting-evidence-boundary");
   if (draftingOfficialUrl(row.source_url)) {
     const sourceAnchor = document.createElement("a");
     sourceAnchor.href = draftingOfficialUrl(row.source_url);
     sourceAnchor.target = "_blank";
     sourceAnchor.rel = "noreferrer";
-    sourceAnchor.textContent = "評価資料 ↗";
+    sourceAnchor.textContent = matsueOld ? "過去登録された公式URL（2026年10月20日時点で取得不可） ↗" : "評価資料 ↗";
     links.appendChild(sourceAnchor);
   }
   card.appendChild(links);

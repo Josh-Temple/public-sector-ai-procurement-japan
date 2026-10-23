@@ -26,6 +26,7 @@ const {
   awardBasisLabel,
   draftingDecisionForTopic
 } = require("../assets/evaluation.js");
+const { assertDraftingEvaluationSources } = require("../assets/drafting.js");
 
 const root = path.resolve(__dirname, "..");
 const read = function (name) {
@@ -97,6 +98,9 @@ assert.throws(() => assertEvaluationSourceCases(altered({source_id:"SRC-UNKNOWN"
 assert.throws(() => assertEvaluationSourceCases(altered({source_url:"javascript:alert(1)"}), sources), /不正/);
 assert.throws(() => assertEvaluationSourceCases(altered({source_id:"", locator:yaizuRow.locator}), sources), /Source ID/);
 assert.throws(() => assertEvaluationSourceCases(altered({locator:""}), sources), /根拠箇所/);
+assertDraftingEvaluationSources(evaluations, sources);
+assert.throws(() => assertDraftingEvaluationSources(altered({locator:""}), sources), /根拠箇所/);
+assert.throws(() => assertDraftingEvaluationSources(altered({source_id:"", locator:yaizuRow.locator}), sources), /Source ID/);
 assert.throws(() => assertEvaluationSourceCases([...evaluations, yaizuRow], sources), /重複/);
 const sourceByUrl = new Map(sources.filter(function (row) { return row.url; }).map(function (row) { return [row.url, row]; }));
 const evidenceByCase = new Map(evidence.map(function (row) { return [row.case_id, row]; }));
@@ -514,6 +518,15 @@ assert.match(matsueMemo, /200点/);
 assert.match(matsueMemo, /該当箇所/);
 assert.match(matsueMemo, /資料取得日/);
 assert.match(matsueMemo, /横断的な配点基準/);
+// The historical 404 disclosure is Matsue-only and does not convert legacy URL rows
+// into verified row-level Source/locator registrations.
+assert.match(matsueMemo, /2026年10月20日の確認時点で取得できませんでした/);
+assert.match(matsueMemo, /過去登録された公式URL・2026年10月20日時点で取得不可/);
+assert.match(matsueMemo, /hyoukakijun\.pdf/);
+assert.match(matsueMemo, /根拠資料ID：SRC\\-matsue\\-2026\\-evaluation/);
+assert.equal(matsueMemo.split("根拠箇所はこのデータに未登録です").length - 1, 8);
+assert.doesNotMatch(kobeSpecMemo, /松江市の評価基準書の登録済み公式URL/);
+assert.doesNotMatch(kobeVoiceMemo, /松江市の評価基準書の登録済み公式URL/);
 const oumiMemo = buildEvaluationMemo("oumi-2026-joint-genai", priceTopic, memoData, sharedState);
 assert.match(oumiMemo, /小計700点.*420点/);
 assert.match(oumiMemo, /どちらか一方/);

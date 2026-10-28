@@ -123,6 +123,7 @@ const EVALUATION_CASE_IDS = [
   "oumi-2026-joint-genai",
   "gosen-2026-genai-service",
   "kobe-2025-dify-platform",
+  "kobe-2026-spec-authoring-ai",
   "kobe-2026-tax-voicebot",
   "minoh-2026-genai-license",
   "sendai-2025-genai-pilot",
@@ -203,6 +204,7 @@ function assertEvaluationSourceCases(evaluations, sources) {
     if (!row.criterion_id || criterionIds.has(row.criterion_id)) throw new Error("評価項目IDが重複または欠落しています");
     criterionIds.add(row.criterion_id);
     if (row.locator && !row.source_id) throw new Error("根拠箇所にSource IDがありません");
+    if (row.source_id && !row.locator) throw new Error("Source IDに根拠箇所がありません");
     if (row.source_url && !evaluationOfficialUrl(row.source_url)) throw new Error("評価資料URLの形式が不正です");
     const source = row.source_id ? byId.get(row.source_id) : null;
     const byLink = row.source_url ? byUrl.get(row.source_url) : null;
@@ -244,11 +246,27 @@ function evaluationOfficialUrl(value) {
     return (["http:", "https:"].includes(url.protocol) && url.hostname) ? value : "";
   } catch (_) { return ""; }
 }
+// Historical availability observation, not a live status check or a new Source registry.
+const MATSUE_EVALUATION_URL = "https://www.city.matsue.lg.jp/material/files/group/6/hyoukakijun.pdf";
+const MATSUE_EVALUATION_NOTICE = "松江市の評価基準書の登録済み公式URLは、2026年10月20日の確認時点で取得できませんでした。資料名・出典ID・根拠箇所は過去の確認記録です。現在の掲載・閲覧可能性を保証するものではありません。";
+function isMatsueEvaluationRow(row) {
+  return row && row.case_id === "matsue-2026-genai-support" && row.source_url === MATSUE_EVALUATION_URL;
+}
+function isMatsueEvaluationSource(source) {
+  return source && source.source_id === "SRC-matsue-2026-evaluation"
+    && source.case_id === "matsue-2026-genai-support" && source.url === MATSUE_EVALUATION_URL;
+}
+function matsueHistoricalLinkLabel() {
+  return "過去登録された公式URL（2026年10月20日時点で取得不可） ↗";
+}
+
 function markdownLiteral(value) {
   return String(value ?? "").replace(/\r?\n/g, " ").replace(/[\\`*_{}\[\]()#+.!|>~-]/g, function (char) { return "\\" + char; });
 }
 function markdownSourceLink(source) {
-  const title = markdownLiteral(source.title || sourceLabel(source));
+  const title = markdownLiteral(isMatsueEvaluationSource(source)
+    ? (source.title || sourceLabel(source)) + "（過去登録された公式URL・2026年10月20日時点で取得不可）"
+    : source.title || sourceLabel(source));
   const url = evaluationOfficialUrl(source.url);
   const target = url.replaceAll("(", "%28").replaceAll(")", "%29")
     .replaceAll("[", "%5B").replaceAll("]", "%5D").replaceAll(" ", "%20");
@@ -271,7 +289,8 @@ function appendCriterionEvidence(parent, row, data) {
   }
   if (row.source_url && evaluationOfficialUrl(row.source_url)) {
     const links = document.createElement("p");
-    appendLink(links, row.source_url, "公式の評価資料 ↗", true);
+    if (isMatsueEvaluationRow(row)) appendText(parent, "p", MATSUE_EVALUATION_NOTICE, "scope-note");
+    appendLink(links, row.source_url, isMatsueEvaluationRow(row) ? matsueHistoricalLinkLabel() : "公式の評価資料 ↗", true);
     parent.appendChild(links);
   }
   appendText(parent, "p", row.source_id && row.locator
@@ -331,6 +350,7 @@ function buildEvaluationMemo(caseId, topic, data, baseUrl) {
     "未登録の項目は、原資料に存在しないことを意味しません。",
     caseBoundaryText(evidence),
     "",
+    ...(caseId === "matsue-2026-genai-support" ? [MATSUE_EVALUATION_NOTICE, "過去登録された公式URL：" + MATSUE_EVALUATION_URL, ""] : []),
     "## 評価項目（審査段階・当該段階の満点）",
     ""
   ];
@@ -432,7 +452,7 @@ function renderLinks(card, caseId, sourceOrSources, claimPath) {
   sources.filter(Boolean).forEach(function (source) {
     if (!source.url || seen.has(source.url)) return;
     seen.add(source.url);
-    appendLink(links, source.url, sourceLabel(source) + " ↗", true);
+    appendLink(links, source.url, isMatsueEvaluationSource(source) ? matsueHistoricalLinkLabel() : sourceLabel(source) + " ↗", true);
   });
   if (claimPath) appendLink(links, claimLink(claimPath), "照合済みの調査記録 ↗", true);
   card.appendChild(links);
@@ -560,7 +580,7 @@ function appendCaseSourceLinks(parent, sources) {
   (Array.isArray(sources) ? sources : [sources]).filter(Boolean).forEach(function (source) {
     if (!source.url || seen.has(source.url)) return;
     seen.add(source.url);
-    appendLink(links, source.url, sourceLabel(source) + " ↗", true);
+    appendLink(links, source.url, isMatsueEvaluationSource(source) ? matsueHistoricalLinkLabel() : sourceLabel(source) + " ↗", true);
   });
   if (links.children.length) parent.appendChild(links);
 }
@@ -569,10 +589,11 @@ function appendSourceEvidence(parent, source, locator, prefix) {
   const line = document.createElement("p");
   line.className = "evaluation-case-source-links";
   line.appendChild(document.createTextNode(prefix + "："));
-  if (source && source.url) appendLink(line, source.url, source.title || sourceLabel(source), true);
+  if (source && source.url) appendLink(line, source.url, isMatsueEvaluationSource(source) ? matsueHistoricalLinkLabel() : source.title || sourceLabel(source), true);
   else line.appendChild(document.createTextNode(source ? (source.title || "公式資料・URL未登録") : "資料未登録"));
   if (locator) line.appendChild(document.createTextNode(" ／ 該当箇所：" + locator));
   parent.appendChild(line);
+  if (isMatsueEvaluationSource(source)) appendText(parent, "p", MATSUE_EVALUATION_NOTICE, "scope-note");
   if (source && source.retrieved_at) appendText(parent, "p", "資料取得日：" + source.retrieved_at, "evaluation-boundary");
 }
 
@@ -783,6 +804,7 @@ function renderCase(caseId, data) {
     appendText(header, "p", selectionLabel, "evaluation-score");
   }
   appendText(header, "p", caseBoundaryText(evidence), "scope-note");
+  if (caseId === "matsue-2026-genai-support") appendText(header, "p", MATSUE_EVALUATION_NOTICE, "scope-note");
   const links = document.createElement("p");
   links.className = "case-dialog-actions";
   appendLink(links, caseLink(caseId), "案件詳細 →", false);
